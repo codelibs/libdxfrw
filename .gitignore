@@ -2,6 +2,7 @@
 obj/
 libdxfrw.pro*
 Makefile
+*~
 
 #vim files
 *.swp

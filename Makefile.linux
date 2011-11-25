@@ -63,7 +63,7 @@ DISTFILES     = AUTHORS \
 		NEWS \
 		README \
 		TODO \
-		Makefile
+		Makefile.linux
 
 
 ####### Implicit rules
@@ -105,8 +105,8 @@ clean:
 
 
 dist: 
-	@$(CHK_DIR_EXISTS) dxfrw0.0.1 || $(MKDIR) dxfrw0.0.1 
-	$(COPY_FILE) --parents $(SOURCES) $(INSTHEADERS) $(INTERNALH) $(DISTFILES) dxfrw0.0.1/ && (cd `dirname dxfrw0.0.1` && $(TAR) dxfrw0.0.1.tar dxfrw0.0.1 && $(COMPRESS) dxfrw0.0.1.tar) && $(DEL_FILE) -r dxfrw0.0.1
+	@$(CHK_DIR_EXISTS) libdxfrw0.0.1 || $(MKDIR) libdxfrw0.0.1 
+	$(COPY_FILE) --parents $(SOURCES) $(INSTHEADERS) $(INTERNALH) $(DISTFILES) libdxfrw0.0.1/ && (cd `dirname libdxfrw0.0.1` && $(TAR) libdxfrw0.0.1.tar libdxfrw0.0.1 && $(COMPRESS) libdxfrw0.0.1.tar) && $(DEL_FILE) -r libdxfrw0.0.1
 
 #	$(COPY_FILE) --parents $(SOURCES) $(INSTHEADERS) $(INTERNALH) $(DISTFILES) dxfrw0.0.1/ && (cd `dirname dxfrw0.0.1` && $(TAR) dxfrw0.0.1.tar dxfrw0.0.1 && $(COMPRESS) dxfrw0.0.1.tar) && $(MOVE) `dirname obj/dxfrw0.0.1`/dxfrw0.0.1.tar.bz2 . && $(DEL_FILE) -r obj/dxfrw0.0.1
 
