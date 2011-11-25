@@ -1,0 +1,22 @@
+libdxfrw
+
+libdxfrw is a free C++ library to read and write DXF files in both formats, ascii and binary form.
+ It is licensed under the terms of the GNU General Public License version 2 (or at you option
+any later version).
+
+
+If you are looking for general information about the project, check our website:
+http://sourceforge.net/projects/libdxfrw
+
+== Building and installing the library ==
+
+make -f Makefile.linux
+make -f Makefile.linux install (as superuser)
+
+to uninstall:
+make -f Makefile.linux uninstall (as superuser)
+
+== Example usage of the library ==
+
+To be written.
+

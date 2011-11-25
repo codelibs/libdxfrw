@@ -1,0 +1,8 @@
+# Generated directories and files
+obj/
+libdxfrw.pro*
+Makefile
+
+#vim files
+*.swp
+*.orig
