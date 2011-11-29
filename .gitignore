@@ -3,7 +3,7 @@ obj/
 libdxfrw.pro*
 Makefile
 *~
-
+*bz2
 #vim files
 *.swp
 *.orig

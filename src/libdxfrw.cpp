@@ -12,8 +12,8 @@
 
 
 #include "libdxfrw.h"
-//#include <math.h>
 #include <fstream>
+#include <algorithm>
 #include "dxfreader.h"
 #include "dxfwriter.h"
 
@@ -178,6 +178,49 @@ bool dxfRW::writeEntity(DRW_Entity *ent) {
     return true;
 }
 
+bool dxfRW::writeLineType(DRW_LType *ent){
+    char buffer[5];
+    string strname = ent->name;
+    transform(strname.begin(), strname.end(), strname.begin(),::toupper);
+    writer->writeString(0, "LTYPE");
+//do not write linetypes handled by library
+    if (strname == "BYLAYER" || strname == "BYBLOCK" || strname == "CONTINUOUS") {
+        return true;
+    }
+    ++entCount;
+    sprintf(buffer, "%X", entCount);
+    writer->writeString(5, buffer);
+
+    writer->writeString(330, "5");
+    writer->writeString(100, "AcDbSymbolTableRecord");
+    writer->writeString(100, "AcDbLinetypeTableRecord");
+    writer->writeString(2, ent->name);
+    writer->writeInt16(70, ent->flags);
+    writer->writeString(3, ent->desc);
+    ent->update();
+    writer->writeInt16(72, 65);
+    writer->writeInt16(73, ent->size);
+    writer->writeDouble(40, ent->length);
+
+    for (int i = 0;  i< ent->path.size(); i++){
+        writer->writeDouble(49, ent->path.at(i));
+        writer->writeInt16(74, 0);
+    }
+    return true;
+}
+
+bool dxfRW::writePoint(DRW_Point *ent) {
+    writer->writeString(0, "POINT");
+    writeEntity(ent);
+    writer->writeString(100, "AcDbPoint");
+    writer->writeDouble(10, ent->x);
+    writer->writeDouble(20, ent->y);
+    if (ent->z != 0.0) {
+        writer->writeDouble(30, ent->z);
+    }
+    return true;
+}
+
 bool dxfRW::writeLine(DRW_Line *ent) {
     writer->writeString(0, "LINE");
     writeEntity(ent);
@@ -305,7 +348,7 @@ bool dxfRW::writeTables() {
     writer->writeString(330, "0");
     writer->writeString(100, "AcDbSymbolTable");
     writer->writeInt16(70, 4); //end table def
-
+//Mandatory linetypes
     writer->writeString(0, "LTYPE");
     writer->writeString(5, "14");
     writer->writeString(330, "5");
@@ -341,28 +384,8 @@ bool dxfRW::writeTables() {
     writer->writeInt16(72, 65);
     writer->writeInt16(73, 0);
     writer->writeDouble(40, 0.0);
-
-    writer->writeString(0, "LTYPE");
-    entCount = 1+entCount;
-    sprintf(buffer, "%X", entCount);
-    writer->writeString(5, buffer);
-    writer->writeString(330, "5");
-    writer->writeString(100, "AcDbSymbolTableRecord");
-    writer->writeString(100, "AcDbLinetypeTableRecord");
-    writer->writeString(2, "DASHDOT");
-    writer->writeInt16(70, 0);
-    writer->writeString(3, "Dash dot __ . __ . __ . __ . __ . __ . __ . __");
-    writer->writeInt16(72, 65);
-    writer->writeInt16(73, 4);
-    writer->writeDouble(40, 25.4);
-    writer->writeDouble(49, 12.7);
-    writer->writeInt16(74, 0);
-    writer->writeDouble(49, -6.35);
-    writer->writeInt16(74, 0);
-    writer->writeDouble(49, 0.0);
-    writer->writeInt16(74, 0);
-    writer->writeDouble(49, -6.35);
-    writer->writeInt16(74, 0);
+//Aplication linetypes
+    iface->writeLTypes();
     writer->writeString(0, "ENDTAB");
 
     writer->writeString(0, "TABLE");
@@ -615,7 +638,7 @@ bool dxfRW::processTables() {
                     if (sectionstr == "VPORT") {
 //                        processVPort();
                     } else if (sectionstr == "LTYPE") {
-//                        processLType();
+                        processLType();
                     } else if (sectionstr == "LAYER") {
                         processLayer();
                     } else if (sectionstr == "STYLE") {
@@ -636,6 +659,32 @@ bool dxfRW::processTables() {
                 return true;  //found ENDSEC terminate
             }
         }
+    }
+    return true;
+}
+
+bool dxfRW::processLType() {
+    DBG("dxfRW::processLType\n");
+    int code;
+    string sectionstr;
+    bool reading = false;
+    DRW_LType ltype;
+    while (reader->readRec(&code, !binary)) {
+        DBG(code); DBG("\n");
+        if (code == 0) {
+            if (reading) {
+                ltype.update();
+                iface->addLType(ltype);
+            }
+            sectionstr = reader->getString();
+            DBG(sectionstr); DBG("\n");
+            if (sectionstr == "LTYPE") {
+                reading = true;
+            } else if (sectionstr == "ENDTAB") {
+                return true;  //found ENDTAB terminate
+            }
+        } else if (reading)
+            ltype.parseCode(code, reader);
     }
     return true;
 }
