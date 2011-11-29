@@ -33,6 +33,7 @@ public:
 
     bool write(DRW_Interface *interface, DRW::Version ver, bool bin);
     bool writeLineType(DRW_LType *ent);
+    bool writeLayer(DRW_Layer *ent);
     bool writePoint(DRW_Point *ent);
     bool writeLine(DRW_Line *ent);
     bool writeCircle(DRW_Circle *ent);
@@ -70,6 +71,7 @@ private:
 //    int section;
     string nextentity;
     int entCount;
+    bool wlayer0;
 
 };
 

@@ -202,10 +202,34 @@ bool dxfRW::writeLineType(DRW_LType *ent){
     writer->writeInt16(73, ent->size);
     writer->writeDouble(40, ent->length);
 
-    for (int i = 0;  i< ent->path.size(); i++){
+    for (unsigned int i = 0;  i< ent->path.size(); i++){
         writer->writeDouble(49, ent->path.at(i));
         writer->writeInt16(74, 0);
     }
+    return true;
+}
+
+bool dxfRW::writeLayer(DRW_Layer *ent){
+    char buffer[5];
+    writer->writeString(0, "LAYER");
+    if (!wlayer0 && ent->name == "0") {
+            wlayer0 = true;
+            writer->writeString(5, "10");
+    } else {
+        ++entCount;
+        sprintf(buffer, "%X", entCount);
+        writer->writeString(5, buffer);
+    }
+    writer->writeString(330, "2");
+    writer->writeString(100, "AcDbSymbolTableRecord");
+    writer->writeString(100, "AcDbLayerTableRecord");
+    writer->writeString(2, ent->name);
+    writer->writeInt16(70, ent->flags);
+    writer->writeInt16(62, ent->color);
+    writer->writeString(6, ent->lineType);
+    writer->writeInt16(370, ent->lWeight);
+    writer->writeString(390, "F");
+//    writer->writeString(347, "10012");
     return true;
 }
 
@@ -394,18 +418,13 @@ bool dxfRW::writeTables() {
     writer->writeString(330, "0");
     writer->writeString(100, "AcDbSymbolTable");
     writer->writeInt16(70, 1); //end table def
-    writer->writeString(0, "LAYER");
-    writer->writeString(5, "10");
-    writer->writeString(330, "2");
-    writer->writeString(100, "AcDbSymbolTableRecord");
-    writer->writeString(100, "AcDbLayerTableRecord");
-    writer->writeString(2, "0");
-    writer->writeInt16(70, 0);
-    writer->writeInt16(62, 7);
-    writer->writeString(6, "CONTINUOUS");
-    writer->writeInt16(370, -3);
-    writer->writeString(390, "F");
-//    writer->writeString(347, "10012");
+    wlayer0 =false;
+    iface->writeLayers();
+    if (!wlayer0) {
+        DRW_Layer lay0;
+        lay0.name = "0";
+        writeLayer(&lay0);
+    }
     writer->writeString(0, "ENDTAB");
 
     writer->writeString(0, "TABLE");
@@ -484,6 +503,7 @@ bool dxfRW::writeTables() {
     writer->writeInt16(280, 1);
     writer->writeInt16(281, 0);
     writer->writeString(0, "ENDTAB");
+return true;
 }
 
 bool dxfRW::writeBlocks() {
@@ -526,6 +546,7 @@ bool dxfRW::writeBlocks() {
     writer->writeString(100, "AcDbEntity");
     writer->writeString(8, "0");
     writer->writeString(100, "AcDbBlockEnd");
+    return true;
 }
 
 bool dxfRW::writeObjects() {
@@ -546,6 +567,7 @@ bool dxfRW::writeObjects() {
     writer->writeString(330, "C");
     writer->writeString(100, "AcDbDictionary");
     writer->writeInt16(281, 1);
+    return true;
 }
 
 /********* Reader Process *********/
