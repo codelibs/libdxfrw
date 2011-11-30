@@ -18,7 +18,7 @@
 #include "drw_objects.h"
 #include "drw_interface.h"
 
-#define DRW_VERSION     "0.0.1"
+#define DRW_VERSION     "0.1.0"
 
 class dxfReader;
 class dxfWriter;
@@ -38,6 +38,9 @@ public:
     bool writeLine(DRW_Line *ent);
     bool writeCircle(DRW_Circle *ent);
     bool writeArc(DRW_Arc *ent);
+    bool writeEllipse(DRW_Ellipse *ent);
+    bool writeTrace(DRW_Trace *ent);
+    bool writeSolid(DRW_Solid *ent);
 
 private:
     bool processDxf();
@@ -54,6 +57,9 @@ private:
     bool processLine();
     bool processCircle();
     bool processArc();
+    bool processEllipse();
+    bool processTrace();
+    bool processSolid();
 
 //    bool writeHeader();
     bool writeEntity(DRW_Entity *ent);
