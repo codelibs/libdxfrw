@@ -7,7 +7,7 @@
 
 INCLUDEPATH   = /usr/local/include/libdxfrw
 LIBPATH       = /usr/local/lib
-VERSION       = 0.1.0
+VERSION       = 0.1.1
 
 CC            = gcc
 CXX           = g++
