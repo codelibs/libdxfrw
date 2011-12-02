@@ -2,6 +2,9 @@
 obj/
 libdxfrw.pro*
 Makefile
+*.a
+*so
+*.dll
 *~
 *bz2
 #vim files
