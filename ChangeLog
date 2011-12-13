@@ -1,0 +1,69 @@
+Author: Rallaz <rallazz@gmail.com>
+Date:   Mon Dec 12 21:02:53 2011 +0100
+
+    added read spline support
+
+Author: Rallaz <rallazz@gmail.com>
+Date:   Sun Dec 11 14:15:26 2011 +0100
+
+    added 3dface read/write support
+
+Author: Rallaz <rallazz@gmail.com>
+Date:   Sun Dec 11 13:18:09 2011 +0100
+
+    read polyline & hatch
+
+Author: Rallaz <rallazz@gmail.com>
+Date:   Sun Dec 4 11:49:22 2011 +0100
+
+    add lwpolyline write support
+
+Author: Rallaz <rallazz@gmail.com>
+Date:   Sat Dec 3 11:22:06 2011 +0100
+
+    add read support for lightweight polyline
+
+Author: Rallaz <rallazz@gmail.com>
+Date:   Fri Dec 2 20:07:17 2011 +0100
+
+    can read block and insert
+
+Author: Rallaz <rallazz@gmail.com>
+Date:   Thu Dec 1 17:31:01 2011 +0100
+
+    fix \r\n and \n on read
+
+Author: Rallaz <rallazz@gmail.com>
+Date:   Wed Nov 30 21:04:27 2011 +0100
+
+    updated makefile
+
+Author: Rallaz <rallazz@gmail.com>
+Date:   Wed Nov 30 20:58:16 2011 +0100
+
+    added read/write support for ellipse, trace & solid
+
+Author: Rallaz <rallazz@gmail.com>
+Date:   Tue Nov 29 19:46:52 2011 +0100
+
+    add write layers
+
+Author: Rallaz <rallazz@gmail.com>
+Date:   Tue Nov 29 16:49:47 2011 +0100
+
+    read/write linetypes
+
+Author: Rallaz <rallazz@gmail.com>
+Date:   Mon Nov 28 18:12:47 2011 +0100
+
+    Completed basic write support
+
+Author: Rallaz <rallazz@gmail.com>
+Date:   Fri Nov 25 20:09:37 2011 +0100
+
+    Minor patch
+
+Author: Rallaz <rallazz@gmail.com>
+Date:   Fri Nov 25 19:46:50 2011 +0100
+
+    Initial commit of version 0.0.1
