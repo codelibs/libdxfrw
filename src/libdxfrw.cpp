@@ -728,6 +728,7 @@ bool dxfRW::processHeader() {
             sectionstr = reader->getString();
             DBG(sectionstr); DBG("\n");
             if (sectionstr == "ENDSEC") {
+                iface->addHeader(&header);
                 return true;  //found ENDSEC terminate
             }
         } else header.parseCode(code, reader);
@@ -924,6 +925,8 @@ bool dxfRW::processEntities(bool isblock) {
             processPolyline();
         } else if (nextentity == "TEXT") {
             processText();
+        } else if (nextentity == "MTEXT") {
+            processMText();
         } else if (nextentity == "HATCH") {
             processHatch();
         } else if (nextentity == "SPLINE") {
@@ -932,6 +935,10 @@ bool dxfRW::processEntities(bool isblock) {
             process3dface();
         } else if (nextentity == "IMAGE") {
             processImage();
+        } else if (nextentity == "DIMENSION") {
+            processDimension();
+        } else if (nextentity == "LEADER") {
+            processLeader();
         } else {
             if (reader->readRec(&code, !binary)){
                 if (code == 0)
@@ -1225,6 +1232,27 @@ bool dxfRW::processText() {
     return true;
 }
 
+bool dxfRW::processMText() {
+    DBG("dxfRW::processMText");
+    int code;
+    DRW_MText txt;
+    while (reader->readRec(&code, !binary)) {
+        DBG(code); DBG("\n");
+        switch (code) {
+        case 0: {
+            nextentity = reader->getString();
+            DBG(nextentity); DBG("\n");
+            iface->addMText(txt);
+            return true;  //found new entity or ENDSEC, terminate
+        }
+        default:
+            txt.parseCode(code, reader);
+            break;
+        }
+    }
+    return true;
+}
+
 bool dxfRW::processHatch() {
     DBG("dxfRW::processHatch");
     int code;
@@ -1291,6 +1319,79 @@ bool dxfRW::processImage() {
 }
 
 
+bool dxfRW::processDimension() {
+    DBG("dxfRW::processDimension");
+    int code;
+    DRW_DimensionData dim;
+    while (reader->readRec(&code, !binary)) {
+        DBG(code); DBG("\n");
+        switch (code) {
+        case 0: {
+            nextentity = reader->getString();
+            DBG(nextentity); DBG("\n");
+            int type = dim.type & 0x0F;
+            switch (type) {
+            case 0: {
+                DRW_DimLinear d(dim);
+                iface->addDimLinear(&d);
+                break; }
+            case 1: {
+                DRW_DimAligned d(dim);
+                iface->addDimAlign(&d);
+                break; }
+            case 2:  {
+                DRW_DimAngular d(dim);
+                iface->addDimAngular(&d);
+                break;}
+            case 3: {
+                DRW_DimDiametric d(dim);
+                iface->addDimDiametric(&d);
+                break; }
+            case 4: {
+                DRW_DimRadial d(dim);
+                iface->addDimRadial(&d);
+                break; }
+            case 5: {
+                DRW_DimAngular3p d(dim);
+                iface->addDimAngular3P(&d);
+                break; }
+            case 6: {
+                DRW_DimOrdinate d(dim);
+                iface->addDimOrdinate(&d);
+                break; }
+            }
+            return true;  //found new entity or ENDSEC, terminate
+        }
+        default:
+            dim.parseCode(code, reader);
+            break;
+        }
+    }
+    return true;
+}
+
+bool dxfRW::processLeader() {
+    DBG("dxfRW::processLeader");
+    int code;
+    DRW_Leader leader;
+    while (reader->readRec(&code, !binary)) {
+        DBG(code); DBG("\n");
+        switch (code) {
+        case 0: {
+            nextentity = reader->getString();
+            DBG(nextentity); DBG("\n");
+            iface->addLeader(&leader);
+            return true;  //found new entity or ENDSEC, terminate
+        }
+        default:
+            leader.parseCode(code, reader);
+            break;
+        }
+    }
+    return true;
+}
+
+
 /********* Objects Section *********/
 
 bool dxfRW::processObjects() {
@@ -1342,4 +1443,3 @@ bool dxfRW::processImageDef() {
     }
     return true;
 }
-

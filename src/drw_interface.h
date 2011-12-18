@@ -35,6 +35,9 @@ public:
 //        delete extrusion;
     }
 
+    /** Called when header is parsed.  */
+    virtual void addHeader(const DRW_Header* data) = 0;
+
     /** Called for every line Type.  */
     virtual void addLType(const DRW_LType& data) = 0;
     /** Called for every layer. */
@@ -100,53 +103,41 @@ public:
     /**
      * Called for every aligned dimension entity. 
      */
-    virtual void addDimAlign(const DRW_Entity& data,
-                             const DRW_Entity& edata) = 0;
+    virtual void addDimAlign(const DRW_DimAligned *data) = 0;
     /**
      * Called for every linear or rotated dimension entity. 
      */
-    virtual void addDimLinear(const DRW_Entity& data,
-                              const DRW_Entity& edata) = 0;
+    virtual void addDimLinear(const DRW_DimLinear *data) = 0;
 
 	/**
      * Called for every radial dimension entity. 
      */
-    virtual void addDimRadial(const DRW_Entity& data,
-                              const DRW_Entity& edata) = 0;
+    virtual void addDimRadial(const DRW_DimRadial *data) = 0;
 
 	/**
      * Called for every diametric dimension entity. 
      */
-    virtual void addDimDiametric(const DRW_Entity& data,
-                              const DRW_Entity& edata) = 0;
+    virtual void addDimDiametric(const DRW_DimDiametric *data) = 0;
 
 	/**
      * Called for every angular dimension (2 lines version) entity. 
      */
-    virtual void addDimAngular(const DRW_Entity& data,
-                              const DRW_Entity& edata) = 0;
+    virtual void addDimAngular(const DRW_DimAngular *data) = 0;
 
 	/**
      * Called for every angular dimension (3 points version) entity. 
      */
-    virtual void addDimAngular3P(const DRW_Entity& data,
-                              const DRW_Entity& edata) = 0;
+    virtual void addDimAngular3P(const DRW_DimAngular3p *data) = 0;
 	
     /**
      * Called for every ordinate dimension entity. 
      */
-    virtual void addDimOrdinate(const DRW_Entity& data,
-                             const DRW_Entity& edata) = 0;
+    virtual void addDimOrdinate(const DRW_DimOrdinate *data) = 0;
     
     /** 
 	 * Called for every leader start. 
 	 */
-    virtual void addLeader(const DRW_Entity& data) = 0;
-	
-	/** 
-	 * Called for every leader vertex 
-	 */
-    virtual void addLeaderVertex(const DRW_Entity& data) = 0;
+    virtual void addLeader(const DRW_Leader *data) = 0;
 	
 	/** 
 	 * Called for every hatch entity. 
@@ -167,32 +158,6 @@ public:
      * Called for every comment in the DXF file (code 999).
      */
     virtual void addComment(const char* comment) = 0;
-
-    /**
-     * Called for every vector variable in the DXF file (e.g. "$EXTMIN").
-     */
-    virtual void setVariableVector(const char* key, 
-	               double v1, double v2, double v3, int code) = 0;
-	
-    /**
-     * Called for every string variable in the DXF file (e.g. "$ACADVER").
-     */
-    virtual void setVariableString(const char* key, const char* value, int code) = 0;
-	
-    /**
-     * Called for every int variable in the DXF file (e.g. "$ACADMAINTVER").
-     */
-    virtual void setVariableInt(const char* key, int value, int code) = 0;
-	
-    /**
-     * Called for every double variable in the DXF file (e.g. "$DIMEXO").
-     */
-    virtual void setVariableDouble(const char* key, double value, int code) = 0;
-	
-     /**
-      * Called when a SEQEND occurs (when a POLYLINE or ATTRIB is done)
-      */
-//     virtual void endSequence() = 0;
 
     /** Sets the current attributes for entities. */
 /*    void setExtrusion(double dx, double dy, double dz, double elevation) {
