@@ -45,15 +45,20 @@ TARGET        = libdxfrw.a
 
 SOURCES       = src/libdxfrw.cpp \
 		src/drw_entities.cpp \
+		src/drw_objects.cpp \
 		src/dxfreader.cpp \
-		src/dxfwriter.cpp 
+		src/dxfwriter.cpp
+
 OBJECTS       = obj/libdxfrw.o \
 		obj/drw_entities.o \
+		src/drw_objects.o \
 		obj/dxfreader.o \
 		obj/dxfwriter.o
 
 INSTHEADERS   = src/libdxfrw.h \
+		src/drw_base.h \
 		src/drw_entities.h \
+		src/drw_objects.h \
 		src/drw_interface.h
 
 INTERNALH     = src/dxfreader.h \
@@ -117,13 +122,19 @@ intermediate:
 	@$(CHK_DIR_EXISTS) obj || $(MKDIR) obj 
 
 obj/libdxfrw.o: src/libdxfrw.cpp src/libdxfrw.h \
+		src/drw_base.h \
 		src/drw_entities.h \
 		src/drw_interface.h \
 		src/dxfreader.h \
 		src/dxfwriter.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/libdxfrw.o src/libdxfrw.cpp
 
-obj/drw_entities.o: src/drw_entities.cpp src/drw_entities.h 
+obj/drw_entities.o: src/drw_entities.cpp src/drw_entities.h \
+		src/drw_base.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/drw_entities.o src/drw_entities.cpp
+
+obj/drw_objects.o: src/drw_objects.cpp src/drw_objects.h \
+		src/drw_base.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/drw_entities.o src/drw_entities.cpp
 
 obj/dxfreader.o: src/dxfreader.cpp src/dxfreader.h
@@ -139,7 +150,7 @@ install: all
 	$(COPY_FILE) $(TARGET) $(LIBPATH)/$(TARGET) && $(COPY_FILE) $(INSTHEADERS) $(INCLUDEPATH)
 
 uninstall:   FORCE
-	$(DEL_FILE) $(LIBPATH)/$(TARGET) && $(DEL_FILE) $(INCLUDEPATH)/libdxfrw.h && $(DEL_FILE) $(INCLUDEPATH)/drw_entities.h && $(DEL_FILE) $(INCLUDEPATH)/drw_interface.h && $(DEL_DIR) $(INCLUDEPATH)
+	$(DEL_FILE) $(LIBPATH)/$(TARGET) && $(DEL_FILE) $(INCLUDEPATH)/libdxfrw.h && $(DEL_FILE) $(INCLUDEPATH)/drw_entities.h && $(DEL_FILE) $(INCLUDEPATH)/drw_objects.h && $(DEL_FILE) $(INCLUDEPATH)/drw_interface.h && $(DEL_FILE) $(INCLUDEPATH)/drw_base.h && $(DEL_DIR) $(INCLUDEPATH)
 
 FORCE:
 
