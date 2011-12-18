@@ -7,7 +7,7 @@
 
 INCLUDEPATH   = /usr/local/include/libdxfrw
 LIBPATH       = /usr/local/lib
-VERSION       = 0.2.0
+VERSION       = 0.2.1
 
 CC            = gcc
 CXX           = g++
@@ -51,7 +51,7 @@ SOURCES       = src/libdxfrw.cpp \
 
 OBJECTS       = obj/libdxfrw.o \
 		obj/drw_entities.o \
-		src/drw_objects.o \
+		obj/drw_objects.o \
 		obj/dxfreader.o \
 		obj/dxfwriter.o
 
