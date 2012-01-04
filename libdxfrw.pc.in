@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libdxfrw
+Description: c++ library to read/write dxf files in binary and ascii form
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -ldxfrw
+Cflags: -I${includedir}
