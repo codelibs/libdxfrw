@@ -1,5 +1,7 @@
 # Generated directories and files
 obj/
+m4/
+autom4te.cache/
 libdxfrw.pro*
 Makefile
 *.a
