@@ -218,6 +218,8 @@ bool dxfRW::writeLayer(DRW_Layer *ent){
     writer->writeInt16(70, ent->flags);
     writer->writeInt16(62, ent->color);
     writer->writeString(6, ent->lineType);
+    if (! ent->plotF)
+        writer->writeBool(290, ent->plotF);
     writer->writeInt16(370, ent->lWeight);
     writer->writeString(390, "F");
 //    writer->writeString(347, "10012");
@@ -880,6 +882,7 @@ bool dxfRW::processLayer() {
             DBG(sectionstr); DBG("\n");
             if (sectionstr == "LAYER") {
                 reading = true;
+                layer.plotF = true; //init for new entry
             } else if (sectionstr == "ENDTAB") {
                 return true;  //found ENDTAB terminate
             }
