@@ -12,3 +12,8 @@ Makefile
 #vim files
 *.swp
 *.orig
+.deps
+config.log
+config.status
+libdxfrw.pc
+libtool

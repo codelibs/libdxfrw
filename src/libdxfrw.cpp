@@ -50,7 +50,7 @@ dxfRW::~dxfRW(){
 
 }
 
-bool dxfRW::read(DRW_Interface *interface, bool ext){
+bool dxfRW::read(DRW_Interface *interface_, bool ext){
     bool isOk = false;
     applyExt = ext;
     ifstream filestr;
@@ -67,7 +67,7 @@ bool dxfRW::read(DRW_Interface *interface, bool ext){
     line2[21] = '\0';
     filestr.read (line, 22);
     filestr.close();
-    iface = interface;
+    iface = interface_;
     DBG("dxfRW::read 2\n");
     if (strcmp(line, line2) == 0) {
         filestr.open (fileName.c_str(), ios_base::in | ios::binary);
@@ -89,14 +89,14 @@ bool dxfRW::read(DRW_Interface *interface, bool ext){
     return isOk;
 }
 
-bool dxfRW::write(DRW_Interface *interface, DRW::Version ver, bool bin){
+bool dxfRW::write(DRW_Interface *interface_, DRW::Version ver, bool bin){
     bool isOk = false;
     ofstream filestr;
     version = ver;
 //TODO allow to write more versions than 2000
     version = DRW::AC1015;
     binary = bin;
-    iface = interface;
+    iface = interface_;
     if (binary) {
         filestr.open (fileName.c_str(), ios_base::out | ios::binary | ios::trunc);
         //write sentinel
@@ -167,13 +167,16 @@ bool dxfRW::writeLineType(DRW_LType *ent){
         return true;
     }
     writer->writeString(0, "LTYPE");
-    ++entCount;
-    sprintf(buffer, "%X", entCount);
-    writer->writeString(5, buffer);
-
-    writer->writeString(330, "5");
-    writer->writeString(100, "AcDbSymbolTableRecord");
-    writer->writeString(100, "AcDbLinetypeTableRecord");
+    if (version > DRW::AC1009) {
+        ++entCount;
+        sprintf(buffer, "%X", entCount);
+        writer->writeString(5, buffer);
+        if (version > DRW::AC1012) {
+            writer->writeString(330, "5");
+        }
+        writer->writeString(100, "AcDbSymbolTableRecord");
+        writer->writeString(100, "AcDbLinetypeTableRecord");
+    }
     writer->writeString(2, ent->name);
     writer->writeInt16(70, ent->flags);
     writer->writeString(3, ent->desc);
@@ -193,16 +196,24 @@ bool dxfRW::writeLayer(DRW_Layer *ent){
     char buffer[5];
     writer->writeString(0, "LAYER");
     if (!wlayer0 && ent->name == "0") {
-            wlayer0 = true;
+        wlayer0 = true;
+        if (version > DRW::AC1009) {
             writer->writeString(5, "10");
+        }
     } else {
-        ++entCount;
-        sprintf(buffer, "%X", entCount);
-        writer->writeString(5, buffer);
+        if (version > DRW::AC1009) {
+            ++entCount;
+            sprintf(buffer, "%X", entCount);
+            writer->writeString(5, buffer);
+        }
     }
-    writer->writeString(330, "2");
-    writer->writeString(100, "AcDbSymbolTableRecord");
-    writer->writeString(100, "AcDbLayerTableRecord");
+    if (version > DRW::AC1012) {
+        writer->writeString(330, "2");
+    }
+    if (version > DRW::AC1009) {
+        writer->writeString(100, "AcDbSymbolTableRecord");
+        writer->writeString(100, "AcDbLayerTableRecord");
+    }
     writer->writeString(2, ent->name);
     writer->writeInt16(70, ent->flags);
     writer->writeInt16(62, ent->color);
@@ -372,17 +383,25 @@ bool dxfRW::writeTables() {
     char buffer[5];
     writer->writeString(0, "TABLE");
     writer->writeString(2, "VPORT");
-    writer->writeString(5, "8");
-    writer->writeString(330, "0");
-    writer->writeString(100, "AcDbSymbolTable");
+    if (version > DRW::AC1009) {
+        writer->writeString(5, "8");
+        if (version > DRW::AC1012) {
+            writer->writeString(330, "0");
+        }
+        writer->writeString(100, "AcDbSymbolTable");
+    }
     writer->writeInt16(70, 1); //end table def
     writer->writeString(0, "VPORT");
+    if (version > DRW::AC1009) {
     entCount = 1+entCount;
     sprintf(buffer, "%X", entCount);
     writer->writeString(5, buffer);
-    writer->writeString(330, "8");
+        if (version > DRW::AC1012) {
+            writer->writeString(330, "8");
+        }
     writer->writeString(100, "AcDbSymbolTableRecord");
     writer->writeString(100, "AcDbViewportTableRecord");
+    }
     writer->writeString(2, "*Active");
     writer->writeInt16(70, 0);
     writer->writeDouble(10, 0.0);
@@ -418,43 +437,56 @@ bool dxfRW::writeTables() {
     writer->writeInt16(76, 1);
     writer->writeInt16(77, 0);
     writer->writeInt16(78, 0);
-    writer->writeInt16(281, 0);
-    writer->writeInt16(65, 1);
-    writer->writeDouble(110, 0.0);
-    writer->writeDouble(120, 0.0);
-    writer->writeDouble(130, 0.0);
-    writer->writeDouble(111, 1.0);
-    writer->writeDouble(121, 0.0);
-    writer->writeDouble(131, 0.0);
-    writer->writeDouble(112, 0.0);
-    writer->writeDouble(122, 1.0);
-    writer->writeDouble(132, 0.0);
-    writer->writeInt16(79, 0);
-    writer->writeDouble(146, 0.0);
-    writer->writeString(348, "10020");
-    writer->writeInt16(60, 3);
-    writer->writeInt16(61, 5);
-    writer->writeBool(292, 1);
-    writer->writeInt16(282, 1);
-    writer->writeDouble(141, 0.0);
-    writer->writeDouble(142, 0.0);
-    writer->writeInt16(63, 250);
-    writer->writeInt32(421, 3358443);
+    if (version > DRW::AC1014) {
+        writer->writeInt16(281, 0);
+        writer->writeInt16(65, 1);
+        writer->writeDouble(110, 0.0);
+        writer->writeDouble(120, 0.0);
+        writer->writeDouble(130, 0.0);
+        writer->writeDouble(111, 1.0);
+        writer->writeDouble(121, 0.0);
+        writer->writeDouble(131, 0.0);
+        writer->writeDouble(112, 0.0);
+        writer->writeDouble(122, 1.0);
+        writer->writeDouble(132, 0.0);
+        writer->writeInt16(79, 0);
+        writer->writeDouble(146, 0.0);
+        if (version > DRW::AC1018) {
+            writer->writeString(348, "10020");
+            writer->writeInt16(60, 3);//v2007 undocummented
+            writer->writeInt16(61, 5);
+            writer->writeBool(292, 1);
+            writer->writeInt16(282, 1);
+            writer->writeDouble(141, 0.0);
+            writer->writeDouble(142, 0.0);
+            writer->writeInt16(63, 250);
+            writer->writeInt32(421, 3358443);
+        }
+    }
     writer->writeString(0, "ENDTAB");
 /*** LTYPE ***/
     writer->writeString(0, "TABLE");
     writer->writeString(2, "LTYPE");
-    writer->writeString(5, "5");
-    writer->writeString(330, "0");
-    writer->writeString(100, "AcDbSymbolTable");
+    if (version > DRW::AC1009) {
+        writer->writeString(5, "5");
+        if (version > DRW::AC1012) {
+            writer->writeString(330, "0");
+        }
+        writer->writeString(100, "AcDbSymbolTable");
+    }
     writer->writeInt16(70, 4); //end table def
 //Mandatory linetypes
     writer->writeString(0, "LTYPE");
-    writer->writeString(5, "14");
-    writer->writeString(330, "5");
-    writer->writeString(100, "AcDbSymbolTableRecord");
-    writer->writeString(100, "AcDbLinetypeTableRecord");
-    writer->writeString(2, "ByBlock");
+    if (version > DRW::AC1009) {
+        writer->writeString(5, "14");
+        if (version > DRW::AC1012) {
+            writer->writeString(330, "5");
+        }
+        writer->writeString(100, "AcDbSymbolTableRecord");
+        writer->writeString(100, "AcDbLinetypeTableRecord");
+        writer->writeString(2, "ByBlock");
+    } else
+        writer->writeString(2, "BYBLOCK");
     writer->writeInt16(70, 0);
     writer->writeString(3, "");
     writer->writeInt16(72, 65);
@@ -462,11 +494,16 @@ bool dxfRW::writeTables() {
     writer->writeDouble(40, 0.0);
 
     writer->writeString(0, "LTYPE");
-    writer->writeString(5, "15");
-    writer->writeString(330, "5");
-    writer->writeString(100, "AcDbSymbolTableRecord");
-    writer->writeString(100, "AcDbLinetypeTableRecord");
-    writer->writeString(2, "ByLayer");
+    if (version > DRW::AC1009) {
+        writer->writeString(5, "15");
+        if (version > DRW::AC1012) {
+            writer->writeString(330, "5");
+        }
+        writer->writeString(100, "AcDbSymbolTableRecord");
+        writer->writeString(100, "AcDbLinetypeTableRecord");
+        writer->writeString(2, "ByLayer");
+    } else
+        writer->writeString(2, "BYLAYER");
     writer->writeInt16(70, 0);
     writer->writeString(3, "");
     writer->writeInt16(72, 65);
@@ -474,10 +511,14 @@ bool dxfRW::writeTables() {
     writer->writeDouble(40, 0.0);
 
     writer->writeString(0, "LTYPE");
-    writer->writeString(5, "16");
-    writer->writeString(330, "5");
-    writer->writeString(100, "AcDbSymbolTableRecord");
-    writer->writeString(100, "AcDbLinetypeTableRecord");
+    if (version > DRW::AC1009) {
+        writer->writeString(5, "16");
+        if (version > DRW::AC1012) {
+            writer->writeString(330, "5");
+        }
+        writer->writeString(100, "AcDbSymbolTableRecord");
+        writer->writeString(100, "AcDbLinetypeTableRecord");
+    }
     writer->writeString(2, "CONTINUOUS");
     writer->writeInt16(70, 0);
     writer->writeString(3, "Solid line");
@@ -490,9 +531,13 @@ bool dxfRW::writeTables() {
 
     writer->writeString(0, "TABLE");
     writer->writeString(2, "LAYER");
-    writer->writeString(5, "2");
-    writer->writeString(330, "0");
-    writer->writeString(100, "AcDbSymbolTable");
+    if (version > DRW::AC1009) {
+        writer->writeString(5, "2");
+        if (version > DRW::AC1012) {
+            writer->writeString(330, "0");
+        }
+        writer->writeString(100, "AcDbSymbolTable");
+    }
     writer->writeInt16(70, 1); //end table def
     wlayer0 =false;
     iface->writeLayers();
@@ -505,33 +550,49 @@ bool dxfRW::writeTables() {
 
     writer->writeString(0, "TABLE");
     writer->writeString(2, "STYLE");
-    writer->writeString(5, "3");
-    writer->writeString(330, "0");
-    writer->writeString(100, "AcDbSymbolTable");
+    if (version > DRW::AC1009) {
+        writer->writeString(5, "3");
+        if (version > DRW::AC1012) {
+            writer->writeString(330, "0");
+        }
+        writer->writeString(100, "AcDbSymbolTable");
+    }
     writer->writeInt16(70, 0); //end table def
     writer->writeString(0, "ENDTAB");
 
     writer->writeString(0, "TABLE");
     writer->writeString(2, "VIEW");
-    writer->writeString(5, "6");
-    writer->writeString(330, "0");
-    writer->writeString(100, "AcDbSymbolTable");
+    if (version > DRW::AC1009) {
+        writer->writeString(5, "6");
+        if (version > DRW::AC1012) {
+            writer->writeString(330, "0");
+        }
+        writer->writeString(100, "AcDbSymbolTable");
+    }
     writer->writeInt16(70, 0); //end table def
     writer->writeString(0, "ENDTAB");
 
     writer->writeString(0, "TABLE");
     writer->writeString(2, "UCS");
-    writer->writeString(5, "7");
-    writer->writeString(330, "0");
-    writer->writeString(100, "AcDbSymbolTable");
+    if (version > DRW::AC1009) {
+        writer->writeString(5, "7");
+        if (version > DRW::AC1012) {
+            writer->writeString(330, "0");
+        }
+        writer->writeString(100, "AcDbSymbolTable");
+    }
     writer->writeInt16(70, 0); //end table def
     writer->writeString(0, "ENDTAB");
 
     writer->writeString(0, "TABLE");
     writer->writeString(2, "APPID");
-    writer->writeString(5, "9");
-    writer->writeString(330, "0");
-    writer->writeString(100, "AcDbSymbolTable");
+    if (version > DRW::AC1009) {
+        writer->writeString(5, "9");
+        if (version > DRW::AC1012) {
+            writer->writeString(330, "0");
+        }
+        writer->writeString(100, "AcDbSymbolTable");
+    }
     writer->writeInt16(70, 1); //end table def
     writer->writeString(0, "APPID");
     writer->writeString(5, "12");
@@ -544,9 +605,13 @@ bool dxfRW::writeTables() {
 
     writer->writeString(0, "TABLE");
     writer->writeString(2, "DIMSTYLE");
-    writer->writeString(5, "A");
-    writer->writeString(330, "0");
-    writer->writeString(100, "AcDbSymbolTable");
+    if (version > DRW::AC1009) {
+        writer->writeString(5, "A");
+        if (version > DRW::AC1012) {
+            writer->writeString(330, "0");
+        }
+        writer->writeString(100, "AcDbSymbolTable");
+    }
     writer->writeInt16(70, 0); //end table def
     writer->writeString(100, "AcDbDimStyleTable");
     writer->writeInt16(71, 0); //end table def
@@ -554,25 +619,37 @@ bool dxfRW::writeTables() {
 
     writer->writeString(0, "TABLE");
     writer->writeString(2, "BLOCK_RECORD");
-    writer->writeString(5, "1");
-    writer->writeString(330, "0");
-    writer->writeString(100, "AcDbSymbolTable");
+    if (version > DRW::AC1009) {
+        writer->writeString(5, "1");
+        if (version > DRW::AC1012) {
+            writer->writeString(330, "0");
+        }
+        writer->writeString(100, "AcDbSymbolTable");
+    }
     writer->writeInt16(70, 2); //end table def
     writer->writeString(0, "BLOCK_RECORD");
-    writer->writeString(5, "1F");
-    writer->writeString(330, "1");
-    writer->writeString(100, "AcDbSymbolTableRecord");
-    writer->writeString(100, "AcDbBlockTableRecord");
+    if (version > DRW::AC1009) {
+        writer->writeString(5, "1F");
+        if (version > DRW::AC1012) {
+            writer->writeString(330, "1");
+        }
+        writer->writeString(100, "AcDbSymbolTableRecord");
+        writer->writeString(100, "AcDbBlockTableRecord");
+    }
     writer->writeString(2, "*Model_Space");
 //    writer->writeInt16(340, 22);
     writer->writeInt16(70, 0);
     writer->writeInt16(280, 1);
     writer->writeInt16(281, 0);
     writer->writeString(0, "BLOCK_RECORD");
-    writer->writeString(5, "1E");
-    writer->writeString(330, "1");
-    writer->writeString(100, "AcDbSymbolTableRecord");
-    writer->writeString(100, "AcDbBlockTableRecord");
+    if (version > DRW::AC1009) {
+        writer->writeString(5, "1E");
+        if (version > DRW::AC1012) {
+            writer->writeString(330, "1");
+        }
+        writer->writeString(100, "AcDbSymbolTableRecord");
+        writer->writeString(100, "AcDbBlockTableRecord");
+    }
     writer->writeString(2, "*Paper_Space");
 //    writer->writeInt16(340, 22);
     writer->writeInt16(70, 0);
@@ -1229,6 +1306,7 @@ bool dxfRW::processMText() {
         case 0: {
             nextentity = reader->getString();
             DBG(nextentity); DBG("\n");
+            txt.updateAngle();
             iface->addMText(txt);
             return true;  //found new entity or ENDSEC, terminate
         }
