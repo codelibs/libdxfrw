@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT([libdxfrw], [0.2.2], [https://sourceforge.net/projects/libdxfrw/])
+AC_INIT([libdxfrw], [0.3.0], [https://sourceforge.net/projects/libdxfrw/])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_CONFIG_SRCDIR([src/drw_interface.h])
 
