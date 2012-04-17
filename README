@@ -10,11 +10,10 @@ http://sourceforge.net/projects/libdxfrw
 
 == Building and installing the library ==
 
-make -f Makefile.linux
-make -f Makefile.linux install (as superuser)
-
-to uninstall:
-make -f Makefile.linux uninstall (as superuser)
+Use the tipical 
+./configure
+make
+make install (as root)
 
 == Example usage of the library ==
 
