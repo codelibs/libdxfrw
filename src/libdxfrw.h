@@ -18,7 +18,7 @@
 #include "drw_objects.h"
 #include "drw_interface.h"
 
-#define DRW_VERSION     "0.3.0"
+#define DRW_VERSION     "0.4.0"
 
 class dxfReader;
 class dxfWriter;
@@ -34,8 +34,11 @@ public:
     bool write(DRW_Interface *interface_, DRW::Version ver, bool bin);
     bool writeLineType(DRW_LType *ent);
     bool writeLayer(DRW_Layer *ent);
+    bool writeDimstyle(DRW_Dimstyle *ent);
     bool writePoint(DRW_Point *ent);
     bool writeLine(DRW_Line *ent);
+    bool writeRay(DRW_Ray *ent);
+    bool writeXline(DRW_Xline *ent);
     bool writeCircle(DRW_Circle *ent);
     bool writeArc(DRW_Arc *ent);
     bool writeEllipse(DRW_Ellipse *ent);
@@ -43,6 +46,7 @@ public:
     bool writeSolid(DRW_Solid *ent);
     bool write3dface(DRW_3Dface *ent);
     bool writeLWPolyline(DRW_LWPolyline *ent);
+    bool writePolyline(DRW_Polyline *ent);
     bool writeSpline(DRW_Spline *ent);
     bool writeBlockRecord(std::string name);
     bool writeBlock(DRW_Block *ent);
@@ -52,6 +56,7 @@ public:
     bool writeHatch(DRW_Hatch *ent);
     DRW_ImageDef *writeImage(DRW_Image *ent, std::string name);
     bool writeLeader(DRW_Leader *ent);
+    bool writeDimension(DRW_Dimension *ent);
 
 private:
     bool processDxf();
@@ -64,9 +69,12 @@ private:
 
     bool processLType();
     bool processLayer();
+    bool processDimStyle();
 
     bool processPoint();
     bool processLine();
+    bool processRay();
+    bool processXline();
     bool processCircle();
     bool processArc();
     bool processEllipse();
@@ -104,6 +112,7 @@ private:
     string nextentity;
     int entCount;
     bool wlayer0;
+    bool dimstyleStd;
     bool applyExt;
     bool writingBlock;
     std::map<std::string,int> blockMap;
