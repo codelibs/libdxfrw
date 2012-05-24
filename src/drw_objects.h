@@ -72,24 +72,72 @@ class DRW_Dimstyle : public DRW_TableEntry {
 public:
     DRW_Dimstyle() {
         tType = DRW::DIMSTYLE;
-        dimasz = dimtxt = 2.5;
-        dimexo = dimgap = 0.625;
-        dimexe = 1.25;
+        dimasz = dimtxt = dimexe = 0.18;
+        dimexo = 0.0625;
+        dimgap = dimcen = 0.09;
+        dimtxsty = "Standard";
+        dimscale = dimlfac = dimtfac = 1.0;
+        dimdli = 0.38;
+        dimrnd = dimdle = dimtp = dimtm = dimtsz = dimtvp = 0.0;
+        dimaltf = 25.4;
+        dimtol = dimlim = dimse1 = dimse2 = dimtad = dimzin = 0;
+        dimtih = dimtoh = 1;
+        dimalt = dimtofl = dimsah = dimtix = dimsoxd =0;
+        dimaltd = 2;
+        dimclrd = dimclre = dimclrt = 0;
+        dimazin = 0; //verify
+        dimadec = 0; //verify
+        dimaltrnd = 0.0; //verify
+
     }
 
     void parseCode(int code, dxfReader *reader);
 
 public:
-    UTF8STRING dimpost;           /*!< code 3 */
-    UTF8STRING dimapost;         /*!< code 4 */
-    UTF8STRING dimblk;            /*!< code 5 (handle are code 105*/
-    UTF8STRING dimblk1;           /*!< code 6 */
-    UTF8STRING dimblk2;           /*!< code 7 */
+    //V12
+    UTF8STRING dimpost;       /*!< code 3 */
+    UTF8STRING dimapost;      /*!< code 4 */
+    UTF8STRING dimblk;        /*!< code 5 (handle are code 105) */
+    UTF8STRING dimblk1;       /*!< code 6 */
+    UTF8STRING dimblk2;       /*!< code 7 */
+    double dimscale;          /*!< code 40 */
     double dimasz;            /*!< code 41 */
     double dimexo;            /*!< code 42 */
+    double dimdli;            /*!< code 43 */
     double dimexe;            /*!< code 44 */
+    double dimrnd;            /*!< code 45 */
+    double dimdle;            /*!< code 46 */
+    double dimtp;             /*!< code 47 */
+    double dimtm;             /*!< code 48 */
     double dimtxt;            /*!< code 140 */
+    double dimcen;            /*!< code 141 */
+    double dimtsz;            /*!< code 142 */
+    double dimaltf;           /*!< code 143 */
+    double dimlfac;           /*!< code 144 */
+    double dimtvp;            /*!< code 145 */
+    double dimtfac;           /*!< code 146 */
     double dimgap;            /*!< code 147 */
+    double dimaltrnd;         /*!< code 148 V2000+ */
+    int dimtol;               /*!< code 71 */
+    int dimlim;               /*!< code 72 */
+    int dimtih;               /*!< code 73 */
+    int dimtoh;               /*!< code 74 */
+    int dimse1;               /*!< code 75 */
+    int dimse2;               /*!< code 76 */
+    int dimtad;               /*!< code 77 */
+    int dimzin;               /*!< code 78 */
+    int dimazin;              /*!< code 79 V2000+ */
+    int dimalt;               /*!< code 170 */
+    int dimaltd;              /*!< code 171 */
+    int dimtofl;              /*!< code 172 */
+    int dimsah;               /*!< code 173 */
+    int dimtix;               /*!< code 174 */
+    int dimsoxd;              /*!< code 175 */
+    int dimclrd;              /*!< code 176 */
+    int dimclre;              /*!< code 177 */
+    int dimclrt;              /*!< code 178 */
+    int dimadec;              /*!< code 179 V2000+ */
+    string dimtxsty;      /*!< code 340 V2000+ */
 };
 
 
