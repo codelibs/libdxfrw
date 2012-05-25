@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.63])
 AC_INIT([libdxfrw], [0.4.2], [https://sourceforge.net/projects/libdxfrw/])
-AM_INIT_AUTOMAKE([foreign -Wall -Werror])
+AM_INIT_AUTOMAKE([foreign -Wall -Werror dist-bzip2])
 AC_CONFIG_SRCDIR([src/drw_interface.h])
 
 # Checks for programs.
@@ -12,6 +12,35 @@ AC_PROG_CC
 LT_INIT
 AC_PROG_LIBTOOL
 AC_CONFIG_MACRO_DIR([m4])
+
+#
+# Libtool library revision control info
+# See the libtool documentation under the heading "Libtool's versioning
+# system" in order to understand the meaning of these fields
+#
+# Here are a set of rules to help you update your library version
+# information:
+#
+#  1. Start with version information of `0:0:0' for each libtool library.
+#  2. Update the version information only immediately before a public
+#     release of your software. More frequent updates are unnecessary, and
+#     only guarantee that the current interface number gets larger faster.
+#  3. If the library source code has changed at all since the last update,
+#     then increment revision (`c:r:a' becomes `c:r+1:a').
+#  4. If any interfaces have been added, removed, or changed since the last
+#     update, increment current, and set revision to 0.
+#  5. If any interfaces have been added since the last public release, then
+#     increment age.
+#  6. If any interfaces have been removed since the last public release,
+#     then set age to 0.
+#
+LIBRARY_CURRENT=0
+LIBRARY_REVISION=4
+LIBRARY_AGE=0
+
+AC_SUBST(LIBRARY_CURRENT)dnl
+AC_SUBST(LIBRARY_REVISION)dnl
+AC_SUBST(LIBRARY_AGE)dnl
 
 # Checks for libraries.
 
@@ -25,5 +54,8 @@ AC_HEADER_STDBOOL
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([sqrt])
 
-AC_CONFIG_FILES([Makefile libdxfrw.pc])
+AC_ENABLE_SHARED
+AC_ENABLE_STATIC
+
+AC_CONFIG_FILES([Makefile libdxfrw${LIBRARY_CURRENT}.pc:libdxfrw.pc.in])
 AC_OUTPUT
