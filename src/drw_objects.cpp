@@ -376,26 +376,106 @@ void DRW_Textstyle::parseCode(int code, dxfReader *reader){
 *  @author Rallaz
 */
 void DRW_Vport::parseCode(int code, dxfReader *reader){
-//RLZ: implement
     switch (code) {
-//    case 6:
-//        lineType = reader->getUtf8String();
-//        break;
-//    case 62:
-//        color = reader->getInt32();
-//        break;
-//    case 290:
-//        plotF = reader->getBool();
-//        break;
-//    case 370:
-//        lWeight = reader->getInt32();
-//        break;
-//    case 390:
-//        handlePlotS = reader->getString();
-//        break;
-//    case 347:
-//        handlePlotM = reader->getString();
-//        break;
+    case 10:
+        lowerLeft.x = reader->getDouble();
+        break;
+    case 20:
+        lowerLeft.y = reader->getDouble();
+        break;
+    case 11:
+        UpperRight.x = reader->getDouble();
+        break;
+    case 21:
+        UpperRight.y = reader->getDouble();
+        break;
+    case 12:
+        center.x = reader->getDouble();
+        break;
+    case 22:
+        center.y = reader->getDouble();
+        break;
+    case 13:
+        snapBase.x = reader->getDouble();
+        break;
+    case 23:
+        snapBase.y = reader->getDouble();
+        break;
+    case 14:
+        snapSpacing.x = reader->getDouble();
+        break;
+    case 24:
+        snapSpacing.y = reader->getDouble();
+        break;
+    case 15:
+        gridSpacing.x = reader->getDouble();
+        break;
+    case 25:
+        gridSpacing.y = reader->getDouble();
+        break;
+    case 16:
+        viewDir.x = reader->getDouble();
+        break;
+    case 26:
+        viewDir.y = reader->getDouble();
+        break;
+    case 36:
+        viewDir.z = reader->getDouble();
+        break;
+    case 17:
+        viewTarget.x = reader->getDouble();
+        break;
+    case 27:
+        viewTarget.y = reader->getDouble();
+        break;
+    case 37:
+        viewTarget.z = reader->getDouble();
+        break;
+    case 40:
+        height = reader->getDouble();
+        break;
+    case 41:
+        ratio = reader->getDouble();
+        break;
+    case 42:
+        lensHeight = reader->getDouble();
+        break;
+    case 43:
+        frontClip = reader->getDouble();
+        break;
+    case 44:
+        backClip = reader->getDouble();
+        break;
+    case 50:
+        snapAngle = reader->getDouble();
+        break;
+    case 51:
+        twistAngle = reader->getDouble();
+        break;
+    case 71:
+        viewMode = reader->getInt32();
+        break;
+    case 72:
+        circleZoom = reader->getInt32();
+        break;
+    case 73:
+        fastZoom = reader->getInt32();
+        break;
+    case 74:
+        ucsIcon = reader->getInt32();
+        break;
+    case 75:
+        snap = reader->getInt32();
+        break;
+    case 76:
+        grid = reader->getInt32();
+        break;
+    case 77:
+        snapStyle = reader->getInt32();
+        break;
+    case 78:
+        snapIsopair = reader->getInt32();
+        break;
     default:
         DRW_TableEntry::parseCode(code, reader);
         break;
@@ -717,34 +797,26 @@ void DRW_Header::write(dxfWriter *writer, DRW::Version ver){
     } else
         writer->writeInt16(70, 8);
     }
-/* RLZ: move to active VPORT*/
-    writer->writeString(9, "$GRIDMODE");
-    if (getInt("$GRIDMODE", &varInt))
+/* RLZ: moved to active VPORT, but can write in header if present*/
+    if (getInt("$GRIDMODE", &varInt)) {
+        writer->writeString(9, "$GRIDMODE");
         writer->writeInt16(70, varInt);
-    else
-        writer->writeInt16(70, 0);
-    writer->writeString(9, "$SNAPSTYLE");
-    if (getInt("$SNAPSTYLE", &varInt))
+    }
+    if (getInt("$SNAPSTYLE", &varInt)) {
+        writer->writeString(9, "$SNAPSTYLE");
         writer->writeInt16(70, varInt);
-    else
-        writer->writeInt16(70, 0);
-    writer->writeString(9, "$GRIDUNIT");
+    }
     if (getCoord("$GRIDUNIT", &varCoord)) {
+        writer->writeString(9, "$GRIDUNIT");
         writer->writeDouble(10, varCoord.x);
         writer->writeDouble(20, varCoord.y);
-    } else {
-        writer->writeDouble(10, 210.0);
-        writer->writeDouble(20, 150.0);
     }
-    writer->writeString(9, "$VIEWCTR");
     if (getCoord("$VIEWCTR", &varCoord)) {
+        writer->writeString(9, "$VIEWCTR");
         writer->writeDouble(10, varCoord.x);
         writer->writeDouble(20, varCoord.y);
-    } else {
-        writer->writeDouble(10, 210.0);
-        writer->writeDouble(20, 150.0);
     }
-    /* RLZ: end move to active VPORT*/
+/* RLZ: moved to active VPORT, but can write in header if present*/
 
     if (ver > DRW::AC1009) {
         writer->writeString(9, "$PINSBASE");
