@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT([libdxfrw], [0.5.2], [https://sourceforge.net/projects/libdxfrw/])
+AC_INIT([libdxfrw0], [0.5.3], [https://sourceforge.net/projects/libdxfrw/])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror dist-bzip2])
 AC_CONFIG_SRCDIR([src/drw_interface.h])
 
@@ -35,7 +35,7 @@ AC_CONFIG_MACRO_DIR([m4])
 #     then set age to 0.
 #
 LIBRARY_CURRENT=5
-LIBRARY_REVISION=2
+LIBRARY_REVISION=3
 LIBRARY_AGE=0
 
 AC_SUBST(LIBRARY_CURRENT)dnl

@@ -12,7 +12,7 @@ lib_LTLIBRARIES = libdxfrw.la
 
 libdxfrw_la_SOURCES = src/drw_entities.cpp src/drw_objects.cpp src/libdxfrw.cpp src/dxfreader.cpp src/dxfwriter.cpp \
   src/drw_textcodec.cpp
-libdxfrw_la_LDFLAGS = -version-info $(LIBRARY_CURRENT):$(LIBRARY_REVISION):$(LIBRARY_AGE)
+libdxfrw_la_LDFLAGS = -version-number $(LIBRARY_AGE):$(LIBRARY_CURRENT):$(LIBRARY_REVISION)
 libdxfrw_la_LIBADD =
 
 pkgconfigdir = ${libdir}/pkgconfig
