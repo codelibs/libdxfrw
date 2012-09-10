@@ -357,7 +357,7 @@ bool dxfRW::writeVport(DRW_Vport *ent){
         writer->writeDouble(146, 0.0);
         if (version > DRW::AC1018) {
             writer->writeString(348, "10020");
-            writer->writeInt16(60, 3);//v2007 undocummented
+            writer->writeInt16(60, ent->gridBehavior);//v2007 undocummented see DRW_Vport class
             writer->writeInt16(61, 5);
             writer->writeBool(292, 1);
             writer->writeInt16(282, 1);
@@ -910,10 +910,14 @@ bool dxfRW::writeHatch(DRW_Hatch *ent){
         }
         writer->writeInt16(75, ent->hstyle);
         writer->writeInt16(76, ent->hpattern);
-        writer->writeDouble(52, ent->angle);
-        writer->writeDouble(41, ent->scale);
-        writer->writeInt16(77, ent->doubleflag);
-        writer->writeInt16(78, ent->deflines);
+        if (!ent->solid){
+            writer->writeDouble(52, ent->angle);
+            writer->writeDouble(41, ent->scale);
+            writer->writeInt16(77, ent->doubleflag);
+        }
+        if (ent->deflines > 0){
+            writer->writeInt16(78, ent->deflines);
+        }
         writer->writeInt16(98, 0);
     } else {
         //RLZ: TODO verify in acad12
@@ -1107,10 +1111,10 @@ bool dxfRW::writeText(DRW_Text *ent){
     else
         writer->writeUtf8Caps(7, ent->style);
     writer->writeInt16(71, ent->textgen);
-    if (ent->alignH != DRW::HAlignLeft) {
+    if (ent->alignH != DRW_Text::HLeft) {
         writer->writeInt16(72, ent->alignH);
     }
-    if (ent->alignH != DRW::HAlignLeft || ent->alignV != DRW::VAlignBaseLine) {
+    if (ent->alignH != DRW_Text::HLeft || ent->alignV != DRW_Text::VBaseLine) {
         writer->writeDouble(11, ent->secPoint.x);
         writer->writeDouble(21, ent->secPoint.y);
         writer->writeDouble(31, ent->secPoint.z);
@@ -1121,7 +1125,7 @@ bool dxfRW::writeText(DRW_Text *ent){
     if (version > DRW::AC1009) {
         writer->writeString(100, "AcDbText");
     }
-    if (ent->alignV != DRW::VAlignBaseLine) {
+    if (ent->alignV != DRW_Text::VBaseLine) {
         writer->writeInt16(73, ent->alignV);
     }
     return true;
@@ -1723,7 +1727,9 @@ bool dxfRW::processDxf() {
 //    section = secUnknown;
     while (reader->readRec(&code, !binary)) {
         DBG(code); DBG(" processDxf\n");
-        if (code == 0) {
+        if (code == 999) {
+            header.addComment(reader->getString());
+        } else if (code == 0) {
             sectionstr = reader->getString();
             DBG(sectionstr); DBG(" processDxf\n");
             if (sectionstr == "EOF") {
@@ -1801,9 +1807,7 @@ bool dxfRW::processTables() {
                     sectionstr = reader->getString();
                     DBG(sectionstr); DBG(" processHeader\n\n");
                 //found section, process it
-                    if (sectionstr == "VPORT") {
-//                        processVPort();
-                    } else if (sectionstr == "LTYPE") {
+                    if (sectionstr == "LTYPE") {
                         processLType();
                     } else if (sectionstr == "LAYER") {
                         processLayer();
