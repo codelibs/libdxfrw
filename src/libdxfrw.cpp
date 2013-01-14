@@ -1008,11 +1008,11 @@ bool dxfRW::writeDimension(DRW_Dimension *ent) {
             writer->writeDouble(34, dd->getDef2Point().z);
             if (ent->eType == DRW::DIMLINEAR) {
                 DRW_DimLinear * dl = (DRW_DimLinear*)ent;
-                writer->writeString(100, "AcDbRotatedDimension");
                 if (dl->getAngle() != 0)
                     writer->writeDouble(50, dl->getAngle());
                 if (dl->getOblique() != 0)
                     writer->writeDouble(52, dl->getOblique());
+                writer->writeString(100, "AcDbRotatedDimension");
             }
             break; }
         case DRW::DIMRADIAL: {
@@ -1861,6 +1861,7 @@ bool dxfRW::processLType() {
             DBG(sectionstr); DBG("\n");
             if (sectionstr == "LTYPE") {
                 reading = true;
+                ltype.reset();
             } else if (sectionstr == "ENDTAB") {
                 return true;  //found ENDTAB terminate
             }
@@ -1885,6 +1886,7 @@ bool dxfRW::processLayer() {
             DBG(sectionstr); DBG("\n");
             if (sectionstr == "LAYER") {
                 reading = true;
+                layer.reset();
             } else if (sectionstr == "ENDTAB") {
                 return true;  //found ENDTAB terminate
             }
@@ -1909,6 +1911,7 @@ bool dxfRW::processDimStyle() {
             DBG(sectionstr); DBG("\n");
             if (sectionstr == "DIMSTYLE") {
                 reading = true;
+                dimSty.reset();
             } else if (sectionstr == "ENDTAB") {
                 return true;  //found ENDTAB terminate
             }
@@ -1933,6 +1936,7 @@ bool dxfRW::processTextStyle(){
             DBG(sectionstr); DBG("\n");
             if (sectionstr == "STYLE") {
                 reading = true;
+                TxtSty.reset();
             } else if (sectionstr == "ENDTAB") {
                 return true;  //found ENDTAB terminate
             }
@@ -1957,6 +1961,7 @@ bool dxfRW::processVports(){
             DBG(sectionstr); DBG("\n");
             if (sectionstr == "VPORT") {
                 reading = true;
+                vp.reset();
             } else if (sectionstr == "ENDTAB") {
                 return true;  //found ENDTAB terminate
             }
