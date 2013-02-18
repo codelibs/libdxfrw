@@ -74,7 +74,7 @@ class DRW_Dimstyle : public DRW_TableEntry {
 public:
     DRW_Dimstyle() { reset();}
 
-      void reset() {
+    void reset(){
         tType = DRW::DIMSTYLE;
         dimasz = dimtxt = dimexe = 0.18;
         dimexo = 0.0625;
@@ -182,8 +182,8 @@ class DRW_LType : public DRW_TableEntry {
 public:
     DRW_LType() { reset();}
 
-    void reset() {
-    tType = DRW::LTYPE;
+    void reset(){
+        tType = DRW::LTYPE;
         desc = "";
         size = 0;
         length = 0.0;
@@ -246,7 +246,7 @@ class DRW_Textstyle : public DRW_TableEntry {
 public:
     DRW_Textstyle() { reset();}
 
-    void reset() {
+    void reset(){
         tType = DRW::STYLE;
         height = oblique = 0.0;
         width = lastHeight = 1.0;
@@ -277,7 +277,7 @@ class DRW_Vport : public DRW_TableEntry {
 public:
     DRW_Vport() { reset();}
 
-    void reset() {
+    void reset(){
         UpperRight.x = UpperRight.y = 1.0;
         snapSpacing.x = snapSpacing.y = 10.0;
         gridSpacing = snapSpacing;
@@ -388,6 +388,7 @@ private:
     string comments;
     string name;
     DRW_Variant *curr;
+    int version; //to use on read
 };
 
 namespace DRW {
