@@ -63,6 +63,7 @@ typedef long double ddouble80;          /* 80 bit floating point */
 
 
 namespace DRW {
+
 //! Version numbers for the DXF Format.
 enum Version {
     UNKNOWNV,     /*!< UNKNOWN VERSION. */
@@ -89,7 +90,54 @@ BAD_READ_TABLES,      /*!< error in tables read process. */
 BAD_READ_ENTITIES     /*!< error in entities read process. */
 };
 
-}
+//! Special codes for colors
+enum ColorCodes {
+    ColorByLayer = 256,
+    ColorByBlock = 0
+};
+
+//! Spaces
+enum Space {
+    ModelSpace = 0,
+    PaperSpace = 1
+};
+
+//! Special kinds of handles
+enum HandleCodes {
+    NoHandle = -1
+};
+
+//! A group in dxf file
+struct Group {
+    std::string name;
+    std::string content;
+};
+
+//! Shadow mode
+enum ShadowMode {
+    CastAndReceieveShadows = 0,
+    CastShadows = 1,
+    ReceiveShadows = 2,
+    IgnoreShadows = 3
+};
+
+//! Special kinds of materials
+enum MaterialCodes {
+    MaterialByLayer = 0
+};
+
+//! Special kinds of plot styles
+enum PlotStyleCodes {
+    DefaultPlotStyle = 0
+};
+
+//! Special kinds of transparencies
+enum TransparencyCodes {
+    Opaque = 0,
+    Transparent = -1
+};
+
+} // namespace DRW
 
 //! Class to handle 3D coordinate point
 /*!
