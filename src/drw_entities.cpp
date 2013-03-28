@@ -92,6 +92,7 @@ bool DRW_Entity::parseCode(int code, dxfReader *reader){
     default:
         break;
     }
+    return true;
 }
 
 bool DRW_Entity::parseDwg(DRW::Version version, dwgBuffer *buf){
@@ -923,8 +924,11 @@ bool DRW_Insert::parseDwg(DRW::Version version, dwgBuffer *buf){
         extPoint = buf->getExtrusion(false); //3BD R14 style
 
     bool hasAttrib = buf->getBit();
+    DRW_UNUSED(hasAttrib);
+
     if (version > DRW::AC1015) {//2004+
         dint32 objCount = buf->getBitLong();
+        DRW_UNUSED(objCount);
     }
     ret = DRW_Entity::parseDwgEntHandle(version, buf);
     blockRecH = buf->getHandle(); /* H 2 BLOCK HEADER (hard pointer) */
@@ -1025,7 +1029,7 @@ bool DRW_LWPolyline::parseDwg(DRW::Version version, dwgBuffer *buf){
         extPoint = buf->getExtrusion(false);
     vertexnum = buf->getBitLong();
     vertlist.reserve(vertexnum);
-    int bulgesnum = 0;
+    unsigned int bulgesnum = 0;
     if (flags & 16)
         bulgesnum = buf->getBitLong();
     int vertexIdCount = 0;
@@ -1033,7 +1037,7 @@ bool DRW_LWPolyline::parseDwg(DRW::Version version, dwgBuffer *buf){
         if (flags & 1024)
             vertexIdCount = buf->getBitLong();
     }
-    int widthsnum = 0;
+    unsigned int widthsnum = 0;
     if (flags & 32)
         widthsnum = buf->getBitLong();
 
@@ -1271,12 +1275,15 @@ bool DRW_MText::parseDwg(DRW::Version version, dwgBuffer *buf){
     textgen = buf->getBitShort(); /* Attachment BS 71 Similar to justification; */
     /* Drawing dir BS 72 Left to right, etc.; see DXF doc */
     dint16 draw_dir = buf->getBitShort();
+    DRW_UNUSED(draw_dir);
     /* Extents ht BD Undocumented and not present in DXF or entget */
     double ext_ht = buf->getBitDouble();
+    DRW_UNUSED(ext_ht);
     /* Extents wid BD Undocumented and not present in DXF or entget The extents
     rectangle, when rotated the same as the text, fits the actual text image on
     the screen (altough we've seen it include an extra row of text in height). */
     double ext_wid = buf->getBitDouble();
+    DRW_UNUSED(ext_wid);
     /* Text TV 1 All text in one long string (without '\n's 3 for line wrapping).
     ACAD seems to add braces ({ }) and backslash-P's to indicate paragraphs
     based on the "\r\n"'s found in the imported file. But, all the text is in

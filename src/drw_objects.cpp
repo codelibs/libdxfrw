@@ -602,6 +602,10 @@ bool DRW_Block_Record::parseDwg(DRW::Version version, dwgBuffer *buf){
         duint16 insUnits = buf->getBitShort();
         bool canExplode = buf->getBit(); //if block can be exploded
         duint8 bkScaling = buf->getRawChar8();
+
+        DRW_UNUSED(insUnits);
+        DRW_UNUSED(canExplode);
+        DRW_UNUSED(bkScaling);
     }
 
     dwgHandle blockControlH = buf->getHandle();
