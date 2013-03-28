@@ -690,7 +690,55 @@ void DRW_Trace::parseCode(int code, dxfReader *reader){
 }
 
 void DRW_Solid::parseCode(int code, dxfReader *reader){
-        DRW_Trace::parseCode(code, reader);
+    DRW_Trace::parseCode(code, reader);
+}
+
+bool DRW_Solid::parseDwg(DRW::Version v, dwgBuffer *buf)
+{
+    bool ret = DRW_Entity::parseDwg(v, buf);
+    if (!ret)
+        return ret;
+    DBG("\n***************************** parsing Solid *********************************************\n");
+
+    thickness = buf->getThickness(v>DRW::AC1014);
+    basePoint.z = buf->getRawDouble();
+    basePoint.x = buf->getRawDouble();
+    basePoint.y = buf->getRawDouble();
+    secPoint.x = buf->getRawDouble();
+    secPoint.y = buf->getRawDouble();
+    secPoint.z = basePoint.z;
+    thirdPoint.x = buf->getRawDouble();
+    thirdPoint.y = buf->getRawDouble();
+    thirdPoint.z = basePoint.z;
+    fourPoint.x = buf->getRawDouble();
+    fourPoint.y = buf->getRawDouble();
+    fourPoint.z = basePoint.z;
+    extPoint = buf->getExtrusion(v>DRW::AC1014);
+
+    DBG(" - base X: "); DBG(basePoint.x);
+    DBG(", Y: "); DBG(basePoint.y);
+    DBG(", Z: "); DBG(basePoint.z); DBG("\n");
+    DBG(" - sec X: "); DBG(secPoint.x);
+    DBG(", Y: "); DBG(secPoint.y);
+    DBG(", Z: "); DBG(secPoint.z); DBG("\n");
+    DBG(" - third X: "); DBG(thirdPoint.x);
+    DBG(", Y: "); DBG(thirdPoint.y);
+    DBG(", Z: "); DBG(thirdPoint.z); DBG("\n");
+    DBG(" - fourth X: "); DBG(fourPoint.x);
+    DBG(", Y: "); DBG(fourPoint.y);
+    DBG(", Z: "); DBG(fourPoint.z); DBG("\n");
+    DBG(" - extrusion: "); DBG(extPoint.x);
+    DBG(", Y: "); DBG(extPoint.y);
+    DBG(", Z: "); DBG(extPoint.z); DBG("\n");
+    DBG(" - thickness: "); DBG(thickness); DBG("\n");
+
+    /* Common Entity Handle Data */
+    ret = DRW_Entity::parseDwgEntHandle(v, buf);
+    if (!ret)
+        return ret;
+
+    /* CRC X --- */
+    return buf->isGood();
 }
 
 void DRW_3Dface::parseCode(int code, dxfReader *reader){
@@ -706,12 +754,12 @@ void DRW_3Dface::parseCode(int code, dxfReader *reader){
 
 bool DRW_3Dface::parseDwg(DRW::Version v, dwgBuffer *buf)
 {
-    bool ret = DRW_Entity::parseDwg(version, buf);
+    bool ret = DRW_Entity::parseDwg(v, buf);
     if (!ret)
         return ret;
     DBG("\n***************************** parsing 3Dface *********************************************\n");
 
-    if ( v < AC1015 ) {// R13 & R14
+    if ( v < DRW::AC1015 ) {// R13 & R14
         basePoint.x = buf->getBitDouble();
         basePoint.y = buf->getBitDouble();
         basePoint.z = buf->getBitDouble();
@@ -740,23 +788,27 @@ bool DRW_3Dface::parseDwg(DRW::Version v, dwgBuffer *buf)
         fourPoint.x = buf->getDefaultDouble(thirdPoint.x);
         fourPoint.y = buf->getDefaultDouble(thirdPoint.y);
         fourPoint.z = buf->getDefaultDouble(thirdPoint.z);
-        invisibleflag = has_no_flag ? AllEdges : buf->getBitShort();
+        invisibleflag = has_no_flag ? (int)AllEdges : buf->getBitShort();
     }
     drw_assert(invisibleflag>=NoEdge);
     drw_assert(invisibleflag<=AllEdges);
 
     DBG(" - base X: "); DBG(basePoint.x);
-    DBG(", Y: "); DBG(basePoint.y); DBG("\n");
+    DBG(", Y: "); DBG(basePoint.y);
+    DBG(", Z: "); DBG(basePoint.z); DBG("\n");
     DBG(" - sec X: "); DBG(secPoint.x);
-    DBG(", Y: "); DBG(secPoint.y); DBG("\n");
+    DBG(", Y: "); DBG(secPoint.y);
+    DBG(", Z: "); DBG(secPoint.z); DBG("\n");
     DBG(" - third X: "); DBG(thirdPoint.x);
-    DBG(", Y: "); DBG(thirdPoint.y); DBG("\n");
+    DBG(", Y: "); DBG(thirdPoint.y);
+    DBG(", Z: "); DBG(thirdPoint.z); DBG("\n");
     DBG(" - fourth X: "); DBG(fourPoint.x);
-    DBG(", Y: "); DBG(fourPoint.y); DBG("\n");
+    DBG(", Y: "); DBG(fourPoint.y);
+    DBG(", Z: "); DBG(fourPoint.z); DBG("\n");
     DBG(" - Invisibility mask: "); DBG(invisibleflag); DBG("\n");
 
     /* Common Entity Handle Data */
-    ret = DRW_Entity::parseDwgEntHandle(version, buf);
+    ret = DRW_Entity::parseDwgEntHandle(v, buf);
     if (!ret)
         return ret;
 

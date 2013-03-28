@@ -326,6 +326,8 @@ public:
     }
 
     void parseCode(int code, dxfReader *reader);
+    //! interpret dwg data (was already determined to be part of this object)
+    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf);
 };
 
 //! Class to handle 3dface entity
