@@ -266,8 +266,23 @@ public:
     }
 
     virtual void applyExtrusion(){DRW_Circle::applyExtrusion();}
+    //! interpret code in dxf reading process or dispatch to inherited class
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf);
+    //! interpret dwg data (was already determined to be part of this object)
+    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf);
+
+    //! center point in OCS
+    const DRW_Coord & center() { return basePoint; }
+    //! the radius of the circle
+    double radius() { return radious; }
+    //! start angle in radians
+    double startAngle() { return staangle; }
+    //! end angle in radians
+    double endAngle() { return endangle; }
+    //! thickness
+    double thick() { return thickness; }
+    //! extrusion
+    const DRW_Coord & extrusion() { return extPoint; }
 
 public:
     double staangle;            /*!< start angle, code 50 in radians*/
@@ -333,9 +348,26 @@ public:
         eType = DRW::SOLID;
     }
 
+    //! interpret code in dxf reading process or dispatch to inherited class
     void parseCode(int code, dxfReader *reader);
     //! interpret dwg data (was already determined to be part of this object)
     virtual bool parseDwg(DRW::Version v, dwgBuffer *buf);
+
+    //! first corner (2D)
+    const DRW_Coord & firstCorner() { return basePoint; }
+    //! second corner (2D)
+    const DRW_Coord & secondCorner() { return secPoint; }
+    //! third corner (2D)
+    const DRW_Coord & thirdCorner() { return thirdPoint; }
+    //! fourth corner (2D)
+    const DRW_Coord & fourthCorner() { return thirdPoint; }
+    //! thickness
+    double thick() { return thickness; }
+    //! elevation
+    double elevation() { return basePoint.z; }
+    //! extrusion
+    const DRW_Coord & extrusion() { return extPoint; }
+
 };
 
 //! Class to handle 3dface entity
