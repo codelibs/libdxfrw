@@ -337,15 +337,35 @@ public:
 */
 class DRW_3Dface : public DRW_Trace {
 public:
+    enum EdgeFlags {
+        FirstEdge = 0x01,
+        SecodEdge = 0x02,
+        ThirdEdge = 0x04,
+        FourthEdge = 0x08
+    };
+
     DRW_3Dface() {
         eType = DRW::E3DFACE;
         invisibleflag = 0;
     }
 
     virtual void applyExtrusion(){}
+
+    //! interpret code in dxf reading process or dispatch to inherited class
     void parseCode(int code, dxfReader *reader);
     //! interpret dwg data (was already determined to be part of this object)
     virtual bool parseDwg(DRW::Version v, dwgBuffer *buf);
+
+    //! first corner in WCS
+    const DRW_Coord & firstCorner() { return basePoint; }
+    //! second corner in WCS
+    const DRW_Coord & secondCorner() { return secPoint; }
+    //! third corner in WCS
+    const DRW_Coord & thirdCorner() { return thirdPoint; }
+    //! fourth corner in WCS
+    const DRW_Coord & fourthCorner() { return fourPoint; }
+    //! edge visibility flags
+    EdgeFlags edgeFlags() { return (EdgeFlags)invisibleflag; }
 
 public:
     int invisibleflag;       /*!< invisible edge flag, code 70 */
