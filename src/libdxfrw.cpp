@@ -52,7 +52,7 @@ dxfRW::~dxfRW(){
 }
 
 bool dxfRW::read(DRW_Interface *interface_, bool ext){
-    assert(fileName.empty() == false);
+    drw_assert(fileName.empty() == false);
     bool isOk = false;
     applyExt = ext;
     std::ifstream filestr;

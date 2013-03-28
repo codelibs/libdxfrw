@@ -338,10 +338,12 @@ public:
 class DRW_3Dface : public DRW_Trace {
 public:
     enum EdgeFlags {
+        NoEdge = 0x00,
         FirstEdge = 0x01,
         SecodEdge = 0x02,
         ThirdEdge = 0x04,
-        FourthEdge = 0x08
+        FourthEdge = 0x08,
+        AllEdges = 0x15
     };
 
     DRW_3Dface() {

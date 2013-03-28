@@ -54,7 +54,7 @@ void DRW_Entity::extrudePoint(DRW_Coord extPoint, DRW_Coord *point){
     point->z = pz;
 }
 
-void DRW_Entity::parseCode(int code, dxfReader *reader){
+bool DRW_Entity::parseCode(int code, dxfReader *reader){
     switch (code) {
     case 5:
         handle = reader->getHandleString();
@@ -87,7 +87,7 @@ void DRW_Entity::parseCode(int code, dxfReader *reader){
         colorName = reader->getString();
         break;
     case 67:
-        space = reader->getInt32();
+        space = (DRW::Space)reader->getInt32(); //RLZ verify cast values
         break;
     default:
         break;
@@ -159,7 +159,7 @@ bool DRW_Entity::parseDwg(DRW::Version version, dwgBuffer *buf){
         entmode = 2;
     else if(entmode ==2)
         entmode = 0;
-    space = entmode;
+    space = (DRW::Space)entmode; //RLZ verify cast values
     DBG("entmode: "); DBG(entmode);
     duint8 numReactors = buf->getBitLong(); //BL
     DBG(", numReactors: "); DBG(numReactors);
