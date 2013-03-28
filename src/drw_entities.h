@@ -342,6 +342,8 @@ public:
 
     virtual void applyExtrusion(){}
     void parseCode(int code, dxfReader *reader);
+    //! interpret dwg data (was already determined to be part of this object)
+    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf);
 
 public:
     int invisibleflag;       /*!< invisible edge flag, code 70 */

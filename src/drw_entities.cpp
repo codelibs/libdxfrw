@@ -704,6 +704,66 @@ void DRW_3Dface::parseCode(int code, dxfReader *reader){
     }
 }
 
+bool DRW_3Dface::parseDwg(DRW::Version v, dwgBuffer *buf)
+{
+    bool ret = DRW_Entity::parseDwg(version, buf);
+    if (!ret)
+        return ret;
+    DBG("\n***************************** parsing 3Dface *********************************************\n");
+
+    if ( v < AC1015 ) {// R13 & R14
+        basePoint.x = buf->getBitDouble();
+        basePoint.y = buf->getBitDouble();
+        basePoint.z = buf->getBitDouble();
+        secPoint.x = buf->getBitDouble();
+        secPoint.y = buf->getBitDouble();
+        secPoint.z = buf->getBitDouble();
+        thirdPoint.x = buf->getBitDouble();
+        thirdPoint.y = buf->getBitDouble();
+        thirdPoint.z = buf->getBitDouble();
+        fourPoint.x = buf->getBitDouble();
+        fourPoint.y = buf->getBitDouble();
+        fourPoint.z = buf->getBitDouble();
+        invisibleflag = buf->getBitShort();
+    } else { // 2000+
+        bool has_no_flag = buf->getBit();
+        bool z_is_zero = buf->getBit();
+        basePoint.x = buf->getRawDouble();
+        basePoint.y = buf->getRawDouble();
+        basePoint.z = z_is_zero ? 0.0 : buf->getRawDouble();
+        secPoint.x = buf->getDefaultDouble(basePoint.x);
+        secPoint.y = buf->getDefaultDouble(basePoint.y);
+        secPoint.z = buf->getDefaultDouble(basePoint.z);
+        thirdPoint.x = buf->getDefaultDouble(secPoint.x);
+        thirdPoint.y = buf->getDefaultDouble(secPoint.y);
+        thirdPoint.z = buf->getDefaultDouble(secPoint.z);
+        fourPoint.x = buf->getDefaultDouble(thirdPoint.x);
+        fourPoint.y = buf->getDefaultDouble(thirdPoint.y);
+        fourPoint.z = buf->getDefaultDouble(thirdPoint.z);
+        invisibleflag = has_no_flag ? AllEdges : buf->getBitShort();
+    }
+    drw_assert(invisibleflag>=NoEdge);
+    drw_assert(invisibleflag<=AllEdges);
+
+    DBG(" - base X: "); DBG(basePoint.x);
+    DBG(", Y: "); DBG(basePoint.y); DBG("\n");
+    DBG(" - sec X: "); DBG(secPoint.x);
+    DBG(", Y: "); DBG(secPoint.y); DBG("\n");
+    DBG(" - third X: "); DBG(thirdPoint.x);
+    DBG(", Y: "); DBG(thirdPoint.y); DBG("\n");
+    DBG(" - fourth X: "); DBG(fourPoint.x);
+    DBG(", Y: "); DBG(fourPoint.y); DBG("\n");
+    DBG(" - Invisibility mask: "); DBG(invisibleflag); DBG("\n");
+
+    /* Common Entity Handle Data */
+    ret = DRW_Entity::parseDwgEntHandle(version, buf);
+    if (!ret)
+        return ret;
+
+    /* CRC X --- */
+    return buf->isGood();
+}
+
 void DRW_Block::parseCode(int code, dxfReader *reader){
     switch (code) {
     case 2:
