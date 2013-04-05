@@ -17,7 +17,7 @@
 
 //! Calculate arbitary axis
 /*!
-*   Calculate arbitary axis for aplly extrusions
+*   Calculate arbitary axis for apply extrusions
 *  @author Rallaz
 */
 void DRW_Entity::calculateAxis(DRW_Coord extPoint){
@@ -70,9 +70,7 @@ void DRW_Entity::parseCode(int code, dxfReader *reader){
         color = reader->getInt32();
         break;
     case 370:
-//        lWeight = (DRW::LWEIGHT)reader->getInt32();
-//RLZ: TODO as integer or enum??
-        lWeight = reader->getInt32();
+        lWeight = DRW_LW_Conv::dxfInt2lineWidth(reader->getInt32());
         break;
     case 48:
         ltypeScale = reader->getDouble();
