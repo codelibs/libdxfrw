@@ -112,6 +112,7 @@ private:
     bool writeTables();
     bool writeBlocks();
     bool writeObjects();
+    std::string toHexStr(int n);
 
 private:
     DRW::Version version;

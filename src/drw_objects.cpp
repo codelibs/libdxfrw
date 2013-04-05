@@ -24,10 +24,10 @@
 void DRW_TableEntry::parseCode(int code, dxfReader *reader){
     switch (code) {
     case 5:
-        handle = reader->getString();
+        handle = reader->getHandleString();
         break;
     case 330:
-        handleBlock = reader->getString();
+        handleBlock = reader->getHandleString();
         break;
     case 2:
         name = reader->getUtf8String();
@@ -48,7 +48,7 @@ void DRW_TableEntry::parseCode(int code, dxfReader *reader){
 void DRW_Dimstyle::parseCode(int code, dxfReader *reader){
     switch (code) {
     case 105:
-        handle = reader->getString();
+        handle = reader->getHandleString();
         break;
     case 3:
         dimpost = reader->getUtf8String();
@@ -319,13 +319,16 @@ void DRW_Layer::parseCode(int code, dxfReader *reader){
         plotF = reader->getBool();
         break;
     case 370:
-        lWeight = reader->getInt32();
+        lWeight = DRW_LW_Conv::dxfInt2lineWidth(reader->getInt32());
         break;
     case 390:
         handlePlotS = reader->getString();
         break;
     case 347:
         handlePlotM = reader->getString();
+        break;
+    case 420:
+        color24 = reader->getInt32();
         break;
     default:
         DRW_TableEntry::parseCode(code, reader);

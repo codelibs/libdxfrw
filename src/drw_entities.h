@@ -110,8 +110,8 @@ protected:
 
 public:
     enum DRW::ETYPE eType;     /*!< enum: entity type, code 0 */
-    string handle;             /*!< entity identifier, code 5 */
-    string handleBlock;        /*!< Soft-pointer ID/handle to owner BLOCK_RECORD object, code 330 */
+    int handle;                /*!< entity identifier, code 5 */
+    int handleBlock;           /*!< Soft-pointer ID/handle to owner BLOCK_RECORD object, code 330 */
     UTF8STRING layer;              /*!< layer name, code 8 */
     UTF8STRING lineType;           /*!< line type, code 6 */
     int color;                 /*!< entity color, code 62 */
@@ -415,6 +415,7 @@ public:
     int flags;                /*!< polyline flag, code 70, default 0 */
     double width;             /*!< constant width, code 43 */
     double elevation;         /*!< elevation, code 38 */
+    double thickness;         /*!< thickness, code 39 */
     DRW_Coord extPoint;       /*!<  Dir extrusion normal vector, code 210, 220 & 230 */
     DRW_Vertex2D *vertex;       /*!< current vertex to add data */
     std::vector<DRW_Vertex2D *> vertlist;  /*!< vertex list */

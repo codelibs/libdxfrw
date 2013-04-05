@@ -52,16 +52,17 @@ public:
         tType = DRW::UNKNOWNT;
         flags = 0;
     }
+    virtual~DRW_TableEntry() {}
 
 protected:
     void parseCode(int code, dxfReader *reader);
 
 public:
-    enum DRW::TTYPE tType;  /*!< enum: entity type, code 0 */
-    string handle;                       /*!< entity identifier, code 5 */
-    string handleBlock;              /*!< Soft-pointer ID/handle to owner BLOCK_RECORD object, code 330 */
+    enum DRW::TTYPE tType;     /*!< enum: entity type, code 0 */
+    int handle;                /*!< entity identifier, code 5 */
+    int handleBlock;           /*!< Soft-pointer ID/handle to owner BLOCK_RECORD object, code 330 */
     UTF8STRING name;           /*!< entry name, code 2 */
-    int flags;                               /*!< Flags relevant to entry, code 70 */
+    int flags;                 /*!< Flags relevant to entry, code 70 */
 };
 
 
@@ -223,7 +224,8 @@ public:
         lineType = "CONTINUOUS";
         color = 7; // default BYLAYER (256)
         plotF = true; // default TRUE (plot yes)
-        lWeight = -3; // default BYDEFAULT (-3)
+        lWeight = DRW_LW_Conv::widthDefault; // default BYDEFAULT (dxf -3, dwg 31)
+        color24 = -1; //default -1 not set
     }
 
     void parseCode(int code, dxfReader *reader);
@@ -231,8 +233,9 @@ public:
 public:
     UTF8STRING lineType;           /*!< line type, code 6 */
     int color;                 /*!< layer color, code 62 */
+    int color24;               /*!< 24-bit color, code 420 */
     bool plotF;                 /*!< Plot flag, code 290 */
-    int lWeight;               /*!< layer lineweight, code 370 */
+    enum DRW_LW_Conv::lineWidth lWeight; /*!< layer lineweight, code 370 */
     string handlePlotS;        /*!< Hard-pointer ID/handle of plotstyle, code 390 */
     string handlePlotM;        /*!< Hard-pointer ID/handle of materialstyle, code 347 */
 };
