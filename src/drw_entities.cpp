@@ -160,10 +160,10 @@ void DRW_Circle::parseCode(int code, dxfReader *reader){
 void DRW_Arc::parseCode(int code, dxfReader *reader){
     switch (code) {
     case 50:
-        staangle = reader->getDouble();
+        staangle = reader->getDouble()/ ARAD;
         break;
     case 51:
-        endangle = reader->getDouble();
+        endangle = reader->getDouble()/ ARAD;
         break;
     default:
         DRW_Circle::parseCode(code, reader);
@@ -185,6 +185,32 @@ void DRW_Ellipse::parseCode(int code, dxfReader *reader){
     default:
         DRW_Line::parseCode(code, reader);
         break;
+    }
+}
+
+//if ratio > 1 minor axis are greather than major axis, correct it
+void DRW_Ellipse::correctAxis(){
+    bool complete = false;
+    if (staparam == endparam) {
+        staparam = 0.0;
+        endparam = M_PIx2; //2*M_PI;
+        complete = true;
+    }
+    if (ratio > 1){
+        if ( fabs(endparam - staparam - M_PIx2) < 1.0e-10)
+            complete = true;
+        double incX = secPoint.x;
+        secPoint.x = -(secPoint.y * ratio);
+        secPoint.y = incX*ratio;
+        ratio = 1/ratio;
+        if (!complete){
+            if (staparam < M_PI_2)
+                staparam += M_PI *2;
+            if (endparam < M_PI_2)
+                endparam += M_PI *2;
+            endparam -= M_PI_2;
+            staparam -= M_PI_2;
+        }
     }
 }
 
@@ -211,7 +237,7 @@ void DRW_Ellipse::toPolyline(DRW_Polyline *pol){
         pol->addVertex( DRW_Vertex(x, y, 0.0, 0.0));
         curAngle = (++i)*incAngle;
     } while (i<128);
-    if ( fabs(endparam - 6.28318530718) < 1.0e-10){
+    if ( fabs(endparam - staparam - M_PIx2) < 1.0e-10){
         pol->flags = 1;
     }
     pol->layer = this->layer;
@@ -575,12 +601,12 @@ void DRW_Hatch::parseCode(int code, dxfReader *reader){
         if (plvert) plvert ->bulge = reader->getDouble();
         break;
     case 50:
-        if (arc) arc->staangle = reader->getDouble();
-        else if (ellipse) ellipse->staparam = reader->getDouble();
+        if (arc) arc->staangle = reader->getDouble()/ARAD;
+        else if (ellipse) ellipse->staparam = reader->getDouble()/ARAD;
         break;
     case 51:
-        if (arc) arc->endangle = reader->getDouble();
-        else if (ellipse) ellipse->endparam = reader->getDouble();
+        if (arc) arc->endangle = reader->getDouble()/ARAD;
+        else if (ellipse) ellipse->endparam = reader->getDouble()/ARAD;
         break;
     case 52:
         angle = reader->getDouble();

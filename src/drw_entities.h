@@ -229,9 +229,9 @@ public:
     void parseCode(int code, dxfReader *reader);
 
 public:
-    double staangle;               /*!< x coordinate, code 50 */
-    double endangle;               /*!< x coordinate, code 51 */
-    double isccw;                  /*!< is counter clockwise arc?, only used in hatch, code 73 */
+    double staangle;            /*!< start angle, code 50 in radians*/
+    double endangle;            /*!< end angle, code 51 in radians */
+    int isccw;                  /*!< is counter clockwise arc?, only used in hatch, code 73 */
 };
 
 //! Class to handle ellipse entity
@@ -250,11 +250,12 @@ public:
 
     void parseCode(int code, dxfReader *reader);
     void toPolyline(DRW_Polyline *pol);
+    void correctAxis();
 public:
     double ratio;           /*!< ratio, code 40 */
     double staparam;        /*!< start parameter, code 41, 0.0 for full ellipse*/
     double endparam;        /*!< end parameter, code 42, 2*PI for full ellipse */
-    double isccw;           /*!< is counter clockwise arc?, only used in hatch, code 73 */
+    int isccw;           /*!< is counter clockwise arc?, only used in hatch, code 73 */
 };
 
 //! Class to handle trace entity

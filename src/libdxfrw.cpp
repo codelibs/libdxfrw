@@ -18,9 +18,7 @@
 #include "drw_textcodec.h"
 #include "dxfreader.h"
 #include "dxfwriter.h"
-
-
-using namespace std;
+#include <assert.h>
 
 #ifdef DRW_DBG
 #include <iostream> //for debug
@@ -53,11 +51,14 @@ dxfRW::~dxfRW(){
 }
 
 bool dxfRW::read(DRW_Interface *interface_, bool ext){
+    assert(fileName.empty() == false);
     bool isOk = false;
     applyExt = ext;
-    ifstream filestr;
+    std::ifstream filestr;
+    if ( interface_ == NULL )
+                return isOk;
     DBG("dxfRW::read 1def\n");
-    filestr.open (fileName.c_str(), ios_base::in | ios::binary);
+    filestr.open (fileName.c_str(), std::ios_base::in | std::ios::binary);
     if (!filestr.is_open())
         return isOk;
     if (!filestr.good())
@@ -72,15 +73,15 @@ bool dxfRW::read(DRW_Interface *interface_, bool ext){
     iface = interface_;
     DBG("dxfRW::read 2\n");
     if (strcmp(line, line2) == 0) {
-        filestr.open (fileName.c_str(), ios_base::in | ios::binary);
+        filestr.open (fileName.c_str(), std::ios_base::in | std::ios::binary);
         binary = true;
         //skip sentinel
-        filestr.seekg (22, ios::beg);
+        filestr.seekg (22, std::ios::beg);
         reader = new dxfReaderBinary(&filestr);
         DBG("dxfRW::read binary file\n");
     } else {
         binary = false;
-        filestr.open (fileName.c_str(), ios_base::in);
+        filestr.open (fileName.c_str(), std::ios_base::in);
         reader = new dxfReaderAscii(&filestr);
     }
 
@@ -93,18 +94,18 @@ bool dxfRW::read(DRW_Interface *interface_, bool ext){
 
 bool dxfRW::write(DRW_Interface *interface_, DRW::Version ver, bool bin){
     bool isOk = false;
-    ofstream filestr;
+    std::ofstream filestr;
     version = ver;
     binary = bin;
     iface = interface_;
     if (binary) {
-        filestr.open (fileName.c_str(), ios_base::out | ios::binary | ios::trunc);
+        filestr.open (fileName.c_str(), std::ios_base::out | std::ios::binary | std::ios::trunc);
         //write sentinel
         filestr << "AutoCAD Binary DXF\r\n" << (char)26 << '\0';
         writer = new dxfWriterBinary(&filestr);
         DBG("dxfRW::read binary file\n");
     } else {
-        filestr.open (fileName.c_str(), ios_base::out | ios::trunc);
+        filestr.open (fileName.c_str(), std::ios_base::out | std::ios::trunc);
         writer = new dxfWriterAscii(&filestr);
         std::string comm = std::string("dxfrw ") + std::string(DRW_VERSION);
         writer->writeString(999, comm);
@@ -590,14 +591,14 @@ bool dxfRW::writeArc(DRW_Arc *ent) {
     if (version > DRW::AC1009) {
         writer->writeString(100, "AcDbArc");
     }
-    writer->writeDouble(50, ent->staangle);
-    writer->writeDouble(51, ent->endangle);
+    writer->writeDouble(50, ent->staangle*ARAD);
+    writer->writeDouble(51, ent->endangle*ARAD);
     return true;
 }
 
 bool dxfRW::writeEllipse(DRW_Ellipse *ent){
-    if (ent->staparam == ent->endparam)
-        ent->endparam = 6.28318530718; //2*M_PI;
+    //verify axis/ratio and params for full ellipse
+    ent->correctAxis();
     if (version > DRW::AC1009) {
         writer->writeString(0, "ELLIPSE");
         writeEntity(ent);
@@ -887,20 +888,21 @@ bool dxfRW::writeHatch(DRW_Hatch *ent){
                         writer->writeDouble(10, a->basePoint.x);
                         writer->writeDouble(20, a->basePoint.y);
                         writer->writeDouble(40, a->radious);
-                        writer->writeDouble(50, a->staangle);
-                        writer->writeDouble(51, a->endangle);
+                        writer->writeDouble(50, a->staangle*ARAD);
+                        writer->writeDouble(51, a->endangle*ARAD);
                         writer->writeInt16(73, a->isccw);
                         break; }
                     case DRW::ELLIPSE: {
                         writer->writeInt16(72, 3);
                         DRW_Ellipse* a = (DRW_Ellipse*)loop->objlist.at(j);
+                        a->correctAxis();
                         writer->writeDouble(10, a->basePoint.x);
                         writer->writeDouble(20, a->basePoint.y);
                         writer->writeDouble(11, a->secPoint.x);
                         writer->writeDouble(21, a->secPoint.y);
                         writer->writeDouble(40, a->ratio);
-                        writer->writeDouble(50, a->staparam);
-                        writer->writeDouble(51, a->endparam);
+                        writer->writeDouble(50, a->staparam*ARAD);
+                        writer->writeDouble(51, a->endparam*ARAD);
                         writer->writeInt16(73, a->isccw);
                         break; }
                     case DRW::SPLINE:
@@ -925,7 +927,7 @@ bool dxfRW::writeHatch(DRW_Hatch *ent){
 /*        if (ent->deflines > 0){
             writer->writeInt16(78, ent->deflines);
         }*/
-        writer->writeInt16(98, 0);
+        writer->writeInt32(98, 0);
     } else {
         //RLZ: TODO verify in acad12
     }
