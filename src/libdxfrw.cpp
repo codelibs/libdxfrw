@@ -168,7 +168,7 @@ bool dxfRW::writeEntity(DRW_Entity *ent) {
         writer->writeInt32(420, ent->color24);
     }
     if (version > DRW::AC1014) {
-        writer->writeInt16(370, ent->lWeight);
+        writer->writeInt16(370, DRW_LW_Conv::lineWidth2dxfInt(ent->lWeight));
     }
     return true;
 }
@@ -239,7 +239,7 @@ bool dxfRW::writeLayer(DRW_Layer *ent){
         writer->writeUtf8String(6, ent->lineType);
         if (! ent->plotF)
             writer->writeBool(290, ent->plotF);
-        writer->writeInt16(370, ent->lWeight);
+        writer->writeInt16(370, DRW_LW_Conv::lineWidth2dxfInt(ent->lWeight));
         writer->writeString(390, "F");
     } else
         writer->writeUtf8Caps(6, ent->lineType);
@@ -250,10 +250,9 @@ bool dxfRW::writeLayer(DRW_Layer *ent){
 bool dxfRW::writeTextstyle(DRW_Textstyle *ent){
     writer->writeString(0, "STYLE");
     if (!dimstyleStd) {
-        std::string name;
-        std::stringstream ss;
-        ss << std::uppercase << ent->name;
-        ss >> name;
+        //stringstream cause crash in OS/X, bug#3597944
+        std::string name=ent->name;
+        transform(name.begin(), name.end(), name.begin(), toupper);
         if (name == "STANDARD")
             dimstyleStd = true;
     }
