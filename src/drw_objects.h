@@ -657,6 +657,7 @@ const unsigned char dxfColors[][3] = {
     {214,214,214},
     {255,255,255}  // 255
 };
+
 }
 
 #endif
