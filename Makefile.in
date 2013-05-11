@@ -276,18 +276,18 @@ AM_CPPFLAGS = ${my_CPPFLAGS}
 ACLOCAL_AMFLAGS = -I m4
 library_includedir = $(includedir)/libdxfrw$(LIBRARY_AGE)
 library_include_HEADERS = src/drw_base.h src/drw_entities.h src/drw_interface.h src/drw_objects.h src/libdxfrw.h
-dist_noinst_HEADERS = src/dxfreader.h src/dxfwriter.h src/drw_cptable932.h src/drw_cptable936.h src/drw_cptable949.h \
-  src/drw_cptable950.h src/drw_cptables.h src/drw_textcodec.h
+dist_noinst_HEADERS = src/intern/dxfreader.h src/intern/dxfwriter.h src/intern/drw_cptable932.h src/intern/drw_cptable936.h \
+  src/intern/drw_cptable949.h src/intern/drw_cptable950.h src/intern/drw_cptables.h src/intern/drw_textcodec.h
 
 lib_LTLIBRARIES = libdxfrw.la
-libdxfrw_la_SOURCES = src/drw_entities.cpp src/drw_objects.cpp src/libdxfrw.cpp src/dxfreader.cpp src/dxfwriter.cpp \
-  src/drw_textcodec.cpp
+libdxfrw_la_SOURCES = src/drw_entities.cpp src/drw_objects.cpp src/libdxfrw.cpp src/intern/dxfreader.cpp src/intern/dxfwriter.cpp \
+  src/intern/drw_textcodec.cpp
 
 libdxfrw_la_LDFLAGS = -version-number $(LIBRARY_AGE):$(LIBRARY_CURRENT):$(LIBRARY_REVISION)
 libdxfrw_la_LIBADD = 
 pkgconfigdir = ${libdir}/pkgconfig
 pkgconfig_DATA = libdxfrw$(LIBRARY_AGE).pc
-EXTRA_DIST = autogen.sh
+EXTRA_DIST = autogen.sh makefile.mingw
 all: all-am
 
 .SUFFIXES:
@@ -420,26 +420,26 @@ libdxfrw.lo: src/libdxfrw.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libdxfrw.lo `test -f 'src/libdxfrw.cpp' || echo '$(srcdir)/'`src/libdxfrw.cpp
 
-dxfreader.lo: src/dxfreader.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dxfreader.lo -MD -MP -MF $(DEPDIR)/dxfreader.Tpo -c -o dxfreader.lo `test -f 'src/dxfreader.cpp' || echo '$(srcdir)/'`src/dxfreader.cpp
+dxfreader.lo: src/intern/dxfreader.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dxfreader.lo -MD -MP -MF $(DEPDIR)/dxfreader.Tpo -c -o dxfreader.lo `test -f 'src/intern/dxfreader.cpp' || echo '$(srcdir)/'`src/intern/dxfreader.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/dxfreader.Tpo $(DEPDIR)/dxfreader.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/dxfreader.cpp' object='dxfreader.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/intern/dxfreader.cpp' object='dxfreader.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dxfreader.lo `test -f 'src/dxfreader.cpp' || echo '$(srcdir)/'`src/dxfreader.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dxfreader.lo `test -f 'src/intern/dxfreader.cpp' || echo '$(srcdir)/'`src/intern/dxfreader.cpp
 
-dxfwriter.lo: src/dxfwriter.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dxfwriter.lo -MD -MP -MF $(DEPDIR)/dxfwriter.Tpo -c -o dxfwriter.lo `test -f 'src/dxfwriter.cpp' || echo '$(srcdir)/'`src/dxfwriter.cpp
+dxfwriter.lo: src/intern/dxfwriter.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dxfwriter.lo -MD -MP -MF $(DEPDIR)/dxfwriter.Tpo -c -o dxfwriter.lo `test -f 'src/intern/dxfwriter.cpp' || echo '$(srcdir)/'`src/intern/dxfwriter.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/dxfwriter.Tpo $(DEPDIR)/dxfwriter.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/dxfwriter.cpp' object='dxfwriter.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/intern/dxfwriter.cpp' object='dxfwriter.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dxfwriter.lo `test -f 'src/dxfwriter.cpp' || echo '$(srcdir)/'`src/dxfwriter.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dxfwriter.lo `test -f 'src/intern/dxfwriter.cpp' || echo '$(srcdir)/'`src/intern/dxfwriter.cpp
 
-drw_textcodec.lo: src/drw_textcodec.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT drw_textcodec.lo -MD -MP -MF $(DEPDIR)/drw_textcodec.Tpo -c -o drw_textcodec.lo `test -f 'src/drw_textcodec.cpp' || echo '$(srcdir)/'`src/drw_textcodec.cpp
+drw_textcodec.lo: src/intern/drw_textcodec.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT drw_textcodec.lo -MD -MP -MF $(DEPDIR)/drw_textcodec.Tpo -c -o drw_textcodec.lo `test -f 'src/intern/drw_textcodec.cpp' || echo '$(srcdir)/'`src/intern/drw_textcodec.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/drw_textcodec.Tpo $(DEPDIR)/drw_textcodec.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/drw_textcodec.cpp' object='drw_textcodec.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/intern/drw_textcodec.cpp' object='drw_textcodec.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o drw_textcodec.lo `test -f 'src/drw_textcodec.cpp' || echo '$(srcdir)/'`src/drw_textcodec.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o drw_textcodec.lo `test -f 'src/intern/drw_textcodec.cpp' || echo '$(srcdir)/'`src/intern/drw_textcodec.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo
