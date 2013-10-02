@@ -655,6 +655,9 @@ void DRW_Header::write(dxfWriter *writer, DRW::Version ver){
     writer->writeString(1, varStr);
     writer->setVersion(&varStr);
 
+    getStr("$ACADVER", &varStr);
+    getStr("$ACADMAINTVER", &varStr);
+
     if (ver > DRW::AC1012) {
         writer->writeString(9, "$HANDSEED");
 //RLZ        dxfHex(5, 0xFFFF);
@@ -730,12 +733,25 @@ void DRW_Header::write(dxfWriter *writer, DRW::Version ver){
             writer->writeUtf8String(7, varStr);
     else
         writer->writeString(7, "STANDARD");
+    writer->writeString(9, "$CLAYER");
+    if (getStr("$CLAYER", &varStr))
+        if (ver == DRW::AC1009)
+            writer->writeUtf8Caps(8, varStr);
+        else
+            writer->writeUtf8String(8, varStr);
+    else
+        writer->writeString(8, "0");
 
     writer->writeString(9, "$DIMASZ");
     if (getDouble("$DIMASZ", &varDouble))
         writer->writeDouble(40, varDouble);
     else
         writer->writeDouble(40, 2.5);
+    writer->writeString(9, "$DIMLFAC");
+    if (getDouble("$DIMLFAC", &varDouble))
+        writer->writeDouble(40, varDouble);
+    else
+        writer->writeDouble(40, 1.0);
     writer->writeString(9, "$DIMSCALE");
     if (getDouble("$DIMSCALE", &varDouble))
         writer->writeDouble(40, varDouble);
