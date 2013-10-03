@@ -21,6 +21,7 @@
 
 class dxfReader;
 class dxfWriter;
+class dwgBuffer;
 
 namespace DRW {
 
@@ -52,6 +53,8 @@ public:
     }
     virtual~DRW_TableEntry() {}
 
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf);
+
 protected:
     void parseCode(int code, dxfReader *reader);
 
@@ -61,6 +64,8 @@ public:
     int handleBlock;           /*!< Soft-pointer ID/handle to owner BLOCK_RECORD object, code 330 */
     UTF8STRING name;           /*!< entry name, code 2 */
     int flags;                 /*!< Flags relevant to entry, code 70 */
+    //***** dwg parse ********/
+    dint32 numReactors; //
 };
 
 
@@ -98,6 +103,7 @@ public:
     }
 
     void parseCode(int code, dxfReader *reader);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf);
 
 public:
     //V12
@@ -194,6 +200,7 @@ public:
     }
 
     void parseCode(int code, dxfReader *reader);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf);
     void update();
 
 public:
@@ -227,6 +234,7 @@ public:
     }
 
     void parseCode(int code, dxfReader *reader);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf);
 
 public:
     UTF8STRING lineType;           /*!< line type, code 6 */
@@ -236,6 +244,30 @@ public:
     enum DRW_LW_Conv::lineWidth lWeight; /*!< layer lineweight, code 370 */
     std::string handlePlotS;        /*!< Hard-pointer ID/handle of plotstyle, code 390 */
     std::string handlePlotM;        /*!< Hard-pointer ID/handle of materialstyle, code 347 */
+/*only used for read dwg*/
+    dwgHandle lTypeH;
+};
+
+//! Class to handle layer entries
+/*!
+*  Class to handle block record table entries
+*  @author Rallaz
+*/
+class DRW_Block_Record : public DRW_TableEntry {
+public:
+    DRW_Block_Record() { reset();}
+    void reset() {
+        tType = DRW::BLOCK_RECORD;
+        flags = 0;
+    }
+
+//    void parseCode(int code, dxfReader *reader);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf);
+
+public:
+//Note:    int DRW_TableEntry::flags; contains code 70 of block
+    int insUnits;             /*!< block insertion units, code 70 of block_record*/
+    DRW_Coord basePoint;      /*!<  block insertion base point dwg only */
 };
 
 //! Class to handle text style entries
@@ -257,6 +289,7 @@ public:
     }
 
     void parseCode(int code, dxfReader *reader);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf);
 
 public:
     double height;          /*!< Fixed text height (0 not set), code 40 */
@@ -297,6 +330,7 @@ public:
     }
 
     void parseCode(int code, dxfReader *reader);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf);
 
 public:
     DRW_Coord lowerLeft;     /*!< Lower left corner, code 10 & 20 */
