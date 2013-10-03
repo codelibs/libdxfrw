@@ -35,18 +35,26 @@ OBJECTS_DIR   = .\obj
 ####### Files
 
 SOURCES       = src/libdxfrw.cpp \
+		src/libdwgr.cpp \
 		src/intern/dxfwriter.cpp \
 		src/intern/dxfreader.cpp \
 		src/intern/drw_textcodec.cpp \
+		src/intern/dwgbuffer.cpp \
+		src/intern/dwgreader.cpp \
 		src/drw_objects.cpp \
 		src/drw_header.cpp \
+		src/drw_classes.cpp \
 		src/drw_entities.cpp 
 OBJECTS       = $(OBJECTS_DIR)/libdxfrw.o \
+		$(OBJECTS_DIR)/libdwgr.o \
 		$(OBJECTS_DIR)/dxfwriter.o \
 		$(OBJECTS_DIR)/dxfreader.o \
 		$(OBJECTS_DIR)/drw_textcodec.o \
+		$(OBJECTS_DIR)/dwgbuffer.o \
+		$(OBJECTS_DIR)/dwgreader.o \
 		$(OBJECTS_DIR)/drw_objects.o \
 		$(OBJECTS_DIR)/drw_header.o \
+		$(OBJECTS_DIR)/drw_classes.o \
 		$(OBJECTS_DIR)/drw_entities.o
 DOC_DIST      = AUTHORS COPYING NEWS README TODO 
 EXTRA_DIST    = aclocal.m4 ar-lib autogen.sh ChangeLog \
@@ -88,8 +96,10 @@ makedirs:
 	$(COPY) .\src\drw_base.h $(INCDIR)
 	$(COPY) .\src\drw_objects.h $(INCDIR)
 	$(COPY) .\src\drw_header.h $(INCDIR)
+	$(COPY) .\src\drw_classes.h $(INCDIR)
 	$(COPY) .\src\drw_interface.h $(INCDIR)
 	$(COPY) .\src\libdxfrw.h $(INCDIR)
+	$(COPY) .\src\libdwgr.h $(INCDIR)
 
 
 
@@ -136,19 +146,44 @@ $(OBJECTS_DIR)/libdxfrw.o: ./src/libdxfrw.cpp ./src/libdxfrw.h \
 		./src/drw_base.h \
 		./src/drw_objects.h \
 		./src/drw_header.h \
+		./src/drw_classes.h \
 		./src/drw_interface.h \
 		./src/intern/drw_textcodec.h \
 		./src/intern/dxfreader.h \
 		./src/intern/dxfwriter.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/libdxfrw.o .\src\libdxfrw.cpp
 
+$(OBJECTS_DIR)/libdwgr.o: ./src/libdwgr.cpp ./src/libdwgr.h \
+		./src/drw_entities.h \
+		./src/drw_base.h \
+		./src/drw_objects.h \
+		./src/drw_header.h \
+		./src/drw_classes.h \
+		./src/drw_interface.h \
+		./src/intern/drw_textcodec.h \
+		./src/intern/dwgbuffer.h \
+		./src/intern/dwgreader.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/libdwgr.o .\src\libdwgr.cpp
+
 $(OBJECTS_DIR)/dxfwriter.o: ./src/intern/dxfwriter.cpp ./src/intern/dxfwriter.h \
 		./src/intern/drw_textcodec.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dxfwriter.o .\src\intern/dxfwriter.cpp
 
 $(OBJECTS_DIR)/dxfreader.o: ./src/intern/dxfreader.cpp ./src/intern/dxfreader.h \
+		./src/drw_base.h \
+		./src/dwgbuffer.h \
 		./src/intern/drw_textcodec.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dxfreader.o .\src\intern/dxfreader.cpp
+
+$(OBJECTS_DIR)/dwgreader.o: ./src/intern/dwgreader.cpp ./src/intern/dwgreader.h \
+		./src/drw_base.h \
+		./src/intern/drw_textcodec.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dwgreader.o .\src\intern/dwgreader.cpp
+
+$(OBJECTS_DIR)/dwgreader.o: ./src/intern/dwgbuffer.cpp ./src/intern/dwgbuffer.h \
+		./src/drw_base.h \
+		./src/intern/drw_textcodec.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dwgbuffer.o .\src\intern/dwgbuffer.cpp
 
 $(OBJECTS_DIR)/drw_textcodec.o: ./src/intern/drw_textcodec.cpp ./src/intern/drw_textcodec.h \
 		./src/drw_base.h \
@@ -178,4 +213,12 @@ $(OBJECTS_DIR)/drw_entities.o: ./src/drw_entities.cpp ./src/drw_entities.h \
 		./src/intern/dxfreader.h \
 		./src/intern/drw_textcodec.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/drw_entities.o .\src\drw_entities.cpp
+
+$(OBJECTS_DIR)/drw_classes.o: ./src/drw_classes.cpp ./src/drw_classes.h \
+		./src/drw_base.h \
+		./src/intern/dxfreader.h \
+		./src/intern/dxfwriter.h \
+		./src/intern/dwgbuffer.h \
+		./src/intern/drw_textcodec.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/drw_classes.o .\src\drw_classes.cpp
 
