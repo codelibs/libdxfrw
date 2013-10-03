@@ -20,19 +20,6 @@
 class DRW_Coord;
 class DRW_TextCodec;
 
-class dwgHandle{
-public:
-    dwgHandle(){
-        code=0;
-        size=0;
-        ref=0;
-    }
-    ~dwgHandle(){}
-    duint8 code;
-    duint8 size;
-    duint32 ref;
-};
-
 class dwgBasicStream{
 protected:
     dwgBasicStream(){}

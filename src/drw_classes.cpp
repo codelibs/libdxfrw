@@ -11,10 +11,10 @@
 ******************************************************************************/
 
 #include "drw_classes.h"
-#include "dxfreader.h"
-#include "dxfwriter.h"
-#include "dwgbuffer.h"
-
+#include "intern/dxfreader.h"
+#include "intern/dxfwriter.h"
+#include "intern/dwgbuffer.h"
+#include "libdwgr.h" //for debug
 
 void DRW_Class::parseCode(int code, dxfReader *reader){
     switch (code) {

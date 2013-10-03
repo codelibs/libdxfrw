@@ -17,7 +17,7 @@
 #include <sstream>
 #include "dwgreader.h"
 #include "drw_textcodec.h"
-#include "libdwgr.h"
+#include "../libdwgr.h"
 
 
 dwgReader::~dwgReader(){

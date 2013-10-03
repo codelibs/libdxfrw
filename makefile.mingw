@@ -171,7 +171,6 @@ $(OBJECTS_DIR)/dxfwriter.o: ./src/intern/dxfwriter.cpp ./src/intern/dxfwriter.h 
 
 $(OBJECTS_DIR)/dxfreader.o: ./src/intern/dxfreader.cpp ./src/intern/dxfreader.h \
 		./src/drw_base.h \
-		./src/dwgbuffer.h \
 		./src/intern/drw_textcodec.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dxfreader.o .\src\intern/dxfreader.cpp
 
@@ -180,7 +179,7 @@ $(OBJECTS_DIR)/dwgreader.o: ./src/intern/dwgreader.cpp ./src/intern/dwgreader.h 
 		./src/intern/drw_textcodec.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dwgreader.o .\src\intern/dwgreader.cpp
 
-$(OBJECTS_DIR)/dwgreader.o: ./src/intern/dwgbuffer.cpp ./src/intern/dwgbuffer.h \
+$(OBJECTS_DIR)/dwgbuffer.o: ./src/intern/dwgbuffer.cpp ./src/intern/dwgbuffer.h \
 		./src/drw_base.h \
 		./src/intern/drw_textcodec.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dwgbuffer.o .\src\intern/dwgbuffer.cpp

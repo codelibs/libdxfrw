@@ -1,7 +1,7 @@
 /******************************************************************************
 **  libDXFrw - Library to read/write DXF files (ascii & binary)              **
 **                                                                           **
-**  Copyright (C) 2011 Rallaz, rallazz@gmail.com                             **
+**  Copyright (C) 2011-2013 Rallaz, rallazz@gmail.com                        **
 **                                                                           **
 **  This library is free software, licensed under the terms of the GNU       **
 **  General Public License as published by the Free Software Foundation,     **
@@ -198,6 +198,23 @@ private:
     std::string data;
 };
 
+//! Class to handle dwg handles
+/*!
+*  Class to handle dwg handles
+*  @author Rallaz
+*/
+class dwgHandle{
+public:
+    dwgHandle(){
+        code=0;
+        size=0;
+        ref=0;
+    }
+    ~dwgHandle(){}
+    duint8 code;
+    duint8 size;
+    duint32 ref;
+};
 
 //! Class to convert between line width and integer
 /*!
