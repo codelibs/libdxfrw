@@ -1,7 +1,7 @@
 /******************************************************************************
 **  libDXFrw - Library to read/write DXF files (ascii & binary)              **
 **                                                                           **
-**  Copyright (C) 2011 Rallaz, rallazz@gmail.com                             **
+**  Copyright (C) 2011-2013 Rallaz, rallazz@gmail.com                        **
 **                                                                           **
 **  This library is free software, licensed under the terms of the GNU       **
 **  General Public License as published by the Free Software Foundation,     **
@@ -16,6 +16,7 @@
 #include <string>
 #include "drw_entities.h"
 #include "drw_objects.h"
+#include "drw_header.h"
 #include "drw_interface.h"
 
 

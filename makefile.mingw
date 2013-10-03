@@ -4,7 +4,7 @@
 
 ####### Compiler, tools and options
 
-VERSION       = 0.5.10
+VERSION       = 0.6.0
 CC            = gcc
 CXX           = g++
 DEFINES       = -DUNICODE
@@ -39,12 +39,14 @@ SOURCES       = src/libdxfrw.cpp \
 		src/intern/dxfreader.cpp \
 		src/intern/drw_textcodec.cpp \
 		src/drw_objects.cpp \
+		src/drw_header.cpp \
 		src/drw_entities.cpp 
 OBJECTS       = $(OBJECTS_DIR)/libdxfrw.o \
 		$(OBJECTS_DIR)/dxfwriter.o \
 		$(OBJECTS_DIR)/dxfreader.o \
 		$(OBJECTS_DIR)/drw_textcodec.o \
 		$(OBJECTS_DIR)/drw_objects.o \
+		$(OBJECTS_DIR)/drw_header.o \
 		$(OBJECTS_DIR)/drw_entities.o
 DOC_DIST      = AUTHORS COPYING NEWS README TODO 
 EXTRA_DIST    = aclocal.m4 ar-lib autogen.sh ChangeLog \
@@ -85,6 +87,7 @@ makedirs:
 	$(COPY) .\src\drw_entities.h $(INCDIR)
 	$(COPY) .\src\drw_base.h $(INCDIR)
 	$(COPY) .\src\drw_objects.h $(INCDIR)
+	$(COPY) .\src\drw_header.h $(INCDIR)
 	$(COPY) .\src\drw_interface.h $(INCDIR)
 	$(COPY) .\src\libdxfrw.h $(INCDIR)
 
@@ -132,6 +135,7 @@ $(OBJECTS_DIR)/libdxfrw.o: ./src/libdxfrw.cpp ./src/libdxfrw.h \
 		./src/drw_entities.h \
 		./src/drw_base.h \
 		./src/drw_objects.h \
+		./src/drw_header.h \
 		./src/drw_interface.h \
 		./src/intern/drw_textcodec.h \
 		./src/intern/dxfreader.h \
@@ -161,6 +165,13 @@ $(OBJECTS_DIR)/drw_objects.o: ./src/drw_objects.cpp ./src/drw_objects.h \
 		./src/intern/drw_textcodec.h \
 		./src/intern/dxfwriter.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/drw_objects.o .\src\drw_objects.cpp
+
+$(OBJECTS_DIR)/drw_header.o: ./src/drw_header.cpp ./src/drw_header.h \
+		./src/drw_base.h \
+		./src/intern/dxfreader.h \
+		./src/intern/drw_textcodec.h \
+		./src/intern/dxfwriter.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/drw_header.o .\src\drw_header.cpp
 
 $(OBJECTS_DIR)/drw_entities.o: ./src/drw_entities.cpp ./src/drw_entities.h \
 		./src/drw_base.h \
