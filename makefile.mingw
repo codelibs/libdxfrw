@@ -8,8 +8,8 @@ VERSION       = 0.6.0
 CC            = gcc
 CXX           = g++
 DEFINES       = -DUNICODE
-CFLAGS        = -pipe -O2 $(DEFINES)
-CXXFLAGS      = -pipe -O2 $(DEFINES)
+CFLAGS        = -pipe -O2 -Wall $(DEFINES)
+CXXFLAGS      = -pipe -O2 -Wall $(DEFINES)
 INCPATH       = -I"."
 LINK          =        g++
 LIB_STATIC    =        ar -ru
@@ -130,6 +130,7 @@ dist-bin: all
 
 clean:
 	-$(DEL_FILE) $(OBJECTS_DIR)\libdxfrw.o $(OBJECTS_DIR)\dxfwriter.o $(OBJECTS_DIR)\dxfreader.o $(OBJECTS_DIR)\drw_textcodec.o $(OBJECTS_DIR)\drw_objects.o $(OBJECTS_DIR)\drw_entities.o
+	-$(DEL_FILE) $(OBJECTS_DIR)\libdwgr.o $(OBJECTS_DIR)\dwgbuffer.o $(OBJECTS_DIR)\dwgreader.o $(OBJECTS_DIR)\drw_header.o $(OBJECTS_DIR)\drw_classes.o
 	-$(DEL_FILE) $(DESTDIR)\libdxfrw-dll.a
 	-$(DEL_FILE) $(DESTDIR)\$(TARGET_SHARED)
 	-$(DEL_FILE) $(DESTDIR)\$(TARGET_STATIC)
@@ -166,6 +167,7 @@ $(OBJECTS_DIR)/libdwgr.o: ./src/libdwgr.cpp ./src/libdwgr.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/libdwgr.o .\src\libdwgr.cpp
 
 $(OBJECTS_DIR)/dxfwriter.o: ./src/intern/dxfwriter.cpp ./src/intern/dxfwriter.h \
+		./src/drw_base.h \
 		./src/intern/drw_textcodec.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dxfwriter.o .\src\intern/dxfwriter.cpp
 
@@ -176,6 +178,12 @@ $(OBJECTS_DIR)/dxfreader.o: ./src/intern/dxfreader.cpp ./src/intern/dxfreader.h 
 
 $(OBJECTS_DIR)/dwgreader.o: ./src/intern/dwgreader.cpp ./src/intern/dwgreader.h \
 		./src/drw_base.h \
+		./src/intern/dwgbuffer.h \
+		./src/drw_entities.h \
+		./src/drw_objects.h \
+		./src/drw_header.h \
+		./src/drw_classes.h \
+		./src/drw_interface.h \
 		./src/intern/drw_textcodec.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dwgreader.o .\src\intern/dwgreader.cpp
 
