@@ -14,7 +14,7 @@
 #include "intern/dxfreader.h"
 #include "intern/dxfwriter.h"
 #include "intern/dwgbuffer.h"
-#include "libdwgr.h" //for debug
+#include "intern/drw_dbg.h"
 
 void DRW_Class::parseCode(int code, dxfReader *reader){
     switch (code) {

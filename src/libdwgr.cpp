@@ -17,13 +17,8 @@
 #include <sstream>
 #include "intern/drw_textcodec.h"
 #include "intern/dwgreader.h"
+#include "intern/drw_dbg.h"
 //#include "dxfwriter.h"
-
-#ifdef DRWG_DBG
-//#include <QTextStream>
-//QString pepdbg;
-//QTextStream readLog(&pepdbg);
-#endif
 
 #define FIRSTHANDLE 48
 
@@ -37,6 +32,7 @@
 };*/
 
 dwgR::dwgR(const char* name){
+    DRW_DBGL(DRW_dbg::NONE);
     fileName = name;
     reader = NULL;
 //    writer = NULL;
@@ -48,6 +44,16 @@ dwgR::~dwgR(){
     if (reader != NULL)
         delete reader;
 
+}
+
+void dwgR::setDebug(DRW::DBG_LEVEL lvl){
+    switch (lvl){
+    case DRW::DEBUG:
+        DRW_DBGL(DRW_dbg::DEBUG);
+        break;
+    default:
+        DRW_DBGL(DRW_dbg::NONE);
+    }
 }
 
 bool dwgR::read(DRW_Interface *interface_, bool ext){
@@ -62,9 +68,10 @@ bool dwgR::read(DRW_Interface *interface_, bool ext){
         return isOk;
     }
 
-    char line[6];
+    char line[7];
     filestr.read (line, 6);
     iface = interface_;
+    line[6]='\0';
     DBG("dwgR::read 2\n");
     DBG("dwgR::read line version: ");
     DBG(line);

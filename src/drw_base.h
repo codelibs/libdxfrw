@@ -90,6 +90,11 @@ BAD_READ_TABLES,      /*!< error in tables read process. */
 BAD_READ_ENTITIES     /*!< error in entities read process. */
 };
 
+enum DBG_LEVEL {
+    NONE,
+    DEBUG
+};
+
 //! Special codes for colors
 enum ColorCodes {
     ColorByLayer = 256,

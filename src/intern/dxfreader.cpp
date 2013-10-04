@@ -16,23 +16,11 @@
 #include <sstream>
 #include "dxfreader.h"
 #include "drw_textcodec.h"
-
-#ifdef DRW_DBG
-#include <iostream> //for debug
-#define DBG(a) std::cerr << a
-#else
-#define DBG(a)
-#endif
+#include "intern/drw_dbg.h"
 
 bool dxfReader::readRec(int *codeData, bool skip) {
 //    std::string text;
     int code;
-
-#ifdef DRW_DBG
-    count = count+2; //DBG
-/*    if (count > 10250)
-        DBG("line 10256");*/
-#endif
 
     if (!readCode(&code))
         return false;

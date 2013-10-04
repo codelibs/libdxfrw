@@ -16,13 +16,6 @@
 #include <algorithm>
 #include "dxfwriter.h"
 
-#ifdef DRW_DBG
-#include <iostream> //for debug
-#define DBG(a) std::cerr << a
-#else
-#define DBG(a)
-#endif
-
 //RLZ TODO change std::endl to x0D x0A (13 10)
 /*bool dxfWriter::readRec(int *codeData, bool skip) {
 //    std::string text;

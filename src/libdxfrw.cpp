@@ -18,14 +18,8 @@
 #include "intern/drw_textcodec.h"
 #include "intern/dxfreader.h"
 #include "intern/dxfwriter.h"
+#include "intern/drw_dbg.h"
 #include <assert.h>
-
-#ifdef DRW_DBG
-#include <iostream> //for debug
-#define DBG(a) std::cerr << a
-#else
-#define DBG(a)
-#endif
 
 #define FIRSTHANDLE 48
 
@@ -39,6 +33,7 @@
 };*/
 
 dxfRW::dxfRW(const char* name){
+    DRW_DBGL(DRW_dbg::NONE);
     fileName = name;
     reader = NULL;
     writer = NULL;
@@ -49,6 +44,16 @@ dxfRW::~dxfRW(){
     if (reader != NULL)
         delete reader;
 
+}
+
+void dxfRW::setDebug(DRW::DBG_LEVEL lvl){
+    switch (lvl){
+    case DRW::DEBUG:
+        DRW_DBGL(DRW_dbg::DEBUG);
+        break;
+    default:
+        DRW_DBGL(DRW_dbg::NONE);
+    }
 }
 
 bool dxfRW::read(DRW_Interface *interface_, bool ext){

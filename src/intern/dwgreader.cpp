@@ -17,8 +17,7 @@
 #include <sstream>
 #include "dwgreader.h"
 #include "drw_textcodec.h"
-#include "../libdwgr.h"
-
+#include "intern/drw_dbg.h"
 
 dwgReader::~dwgReader(){
     for (std::map<int, DRW_LType*>::iterator it=ltypemap.begin(); it!=ltypemap.end(); ++it)

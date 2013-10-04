@@ -20,23 +20,6 @@
 #include "drw_classes.h"
 #include "drw_interface.h"
 
-#ifdef DRWG_DBG
-#include <iostream> //for debug
-//#define DBG(a) std::cerr << a
-#include <QTextStream>
-extern QTextStream readLog;
-#define DBG(a) readLog << a
-#define DBGH(a) readLog.setFieldWidth(2); readLog.setPadChar('0'); readLog.setIntegerBase(16); \
-    readLog << a; readLog.setIntegerBase(10); readLog.setFieldWidth(0); readLog.setPadChar(' ');
-#define DBGB(a) readLog.setFieldWidth(8); readLog.setPadChar('0'); readLog.setIntegerBase(2); \
-    readLog << a; readLog.setIntegerBase(10); readLog.setFieldWidth(0); readLog.setPadChar(' ');
-#else
-#define DBG(a)
-#define DBGH(a)
-#define DBGB(a)
-#endif
-
-
 class dwgReader;
 //class dxfWriter;
 
@@ -79,6 +62,7 @@ public:
     DRW::error getError(){return error;}
 //    void setError(DRW::error err){error = err;}
 
+    void setDebug(DRW::DBG_LEVEL lvl);
 //    void addDwgObject(dwgObject *obj);
 
 private:

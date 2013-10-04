@@ -16,7 +16,7 @@
 #include "intern/dxfreader.h"
 #include "intern/dxfwriter.h"
 #include "intern/dwgbuffer.h"
-#include "libdwgr.h"// only for debug
+#include "intern/drw_dbg.h"
 
 //! Base class for tables entries
 /*!
