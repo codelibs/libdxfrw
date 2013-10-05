@@ -38,9 +38,14 @@ SOURCES       = src/libdxfrw.cpp \
 		src/libdwgr.cpp \
 		src/intern/dxfwriter.cpp \
 		src/intern/dxfreader.cpp \
+		src/intern/drw_dbg.cpp \
 		src/intern/drw_textcodec.cpp \
 		src/intern/dwgbuffer.cpp \
+		src/intern/dwgutil.cpp \
 		src/intern/dwgreader.cpp \
+		src/intern/dwgreader15.cpp \
+		src/intern/dwgreader18.cpp \
+		src/intern/dwgreader21.cpp \
 		src/drw_objects.cpp \
 		src/drw_header.cpp \
 		src/drw_classes.cpp \
@@ -49,9 +54,14 @@ OBJECTS       = $(OBJECTS_DIR)/libdxfrw.o \
 		$(OBJECTS_DIR)/libdwgr.o \
 		$(OBJECTS_DIR)/dxfwriter.o \
 		$(OBJECTS_DIR)/dxfreader.o \
+		$(OBJECTS_DIR)/drw_dbg.o \
 		$(OBJECTS_DIR)/drw_textcodec.o \
 		$(OBJECTS_DIR)/dwgbuffer.o \
+		$(OBJECTS_DIR)/dwgutil.o \
 		$(OBJECTS_DIR)/dwgreader.o \
+		$(OBJECTS_DIR)/dwgreader15.o \
+		$(OBJECTS_DIR)/dwgreader18.o \
+		$(OBJECTS_DIR)/dwgreader21.o \
 		$(OBJECTS_DIR)/drw_objects.o \
 		$(OBJECTS_DIR)/drw_header.o \
 		$(OBJECTS_DIR)/drw_classes.o \
@@ -131,6 +141,7 @@ dist-bin: all
 clean:
 	-$(DEL_FILE) $(OBJECTS_DIR)\libdxfrw.o $(OBJECTS_DIR)\dxfwriter.o $(OBJECTS_DIR)\dxfreader.o $(OBJECTS_DIR)\drw_textcodec.o $(OBJECTS_DIR)\drw_objects.o $(OBJECTS_DIR)\drw_entities.o
 	-$(DEL_FILE) $(OBJECTS_DIR)\libdwgr.o $(OBJECTS_DIR)\dwgbuffer.o $(OBJECTS_DIR)\dwgreader.o $(OBJECTS_DIR)\drw_header.o $(OBJECTS_DIR)\drw_classes.o
+	-$(DEL_FILE) $(OBJECTS_DIR)\drw_dbg.o $(OBJECTS_DIR)\dwgutil.o $(OBJECTS_DIR)\dwgreader15.o $(OBJECTS_DIR)\dwgreader18.o $(OBJECTS_DIR)\dwgreader21.o
 	-$(DEL_FILE) $(DESTDIR)\libdxfrw-dll.a
 	-$(DEL_FILE) $(DESTDIR)\$(TARGET_SHARED)
 	-$(DEL_FILE) $(DESTDIR)\$(TARGET_STATIC)
@@ -147,50 +158,94 @@ $(OBJECTS_DIR)/libdxfrw.o: ./src/libdxfrw.cpp ./src/libdxfrw.h \
 		./src/drw_base.h \
 		./src/drw_objects.h \
 		./src/drw_header.h \
-		./src/drw_classes.h \
 		./src/drw_interface.h \
 		./src/intern/drw_textcodec.h \
 		./src/intern/dxfreader.h \
-		./src/intern/dxfwriter.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/libdxfrw.o .\src\libdxfrw.cpp
+		./src/intern/dxfwriter.h \
+		./src/intern/drw_dbg.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/libdxfrw.o ./src/libdxfrw.cpp
 
 $(OBJECTS_DIR)/libdwgr.o: ./src/libdwgr.cpp ./src/libdwgr.h \
 		./src/drw_entities.h \
 		./src/drw_base.h \
 		./src/drw_objects.h \
-		./src/drw_header.h \
 		./src/drw_classes.h \
 		./src/drw_interface.h \
+		./src/drw_header.h \
+		./src/intern/drw_dbg.h \
+		./src/intern/drw_textcodec.h \
+		./src/intern/dwgreader.h \
+		./src/intern/dwgbuffer.h \
+		./src/intern/dwgreader15.h \
+		./src/intern/dwgreader18.h \
+		./src/intern/dwgreader21.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/libdwgr.o ./src/libdwgr.cpp
+
+$(OBJECTS_DIR)/drw_objects.o: ./src/drw_objects.cpp ./src/drw_objects.h \
+		./src/drw_base.h \
+		./src/intern/dxfreader.h \
+		./src/intern/drw_textcodec.h \
+		./src/intern/dxfwriter.h \
+		./src/intern/dwgbuffer.h \
+		./src/intern/drw_dbg.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/drw_objects.o ./src/drw_objects.cpp
+
+$(OBJECTS_DIR)/drw_header.o: ./src/drw_header.cpp ./src/drw_header.h \
+		./src/drw_base.h \
+		./src/intern/dxfreader.h \
+		./src/intern/drw_textcodec.h \
+		./src/intern/dxfwriter.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/drw_header.o ./src/drw_header.cpp
+
+$(OBJECTS_DIR)/drw_entities.o: ./src/drw_entities.cpp ./src/drw_entities.h \
+		./src/drw_base.h \
+		./src/intern/dxfreader.h \
 		./src/intern/drw_textcodec.h \
 		./src/intern/dwgbuffer.h \
-		./src/intern/dwgreader.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/libdwgr.o .\src\libdwgr.cpp
+		./src/intern/drw_dbg.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/drw_entities.o ./src/drw_entities.cpp
+
+$(OBJECTS_DIR)/drw_classes.o: ./src/drw_classes.cpp ./src/drw_classes.h \
+		./src/drw_base.h \
+		./src/intern/dxfreader.h \
+		./src/intern/drw_textcodec.h \
+		./src/intern/dxfwriter.h \
+		./src/intern/dwgbuffer.h \
+		./src/intern/drw_dbg.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/drw_classes.o ./src/drw_classes.cpp
 
 $(OBJECTS_DIR)/dxfwriter.o: ./src/intern/dxfwriter.cpp ./src/intern/dxfwriter.h \
-		./src/drw_base.h \
 		./src/intern/drw_textcodec.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dxfwriter.o .\src\intern/dxfwriter.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dxfwriter.o ./src/intern/dxfwriter.cpp
 
 $(OBJECTS_DIR)/dxfreader.o: ./src/intern/dxfreader.cpp ./src/intern/dxfreader.h \
-		./src/drw_base.h \
-		./src/intern/drw_textcodec.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dxfreader.o .\src\intern/dxfreader.cpp
+		./src/intern/drw_textcodec.h \
+		./src/intern/drw_dbg.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dxfreader.o ./src/intern/dxfreader.cpp
 
 $(OBJECTS_DIR)/dwgreader.o: ./src/intern/dwgreader.cpp ./src/intern/dwgreader.h \
-		./src/drw_base.h \
+		./src/intern/drw_textcodec.h \
 		./src/intern/dwgbuffer.h \
+		./src/drw_base.h \
+		./src/libdwgr.h \
 		./src/drw_entities.h \
 		./src/drw_objects.h \
-		./src/drw_header.h \
 		./src/drw_classes.h \
 		./src/drw_interface.h \
-		./src/intern/drw_textcodec.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dwgreader.o .\src\intern/dwgreader.cpp
+		./src/drw_header.h \
+		./src/intern/drw_dbg.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dwgreader.o ./src/intern/dwgreader.cpp
 
 $(OBJECTS_DIR)/dwgbuffer.o: ./src/intern/dwgbuffer.cpp ./src/intern/dwgbuffer.h \
 		./src/drw_base.h \
+		./src/libdwgr.h \
+		./src/drw_entities.h \
+		./src/drw_objects.h \
+		./src/drw_classes.h \
+		./src/drw_interface.h \
+		./src/drw_header.h \
 		./src/intern/drw_textcodec.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dwgbuffer.o .\src\intern/dwgbuffer.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dwgbuffer.o ./src/intern/dwgbuffer.cpp
 
 $(OBJECTS_DIR)/drw_textcodec.o: ./src/intern/drw_textcodec.cpp ./src/intern/drw_textcodec.h \
 		./src/drw_base.h \
@@ -199,33 +254,63 @@ $(OBJECTS_DIR)/drw_textcodec.o: ./src/intern/drw_textcodec.cpp ./src/intern/drw_
 		./src/intern/drw_cptable936.h \
 		./src/intern/drw_cptable949.h \
 		./src/intern/drw_cptable950.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/drw_textcodec.o .\src\intern/drw_textcodec.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/drw_textcodec.o ./src/intern/drw_textcodec.cpp
 
-$(OBJECTS_DIR)/drw_objects.o: ./src/drw_objects.cpp ./src/drw_objects.h \
-		./src/drw_base.h \
-		./src/intern/dxfreader.h \
+$(OBJECTS_DIR)/drw_dbg.o: ./src/intern/drw_dbg.cpp ./src/intern/drw_dbg.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/drw_dbg.o ./src/intern/drw_dbg.cpp
+
+$(OBJECTS_DIR)/dwgreader21.o: ./src/intern/dwgreader21.cpp ./src/intern/drw_dbg.h \
+		./src/intern/dwgreader21.h \
 		./src/intern/drw_textcodec.h \
-		./src/intern/dxfwriter.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/drw_objects.o .\src\drw_objects.cpp
-
-$(OBJECTS_DIR)/drw_header.o: ./src/drw_header.cpp ./src/drw_header.h \
-		./src/drw_base.h \
-		./src/intern/dxfreader.h \
-		./src/intern/drw_textcodec.h \
-		./src/intern/dxfwriter.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/drw_header.o .\src\drw_header.cpp
-
-$(OBJECTS_DIR)/drw_entities.o: ./src/drw_entities.cpp ./src/drw_entities.h \
-		./src/drw_base.h \
-		./src/intern/dxfreader.h \
-		./src/intern/drw_textcodec.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/drw_entities.o .\src\drw_entities.cpp
-
-$(OBJECTS_DIR)/drw_classes.o: ./src/drw_classes.cpp ./src/drw_classes.h \
-		./src/drw_base.h \
-		./src/intern/dxfreader.h \
-		./src/intern/dxfwriter.h \
 		./src/intern/dwgbuffer.h \
-		./src/intern/drw_textcodec.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/drw_classes.o .\src\drw_classes.cpp
+		./src/drw_base.h \
+		./src/intern/dwgreader.h \
+		./src/libdwgr.h \
+		./src/drw_entities.h \
+		./src/drw_objects.h \
+		./src/drw_classes.h \
+		./src/drw_interface.h \
+		./src/drw_header.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dwgreader21.o ./src/intern/dwgreader21.cpp
+
+$(OBJECTS_DIR)/dwgreader18.o: ./src/intern/dwgreader18.cpp ./src/intern/drw_dbg.h \
+		./src/intern/dwgreader18.h \
+		./src/intern/dwgreader.h \
+		./src/intern/drw_textcodec.h \
+		./src/intern/dwgbuffer.h \
+		./src/drw_base.h \
+		./src/libdwgr.h \
+		./src/drw_entities.h \
+		./src/drw_objects.h \
+		./src/drw_classes.h \
+		./src/drw_interface.h \
+		./src/drw_header.h \
+		./src/intern/dwgutil.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dwgreader18.o ./src/intern/dwgreader18.cpp
+
+$(OBJECTS_DIR)/dwgreader15.o: ./src/intern/dwgreader15.cpp ./src/intern/drw_dbg.h \
+		./src/intern/dwgreader15.h \
+		./src/intern/drw_textcodec.h \
+		./src/intern/dwgbuffer.h \
+		./src/drw_base.h \
+		./src/intern/dwgreader.h \
+		./src/libdwgr.h \
+		./src/drw_entities.h \
+		./src/drw_objects.h \
+		./src/drw_classes.h \
+		./src/drw_interface.h \
+		./src/drw_header.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dwgreader15.o ./src/intern/dwgreader15.cpp
+
+$(OBJECTS_DIR)/dwgutil.o: ./src/intern/dwgutil.cpp ./src/intern/drw_dbg.h \
+		./src/intern/dwgutil.h \
+		./src/drw_base.h \
+		./src/libdwgr.h \
+		./src/drw_entities.h \
+		./src/drw_objects.h \
+		./src/drw_classes.h \
+		./src/drw_interface.h \
+		./src/drw_header.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o $(OBJECTS_DIR)/dwgutil.o ./src/intern/dwgutil.cpp
+
 

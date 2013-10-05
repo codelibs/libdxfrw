@@ -15,10 +15,12 @@
 #include <fstream>
 #include <algorithm>
 #include <sstream>
+#include "intern/drw_dbg.h"
 #include "intern/drw_textcodec.h"
 #include "intern/dwgreader.h"
-#include "intern/drw_dbg.h"
-//#include "dxfwriter.h"
+#include "intern/dwgreader15.h"
+#include "intern/dwgreader18.h"
+#include "intern/dwgreader21.h"
 
 #define FIRSTHANDLE 48
 
@@ -81,7 +83,7 @@ bool dwgR::read(DRW_Interface *interface_, bool ext){
         version = DRW::AC1006;
     else if (strcmp(line, "AC1009") == 0) {
         version = DRW::AC1009;
-//        reader = new dwgReader21(&filestr, this);
+//        reader = new dwgReader09(&filestr, this);
     }else if (strcmp(line, "AC1012") == 0){
         version = DRW::AC1012;
         reader = new dwgReader15(&filestr, this);
@@ -93,13 +95,13 @@ bool dwgR::read(DRW_Interface *interface_, bool ext){
         reader = new dwgReader15(&filestr, this);
     } else if (strcmp(line, "AC1018") == 0){
         version = DRW::AC1018;
-//        reader = new dwgReader18(&filestr, this);
+        reader = new dwgReader18(&filestr, this);
     } else if (strcmp(line, "AC1021") == 0) {
         version = DRW::AC1021;
-//        reader = new dwgReader21(&filestr, this);
+        reader = new dwgReader21(&filestr, this);
     } else if (strcmp(line, "AC1024") == 0) {
         version = DRW::AC1024;
-//        reader = new dwgReader21(&filestr, this);
+//        reader = new dwgReader24(&filestr, this);
     } else
         version = DRW::UNKNOWNV;
 
@@ -139,10 +141,10 @@ bool dwgR::processDwg() {
         ret = ret2;
     }
 
-    ret = reader->readDwgObjectOffsets();
-    if (!ret) {
+    ret2 = reader->readDwgObjectOffsets();
+    if (ret && !ret2) {
         error = DRW::BAD_READ_OFFSETS;
-//        return ret;
+        ret = ret2;
     }
 
     ret2 = reader->readDwgTables();

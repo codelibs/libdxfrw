@@ -301,11 +301,20 @@ double dwgBuffer::getRawDouble(){
     return nOffset;
 }
 
-/**Reads raw int 32 bits little-endian order, returns a unsigned int (RS) **/
+/**Reads raw int 32 bits little-endian order, returns a unsigned int (RL) **/
 duint32 dwgBuffer::getRawLong32(){
     duint16 tmp1 = getRawShort16();
     duint16 tmp2 = getRawShort16();
     duint32 ret = (tmp2 << 16) | (tmp1 & 0x0000FFFF);
+
+    return ret;
+}
+
+/**Reads raw int 64 bits little-endian order, returns a unsigned long long (RLL) **/
+duint64 dwgBuffer::getRawLong64(){
+    duint32 tmp1 = getRawLong32();
+    duint64 tmp2 = getRawLong32();
+    duint64 ret = (tmp2 << 32) | (tmp1 & 0x00000000FFFFFFFF);
 
     return ret;
 }
@@ -534,7 +543,6 @@ duint16 dwgBuffer::crc8(duint16 dx,dint32 start,dint32 end){
   }
   return(dx);
 }
-
 
 /*std::string dwgBuffer::getBytes(int size){
     char buffer[size];

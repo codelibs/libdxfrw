@@ -96,6 +96,7 @@ public:
     duint16 getRawShort16();  //RS
     double getRawDouble(); //RD
     duint32 getRawLong32();   //RL
+    duint64 getRawLong64();   //RLL
     //2RD ?
     //3RD ?
     dint32 getModularChar(); //MC

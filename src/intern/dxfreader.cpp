@@ -16,7 +16,7 @@
 #include <sstream>
 #include "dxfreader.h"
 #include "drw_textcodec.h"
-#include "intern/drw_dbg.h"
+#include "drw_dbg.h"
 
 bool dxfReader::readRec(int *codeData, bool skip) {
 //    std::string text;

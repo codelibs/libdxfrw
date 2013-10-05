@@ -82,32 +82,4 @@ protected:
     DRW_TextCodec decoder;
 };
 
-class dwgReader15 : public dwgReader {
-public:
-    dwgReader15(std::ifstream *stream, dwgR *p):dwgReader(stream, p){ }
-    virtual ~dwgReader15() {
-        //RLZ: clear & destroy ltmap;
-    }
-    bool readFileHeader();
-    //RLZ todo    bool readDwgHeader();
-    //RLZ todo    bool readDwgClasses();
-    bool readDwgClasses();
-    bool readDwgObjectOffsets();
-    bool readDwgTables();
-    bool readDwgEntity(objHandle& obj, DRW_Interface& intfa);
-};
-
-class dwgReader18 : public dwgReader {
-public:
-    dwgReader18(std::ifstream *stream, dwgR *p):dwgReader(stream, p){ }
-    virtual ~dwgReader18(){}
-    bool readFileHeader();
-    //RLZ todo    bool readDwgHeader();
-    //RLZ todo    bool readDwgClasses();
-    bool readDwgClasses(){return false;}
-    bool readDwgObjectOffsets(){return false;}
-    bool readDwgTables(){return false;}
-    bool readDwgEntity(objHandle& obj, DRW_Interface& intfa);
-};
-
 #endif // DWGREADER_H
