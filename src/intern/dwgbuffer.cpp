@@ -319,7 +319,25 @@ duint64 dwgBuffer::getRawLong64(){
     return ret;
 }
 
-/**Reads modular int, char based, compresed form, little-endian order, returns a unsigned int (MC) **/
+/**Reads modular unsigner int, char based, compresed form, little-endian order, returns a unsigned int (U-MC) **/
+duint32 dwgBuffer::getUModularChar(){
+    std::vector<dint8> buffer;
+    dint32 result =0;
+    for (int i=0; i<4;i++){
+        duint8 b= getRawChar8();
+        buffer.push_back(b & 0x7F);
+        if (! (b & 0x80))
+            break;
+    }
+    int offset = 0;
+    for (unsigned int i=0; i<buffer.size();i++){
+        result += buffer[i] << offset;
+        offset +=7;
+    }
+    return result;
+}
+
+/**Reads modular int, char based, compresed form, little-endian order, returns a signed int (MC) **/
 dint32 dwgBuffer::getModularChar(){
     bool negative = false;
     std::vector<dint8> buffer;

@@ -99,6 +99,7 @@ public:
     duint64 getRawLong64();   //RLL
     //2RD ?
     //3RD ?
+    duint32 getUModularChar(); //UMC, unsigned for offsets in 1015
     dint32 getModularChar(); //MC
     dint32 getModularShort(); //MS
     dwgHandle getHandle(); //MS

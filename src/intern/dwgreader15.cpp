@@ -180,7 +180,7 @@ bool dwgReader15::readDwgObjectOffsets() {
             //read data
             while(buff.getPosition()< size){
                 pppp = buff.getPosition();
-                lastHandle += buff.getModularChar();
+                lastHandle += buff.getUModularChar();
                 DBG("object map lastHandle= "); DBG(lastHandle); DBG("\n");
                 lastLoc += buff.getModularChar();
                 DBG("object map lastLoc= "); DBG(lastLoc); DBG("\n");
