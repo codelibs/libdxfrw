@@ -14,14 +14,19 @@
 #define DRW_DBG_H
 
 #include <string>
+#include <iostream>
+//#include <iomanip>
 
 #define DRW_DBGL(a) DRW_dbg::getInstance()->setLevel(a)
 #define DRW_DBG(a) DRW_dbg::getInstance()->print(a)
 #define DRW_DBGH(a) DRW_dbg::getInstance()->printH(a)
 #define DRW_DBGB(a) DRW_dbg::getInstance()->printB(a)
 
+//change to DRW_DBG
 #define DBG(a) DRW_dbg::getInstance()->print(a)
 #define DBGH(a) DRW_dbg::getInstance()->printH(a)
+
+class print_none;
 
 class DRW_dbg {
 public:
@@ -29,16 +34,19 @@ public:
         NONE,
         DEBUG
     };
-    void setLevel(LEVEL lvl){level = lvl;}
+    void setLevel(LEVEL lvl);
     static DRW_dbg *getInstance();
     void print(std::string s);
-    void print(int i);
+//    void print(long long int i);
+    void print(double d);
     void printH(int i);
     void printB(int i);
 private:
-    DRW_dbg(){level = NONE;}
+    DRW_dbg();
     static DRW_dbg *instance;
     LEVEL level;
+    std::ios_base::fmtflags flags;
+    print_none* prClass;
 };
 
 

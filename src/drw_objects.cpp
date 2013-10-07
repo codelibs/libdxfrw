@@ -406,7 +406,7 @@ bool DRW_LType::parseDwg(DRW::Version version, dwgBuffer *buf){
     length = buf->getBitDouble();
     DBG(" length: "); DBG(length);
     char align = buf->getRawChar8();
-    DBG(" align: "); DBG(align);
+    DBG(" align: "); DBG(std::string(&align, 1));
     size = buf->getRawChar8();
     DBG(" num dashes, size: "); DBG(size);
     DBG("\n    dashes:\n");
