@@ -19,20 +19,26 @@ DRW_dbg *DRW_dbg::instance= NULL;
 /*********private clases*************/
 class print_none {
 public:
-    virtual void print(std::string s){(void)s;}
-    virtual void print(double d){(void)d;}
+    virtual void printS(std::string s){(void)s;}
+    virtual void printI(long long int i){(void)i;}
+    virtual void printUI(long long unsigned int i){(void)i;}
+    virtual void printD(double d){(void)d;}
     virtual void printH(int i){(void)i;}
     virtual void printB(int i){(void)i;}
     print_none(){}
+    virtual ~print_none(){}
 };
 
 class print_debug : public print_none {
 public:
-    virtual void print(std::string s);
-    virtual void print(double d);
+    virtual void printS(std::string s);
+    virtual void printI(long long int i);
+    virtual void printUI(long long unsigned int i);
+    virtual void printD(double d);
     virtual void printH(int i);
     virtual void printB(int i);
     print_debug();
+    virtual ~print_debug(){}
 private:
     std::ios_base::fmtflags flags;
 };
@@ -64,11 +70,31 @@ void DRW_dbg::setLevel(LEVEL lvl){
 }
 
 void DRW_dbg::print(std::string s){
-    prClass->print(s);
+    prClass->printS(s);
+}
+
+void DRW_dbg::print(int i){
+    prClass->printI(i);
+}
+
+void DRW_dbg::print(unsigned int i){
+    prClass->printUI(i);
+}
+
+void DRW_dbg::print(long long int i){
+    prClass->printI(i);
+}
+
+void DRW_dbg::print(long unsigned int i){
+    prClass->printUI(i);
+}
+
+void DRW_dbg::print(long long unsigned int i){
+    prClass->printUI(i);
 }
 
 void DRW_dbg::print(double d){
-    prClass->print(d);
+    prClass->printD(d);
 }
 
 void DRW_dbg::printH(int i){
@@ -83,12 +109,20 @@ print_debug::print_debug(){
     flags = std::cerr.flags();
 }
 
-void print_debug::print(std::string s){
+void print_debug::printS(std::string s){
     std::cerr << s;
 }
 
-void print_debug::print(double d){
-    std::cerr << d;
+void print_debug::printI(long long int i){
+    std::cerr << i;
+}
+
+void print_debug::printUI(long long unsigned int i){
+    std::cerr << i;
+}
+
+void print_debug::printD(double d){
+    std::cerr << std::fixed << d;
 }
 
 void print_debug::printH(int i){

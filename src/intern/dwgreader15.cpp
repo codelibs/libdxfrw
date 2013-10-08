@@ -181,6 +181,7 @@ bool dwgReader15::readDwgObjectOffsets() {
             while(buff.getPosition()< size){
                 pppp = buff.getPosition();
                 lastHandle += buff.getUModularChar();
+//                lastHandle += buff.getModularChar();
                 DBG("object map lastHandle= "); DBG(lastHandle); DBG("\n");
                 lastLoc += buff.getModularChar();
                 DBG("object map lastLoc= "); DBG(lastLoc); DBG("\n");
@@ -349,7 +350,7 @@ bool dwgReader15::readDwgTables() {
     //parse blocks records
     std::map<int, DRW_Block*> tmpBlockmap;
     for (std::list<objHandle>::iterator it=BlockRecordMap.begin(); it != BlockRecordMap.end(); ++it){
-        DBG("BlockMap map Handle= "); DBG(it->handle); DBG(" "); DBG(it->loc); DBG("\n");
+        DBG("BlockMap map Handle= "); DBG(it->handle); DBG(" Location: "); DBG(it->loc); DBG("\n");
         buf->setPosition(it->loc);
         int size = buf->getModularShort();
         char byteStr[size];
