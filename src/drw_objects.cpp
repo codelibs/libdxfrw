@@ -54,7 +54,7 @@ DBG("\n***************************** parsing table entry ***********************
     dwgHandle ho = buf->getHandle();
     handle = ho.ref;
     DBG("TableEntry Handle: "); DBG(ho.code); DBG(".");
-    DBG(ho.size); DBG("."); DBG(ho.ref);
+    DBG(ho.size); DBG("."); DBGH(ho.ref);
     dint16 extDataSize = buf->getBitShort(); //BS
     DBG(" ext data size: "); DBG(extDataSize);
     while (extDataSize>0 && buf->isGood()) {

@@ -182,7 +182,7 @@ bool dwgReader15::readDwgObjectOffsets() {
                 pppp = buff.getPosition();
                 lastHandle += buff.getUModularChar();
 //                lastHandle += buff.getModularChar();
-                DBG("object map lastHandle= "); DBG(lastHandle); DBG("\n");
+                DBG("object map lastHandle= "); DBGH(lastHandle); DBG("\n");
                 lastLoc += buff.getModularChar();
                 DBG("object map lastLoc= "); DBG(lastLoc); DBG("\n");
                 ObjectMap.push_back(objHandle(0, lastHandle, lastLoc));
@@ -203,7 +203,7 @@ bool dwgReader15::readDwgObjectOffsets() {
     //read object types
     DBG("readDwgObjects() Total objects: "); DBG(ObjectMap.size()); DBG("\n");
     for (std::list<objHandle>::iterator it=ObjectMap.begin(); it != ObjectMap.end(); ++it){
-        DBG("object map Handle= "); DBG(it->handle); DBG(" "); DBG(it->loc); DBG("\n");
+        DBG("object map Handle= "); DBGH(it->handle); DBG(" "); DBG(it->loc); DBG("\n");
         ret = buf->setPosition(it->loc); //loc == offset
         if (!ret){
             ret = false;
@@ -264,7 +264,7 @@ bool dwgReader15::readDwgTables() {
     //parse object controls
     //parse linetypes
     for (std::list<objHandle>::iterator it=LineTypeMap.begin(); it != LineTypeMap.end(); ++it){
-        DBG("LineTypeMap map Handle= "); DBG(it->handle); DBG(" "); DBG(it->loc); DBG("\n");
+        DBG("LineTypeMap map Handle= "); DBGH(it->handle); DBG(" "); DBG(it->loc); DBG("\n");
         DRW_LType *lt = new DRW_LType();
         buf->setPosition(it->loc);
         int size = buf->getModularShort();
@@ -279,7 +279,7 @@ bool dwgReader15::readDwgTables() {
 
     //parse layers
     for (std::list<objHandle>::iterator it=LayerMap.begin(); it != LayerMap.end(); ++it){
-        DBG("LayerMap map Handle= "); DBG(it->handle); DBG(" "); DBG(it->loc); DBG("\n");
+        DBG("LayerMap map Handle= "); DBGH(it->handle); DBG(" "); DBG(it->loc); DBG("\n");
         DRW_Layer *la = new DRW_Layer();
         buf->setPosition(it->loc);
         int size = buf->getModularShort();
@@ -294,7 +294,7 @@ bool dwgReader15::readDwgTables() {
 
     //parse text styles
     for (std::list<objHandle>::iterator it=StyleMap.begin(); it != StyleMap.end(); ++it){
-        DBG("StyleMap map Handle= "); DBG(it->handle); DBG(" "); DBG(it->loc); DBG("\n");
+        DBG("StyleMap map Handle= "); DBGH(it->handle); DBG(" "); DBG(it->loc); DBG("\n");
         DRW_Textstyle *la = new DRW_Textstyle();
         buf->setPosition(it->loc);
         int size = buf->getModularShort();
@@ -309,7 +309,7 @@ bool dwgReader15::readDwgTables() {
 
     //parse dimstyles
     for (std::list<objHandle>::iterator it=DimstyleMap.begin(); it != DimstyleMap.end(); ++it){
-        DBG("DimstyleMap map Handle= "); DBG(it->handle); DBG(" "); DBG(it->loc); DBG("\n");
+        DBG("DimstyleMap map Handle= "); DBGH(it->handle); DBG(" "); DBG(it->loc); DBG("\n");
         DRW_Dimstyle *la = new DRW_Dimstyle();
         buf->setPosition(it->loc);
         int size = buf->getModularShort();
@@ -324,7 +324,7 @@ bool dwgReader15::readDwgTables() {
 
     //parse vports
     for (std::list<objHandle>::iterator it=VportMap.begin(); it != VportMap.end(); ++it){
-        DBG("VportMap map Handle= "); DBG(it->handle); DBG(" "); DBG(it->loc); DBG("\n");
+        DBG("VportMap map Handle= "); DBGH(it->handle); DBG(" "); DBG(it->loc); DBG("\n");
         DRW_Vport *la = new DRW_Vport();
         buf->setPosition(it->loc);
         int size = buf->getModularShort();
@@ -350,7 +350,7 @@ bool dwgReader15::readDwgTables() {
     //parse blocks records
     std::map<int, DRW_Block*> tmpBlockmap;
     for (std::list<objHandle>::iterator it=BlockRecordMap.begin(); it != BlockRecordMap.end(); ++it){
-        DBG("BlockMap map Handle= "); DBG(it->handle); DBG(" Location: "); DBG(it->loc); DBG("\n");
+        DBG("BlockMap map Handle= "); DBGH(it->handle); DBG(" Location: "); DBG(it->loc); DBG("\n");
         buf->setPosition(it->loc);
         int size = buf->getModularShort();
         char byteStr[size];
