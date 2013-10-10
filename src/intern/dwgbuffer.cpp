@@ -402,7 +402,7 @@ dwgHandle dwgBuffer::getHandle(){ //H
     hl.size = data & 0x0F;
     hl.ref=0;
     for (int i=0; i< hl.size;i++){
-        hl.ref = (hl.ref << (8*i)) | getRawChar8();
+        hl.ref = (hl.ref << 8) | getRawChar8();
     }
     return hl;
 }

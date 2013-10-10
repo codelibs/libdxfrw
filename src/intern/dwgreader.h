@@ -21,14 +21,14 @@
 
 class objHandle{
 public:
-    objHandle(dint32 t, dint32 h, dint32 l){
+    objHandle(duint32 t, duint32 h, duint32 l){
         type = t;
         handle = h;
         loc = l;
     }
-    dint32 type;
-    dint32 handle;
-    dint32 loc;
+    duint32 type;
+    duint32 handle;
+    duint32 loc;
 };
 
 class dwgReader {

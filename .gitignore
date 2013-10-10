@@ -4,7 +4,10 @@ m4/
 autom4te.cache/
 libdxfrw.pro*
 Makefile
+*.o
+*.lo
 *.a
+*.la
 *so
 *.dll
 *~
@@ -15,5 +18,5 @@ Makefile
 .deps
 config.log
 config.status
-libdxfrw.pc
+libdxfrw*.pc
 libtool
