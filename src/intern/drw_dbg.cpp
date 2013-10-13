@@ -69,6 +69,10 @@ void DRW_dbg::setLevel(LEVEL lvl){
     }
 }
 
+DRW_dbg::LEVEL DRW_dbg::getLevel(){
+    return level;
+}
+
 void DRW_dbg::print(std::string s){
     prClass->printS(s);
 }

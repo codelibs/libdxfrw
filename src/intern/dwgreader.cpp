@@ -94,3 +94,29 @@ std::string dwgReader::findTableName(DRW::TTYPE table, dint32 handle){
     return name;
 }
 
+bool DRW_ObjControl::parseDwg(DRW::Version version, dwgBuffer *buf){
+
+    bool ret = DRW_TableEntry::parseDwg(version, buf);
+    DBG("\n***************************** parsing object control entry *********************************************\n");
+    if (!ret)
+        return ret;
+    int numEntries = buf->getBitLong();
+    DBG(" num entries: "); DBG(numEntries); DBG("\n");
+
+    dwgHandle XDicObjH = buf->getHandle();
+    DBG(" XDicObj control Handle: "); DBG(XDicObjH.code); DBG(".");
+    DBG(XDicObjH.size); DBG("."); DBG(XDicObjH.ref); DBG("\n");
+    DBG("Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
+
+    dwgHandle objectH = buf->getHandle();
+    numEntries = ((oType == 48) || (oType == 56)) ? (numEntries +2) : numEntries;
+
+    for (int i =0; i< numEntries; i++){
+        objectH = buf->getHandle();
+        DBG(" objectH Handle: "); DBG(objectH.code); DBG(".");
+        DBG(objectH.size); DBG("."); DBGH(objectH.ref); DBG("\n");
+        DBG("Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
+    }
+    return buf->isGood();
+}
+

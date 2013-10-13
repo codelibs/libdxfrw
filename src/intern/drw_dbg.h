@@ -17,7 +17,8 @@
 #include <iostream>
 //#include <iomanip>
 
-#define DRW_DBGL(a) DRW_dbg::getInstance()->setLevel(a)
+#define DRW_DBGSL(a) DRW_dbg::getInstance()->setLevel(a)
+#define DRW_DBGGL DRW_dbg::getInstance()->getLevel()
 #define DRW_DBG(a) DRW_dbg::getInstance()->print(a)
 #define DRW_DBGH(a) DRW_dbg::getInstance()->printH(a)
 #define DRW_DBGB(a) DRW_dbg::getInstance()->printB(a)
@@ -35,6 +36,7 @@ public:
         DEBUG
     };
     void setLevel(LEVEL lvl);
+    LEVEL getLevel();
     static DRW_dbg *getInstance();
     void print(std::string s);
     void print(int i);

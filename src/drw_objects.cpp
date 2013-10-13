@@ -47,7 +47,7 @@ bool DRW_TableEntry::parseDwg(DRW::Version version, dwgBuffer *buf){
 //    duint8 ltFlags; //BB
 //    duint8 plotFlags; //BB
 DBG("\n***************************** parsing table entry *********************************************\n");
-    /*dint16 oType =*/ buf->getBitShort();
+    oType = buf->getBitShort();
     if (version > DRW::AC1014) {//2000+
         objSize = buf->getRawLong32();  //RL 32bits size in bits
     }

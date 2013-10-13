@@ -21,36 +21,6 @@
 #include "drw_interface.h"
 
 class dwgReader;
-//class dxfWriter;
-
-/*class dwgObject {
-public:
-    enum Type {
-        NONE,
-        OBJ,
-        ENT
-    };
-    dwgObject(){
-        type = NONE;
-        ent = NULL;
-        obj = NULL;
-    }
-    dwgObject(dwgObject::Type t){
-        type = t;
-        ent = NULL;
-        obj = NULL;
-    }
-    ~dwgObject(){
-        if (ent != NULL)
-            delete ent;
-        if (obj != NULL)
-            delete obj;
-    }
-
-    DRW_Entity *ent;
-    DRW_TableEntry *obj;
-    dwgObject::Type type;
-};*/
 
 class dwgR {
 public:
@@ -60,52 +30,11 @@ public:
     bool read(DRW_Interface *interface_, bool ext);
     DRW::Version getVersion(){return version;}
     DRW::error getError(){return error;}
-//    void setError(DRW::error err){error = err;}
 
     void setDebug(DRW::DBG_LEVEL lvl);
-//    void addDwgObject(dwgObject *obj);
 
 private:
     bool processDwg();
-//    void processLine(const DRW_Line *line);
-
-public:
-/*    bool processHeader();
-    bool processTables();
-    bool processBlocks();
-    bool processBlock();
-    bool processEntities(bool isblock);
-    bool processObjects();
-
-    bool processLType();
-    bool processLayer();
-    bool processDimStyle();
-    bool processTextStyle();
-    bool processVports();
-
-    bool processPoint();
-    bool processRay();
-    bool processXline();
-    bool processCircle();
-    bool processArc();
-    bool processEllipse();
-    bool processTrace();
-    bool processSolid();
-    bool processInsert();
-    bool processLWPolyline();
-    bool processPolyline();
-    bool processVertex(DRW_Polyline* pl);
-    bool processText();
-    bool processMText();
-    bool processHatch();
-    bool processSpline();
-    bool process3dface();
-    bool processViewport();
-    bool processImage();
-    bool processImageDef();
-    bool processDimension();
-    bool processLeader();*/
-
 private:
     DRW::Version version;
     DRW::error error;
@@ -114,20 +43,6 @@ private:
     std::string codePage;
     DRW_Interface *iface;
     dwgReader *reader;
-//    dwgWriter *writer;
-
-
-/*    DRW_Header header;
-//    int section;
-    string nextentity;
-    int entCount;
-    bool wlayer0;
-    bool dimstyleStd;
-    bool writingBlock;
-    std::map<std::string,int> blockMap;
-    std::vector<DRW_ImageDef*> imageDef;*/  /*!< imageDef list */
-
-//    int currHandle;
 
 };
 

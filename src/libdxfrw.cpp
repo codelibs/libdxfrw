@@ -33,7 +33,7 @@
 };*/
 
 dxfRW::dxfRW(const char* name){
-    DRW_DBGL(DRW_dbg::NONE);
+    DRW_DBGSL(DRW_dbg::NONE);
     fileName = name;
     reader = NULL;
     writer = NULL;
@@ -49,10 +49,10 @@ dxfRW::~dxfRW(){
 void dxfRW::setDebug(DRW::DBG_LEVEL lvl){
     switch (lvl){
     case DRW::DEBUG:
-        DRW_DBGL(DRW_dbg::DEBUG);
+        DRW_DBGSL(DRW_dbg::DEBUG);
         break;
     default:
-        DRW_DBGL(DRW_dbg::NONE);
+        DRW_DBGSL(DRW_dbg::NONE);
     }
 }
 

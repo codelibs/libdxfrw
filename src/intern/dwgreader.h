@@ -82,4 +82,37 @@ protected:
     DRW_TextCodec decoder;
 };
 
+
+//! Class to handle dwg obj control entries
+/*!
+*  Class to handle dwg obj control entries
+*  @author Rallaz
+*/
+class DRW_ObjControl : public DRW_TableEntry {
+public:
+    DRW_ObjControl() { reset();}
+
+    void reset(){
+//        tType = DRW::LTYPE;
+//        desc = "";
+//        size = 0;
+//        length = 0.0;
+//        pathIdx = 0;
+    }
+
+//    void parseCode(int code, dxfReader *reader);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf);
+//    void update();
+
+public:
+//    UTF8STRING desc;           /*!< descriptive string, code 3 */
+//    int size;                 /*!< element number, code 73 */
+//    double length;            /*!< total length of pattern, code 40 */
+//    std::vector<double> path;  /*!< trace, point or space length sequence, code 49 */
+private:
+//    int pathIdx;
+};
+
+
+
 #endif // DWGREADER_H

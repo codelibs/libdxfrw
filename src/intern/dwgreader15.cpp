@@ -262,6 +262,28 @@ bool dwgReader15::readDwgTables() {
             it++;
     }
     //parse object controls
+    if (DRW_DBGGL == DRW_dbg::DEBUG){
+        DRW_ObjControl *oc = new DRW_ObjControl();
+        for (std::list<objHandle>::iterator it=ObjectControlMap.begin(); it != ObjectControlMap.end(); ++it){
+            buf->setPosition(it->loc);
+            int size = buf->getModularShort();
+            char byteStr[size];
+            buf->getBytes(byteStr, size);
+            dwgBuffer buff(byteStr, size, &decoder);
+            if (it->type == 0x30){ DBG("Block Control Obj Handle= "); }
+            else if (it->type == 0x32){ DBG("Layer Control Obj Handle= "); }
+            else if (it->type == 0x34){ DBG("Style Control Obj Handle= "); }
+            else if (it->type == 0x38){ DBG("LType Control Obj Handle= "); }
+            else if (it->type == 0x3C){ DBG("View Control Obj Handle= "); }
+            else if (it->type == 0x3E){ DBG("Ucs Control Obj Handle= "); }
+            else if (it->type == 0x40){ DBG("Vport Control Obj Handle= "); }
+            else if (it->type == 0x42){ DBG("AppId Control Obj Handle= "); }
+            else if (it->type == 0x44){ DBG("DimStyle Control Obj Handle= "); }
+            else if (it->type == 0x46){ DBG("VP Ent Header Control Obj Handle= "); }
+            DBG("ObjectControlMap map Handle= "); DBGH(it->handle); DBG(" "); DBG(it->loc); DBG("\n");
+            ret2 = oc->parseDwg(version, &buff);
+        }
+    }
     //parse linetypes
     for (std::list<objHandle>::iterator it=LineTypeMap.begin(); it != LineTypeMap.end(); ++it){
         DBG("LineTypeMap map Handle= "); DBGH(it->handle); DBG(" "); DBG(it->loc); DBG("\n");

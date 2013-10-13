@@ -66,6 +66,8 @@ public:
     int flags;                 /*!< Flags relevant to entry, code 70 */
     //***** dwg parse ********/
     dint32 numReactors; //
+protected:
+    dint16 oType;
 };
 
 

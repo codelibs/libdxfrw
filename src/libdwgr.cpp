@@ -34,7 +34,7 @@
 };*/
 
 dwgR::dwgR(const char* name){
-    DRW_DBGL(DRW_dbg::NONE);
+    DRW_DBGSL(DRW_dbg::NONE);
     fileName = name;
     reader = NULL;
 //    writer = NULL;
@@ -42,6 +42,7 @@ dwgR::dwgR(const char* name){
     version = DRW::UNKNOWNV;
     error = DRW::BAD_NONE;
 }
+
 dwgR::~dwgR(){
     if (reader != NULL)
         delete reader;
@@ -51,10 +52,10 @@ dwgR::~dwgR(){
 void dwgR::setDebug(DRW::DBG_LEVEL lvl){
     switch (lvl){
     case DRW::DEBUG:
-        DRW_DBGL(DRW_dbg::DEBUG);
+        DRW_DBGSL(DRW_dbg::DEBUG);
         break;
     default:
-        DRW_DBGL(DRW_dbg::NONE);
+        DRW_DBGSL(DRW_dbg::NONE);
     }
 }
 
