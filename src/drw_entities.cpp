@@ -1062,7 +1062,7 @@ bool DRW_LWPolyline::parseDwg(DRW::Version version, dwgBuffer *buf){
         //add bulges
         for (unsigned int i = 0; i < bulgesnum; i++){
             double bulge = buf->getBitDouble();
-            if (vertlist.size()< i)
+            if (vertlist.size()> i)
                 vertlist.at(i)->bulge = bulge;
         }
         //add vertexId
