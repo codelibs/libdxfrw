@@ -32,8 +32,8 @@ bool dwgReader21::readFileHeader() {
     DBG("byte at 0x0C= "); DBG(buf->getRawChar8()); DBG("\n");
     seekerImageData = buf->getRawLong32();
     DBG("seekerImageData= "); DBG(seekerImageData); DBG("\n");
-    DBG("app writer version= "); DBGH(buf->getRawChar8()); DBG("\n");
-    DBG("app writer maintenance version= "); DBGH(buf->getRawChar8()); DBG("\n");
+    DBG("app writer version= "); DRW_DBGH(buf->getRawChar8()); DBG("\n");
+    DBG("app writer maintenance version= "); DRW_DBGH(buf->getRawChar8()); DBG("\n");
     duint16 cp = buf->getRawShort16();
     DBG("codepage= "); DBG(cp); DBG("\n");
     if (cp == 30)
@@ -43,16 +43,16 @@ bool dwgReader21::readFileHeader() {
     DBG("UNKNOUWN SECTION= "); DBG(uk); DBG("\n");
     DBG("UNKNOUWN SECTION 3b= "); DBG(buf->getRawChar8()); DBG("\n");
     duint32 secType = buf->getRawLong32();
-    DBG("security type flag= "); DBGH(secType); DBG("\n");
+    DBG("security type flag= "); DRW_DBGH(secType); DBG("\n");
     /* UNKNOUWN2 SECTION 4 bytes*/
     DBG("UNKNOUWN SECTION 4bytes= "); DBG(buf->getRawLong32()); DBG("\n");
 
-    DBG("Summary info address= "); DBGH(buf->getRawLong32()); DBG("\n");
-    DBG("VBA project address= "); DBGH(buf->getRawLong32()); DBG("\n");
-    DBG("0x00000080 32b= "); DBGH(buf->getRawLong32()); DBG("\n");
-    DBG("App info address= "); DBGH(buf->getRawLong32()); DBG("\n");
+    DBG("Summary info address= "); DRW_DBGH(buf->getRawLong32()); DBG("\n");
+    DBG("VBA project address= "); DRW_DBGH(buf->getRawLong32()); DBG("\n");
+    DBG("0x00000080 32b= "); DRW_DBGH(buf->getRawLong32()); DBG("\n");
+    DBG("App info address= "); DRW_DBGH(buf->getRawLong32()); DBG("\n");
     //current position are 0x30 from here to 0x80 are undocumented
-    DBG("Another address? = "); DBGH(buf->getRawLong32()); DBG("\n");
+    DBG("Another address? = "); DRW_DBGH(buf->getRawLong32()); DBG("\n");
 
     if (! buf->setPosition(0x80))
         return false;
@@ -61,7 +61,7 @@ bool dwgReader21::readFileHeader() {
 //    dwgBuffer buff(byteStr, 0x400, &decoder);
     int j = 0;
     for (int i=0; i<0x400; i++){
-        DBGH( (unsigned char)byteStr[i]);
+        DRW_DBGH( (unsigned char)byteStr[i]);
         if (j== 15){
             j=0;
             DBG("\n");

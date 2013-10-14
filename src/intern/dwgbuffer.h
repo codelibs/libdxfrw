@@ -102,8 +102,9 @@ public:
     duint32 getUModularChar(); //UMC, unsigned for offsets in 1015
     dint32 getModularChar(); //MC
     dint32 getModularShort(); //MS
-    dwgHandle getHandle(); //MS
-    //H, T, TU, TV, X, U, SN,
+    dwgHandle getHandle(); //H
+    dwgHandle getHardHandle(duint32 href); //H converted to hard
+    //T, TU, TV, X, U, SN,
     std::string getVariableText();
     std::string getVariableUtf8Text();
     DRW_Coord getExtrusion(bool b_R2000_style); //BE

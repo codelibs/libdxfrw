@@ -107,13 +107,13 @@ bool DRW_Entity::parseDwg(DRW::Version version, dwgBuffer *buf){
     dwgHandle ho = buf->getHandle();
     handle = ho.ref;
     DBG("Entity Handle: "); DBG(ho.code); DBG(".");
-    DBG(ho.size); DBG("."); DBG(ho.ref);
+    DBG(ho.size); DBG("."); DRW_DBGH(ho.ref);
     dint16 extDataSize = buf->getBitShort(); //BS
     DBG(" ext data size: "); DBG(extDataSize);
     while (extDataSize>0 && buf->isGood()) {
         /* RLZ: TODO */
         dwgHandle ah = buf->getHandle();
-        DBG("App Handle: "); DBG(ah.code); DBG("."); DBG(ah.size); DBG("."); DBG(ah.ref);
+        DBG("App Handle: "); DBG(ah.code); DBG("."); DBG(ah.size); DBG("."); DRW_DBGH(ah.ref);
         char byteStr[extDataSize];
         buf->getBytes(byteStr, extDataSize);
         dwgBuffer buff(byteStr, extDataSize, buf->decoder);
@@ -219,7 +219,7 @@ bool DRW_Entity::parseDwgEntHandle(DRW::Version version, dwgBuffer *buf){
         //lineType handle
         if(space == 2){//entity are in block
             dwgHandle ownerH = buf->getHandle();
-            DBG("owner Handle: "); DBG(ownerH.code); DBG(".");
+            DBG("owner Handle: "); DRW_DBGH(ownerH.code); DBG(".");
             DBG(ownerH.size); DBG("."); DBG(ownerH.ref); DBG("\n");
             DBG("   Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
             if (ownerH.code == 12)
@@ -236,7 +236,7 @@ bool DRW_Entity::parseDwgEntHandle(DRW::Version version, dwgBuffer *buf){
         DBG(" Block Handle: "); DBG(handleBlock); DBG(".");
         dwgHandle XDicObjH = buf->getHandle();
         DBG(" XDicObj control Handle: "); DBG(XDicObjH.code); DBG(".");
-        DBG(XDicObjH.size); DBG("."); DBG(XDicObjH.ref); DBG("\n");
+        DBG(XDicObjH.size); DBG("."); DRW_DBGH(XDicObjH.ref); DBG("\n");
         DBG("Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
 
         if (version > DRW::AC1014) {//2000+
@@ -244,21 +244,21 @@ bool DRW_Entity::parseDwgEntHandle(DRW::Version version, dwgBuffer *buf){
                 for (int i=0; i<2;i++) {
                     dwgHandle nextLinkH = buf->getHandle();
                     DBG(" nextLinkers Handle: "); DBG(nextLinkH.code); DBG(".");
-                    DBG(nextLinkH.size); DBG("."); DBG(nextLinkH.ref); DBG("\n");
+                    DBG(nextLinkH.size); DBG("."); DRW_DBGH(nextLinkH.ref); DBG("\n");
                     DBG("\n Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
                 }
             }
         }
         //layer handle
-        dwgHandle layerH = buf->getHandle();
+        layerH = buf->getHardHandle(handle);
         DBG(" layer Handle: "); DBG(layerH.code); DBG(".");
-        DBG(layerH.size); DBG("."); DBG(layerH.ref); DBG("\n");
+        DBG(layerH.size); DBG("."); DRW_DBGH(layerH.ref); DBG("\n");
         DBG("   Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
         //lineType handle
         if(lineType.empty()){
-            dwgHandle ltypeH = buf->getHandle();
-            DBG("linetype Handle: "); DBG(ltypeH.code); DBG(".");
-            DBG(ltypeH.size); DBG("."); DBG(ltypeH.ref); DBG("\n");
+            lTypeH = buf->getHardHandle(handle);
+            DBG("linetype Handle: "); DBG(lTypeH.code); DBG(".");
+            DBG(lTypeH.size); DBG("."); DRW_DBGH(lTypeH.ref); DBG("\n");
             DBG("   Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
         }
         if (version < DRW::AC1015) {//14-
@@ -266,7 +266,7 @@ bool DRW_Entity::parseDwgEntHandle(DRW::Version version, dwgBuffer *buf){
                 for (int i=0; i<2;i++) {
                     dwgHandle nextLinkH = buf->getHandle();
                     DBG(" nextLinkers Handle: "); DBG(nextLinkH.code); DBG(".");
-                    DBG(nextLinkH.size); DBG("."); DBG(nextLinkH.ref); DBG("\n");
+                    DBG(nextLinkH.size); DBG("."); DRW_DBGH(nextLinkH.ref); DBG("\n");
                     DBG("\n Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
                 }
             }
@@ -1085,7 +1085,8 @@ bool DRW_LWPolyline::parseDwg(DRW::Version version, dwgBuffer *buf){
             }
         }
     }
-
+//set flags to open/close
+    flags = (flags & 512)? 1:0;
     /* Common Entity Handle Data */
     ret = DRW_Entity::parseDwgEntHandle(version, buf);
     if (!ret)

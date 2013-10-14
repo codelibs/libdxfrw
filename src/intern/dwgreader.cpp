@@ -114,7 +114,7 @@ bool DRW_ObjControl::parseDwg(DRW::Version version, dwgBuffer *buf){
     for (int i =0; i< numEntries; i++){
         objectH = buf->getHandle();
         DBG(" objectH Handle: "); DBG(objectH.code); DBG(".");
-        DBG(objectH.size); DBG("."); DBGH(objectH.ref); DBG("\n");
+        DBG(objectH.size); DBG("."); DRW_DBGH(objectH.ref); DBG("\n");
         DBG("Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
     }
     return buf->isGood();

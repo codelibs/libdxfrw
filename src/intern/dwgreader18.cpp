@@ -34,7 +34,7 @@ void dwgReader18::genMagicNumber(){
     int j = 0;
     size =0x114;
     for (int i=0; i< size;i++) {
-        DBGH(magicStr[i]);
+        DRW_DBGH(magicStr[i]);
         if (j == 15) {
             DBG("\n");
             j = 0;
@@ -52,18 +52,18 @@ bool dwgReader18::readFileHeader() {
     DBG("dwgReader18::readFileHeader\n");
     if (! buf->setPosition(11))
         return false;
-    DBG("maintenance verion= "); DBGH(buf->getRawChar8()); DBG("\n");
-    DBG("byte at 0x0C= "); DBGH(buf->getRawChar8()); DBG("\n");
+    DBG("maintenance verion= "); DRW_DBGH(buf->getRawChar8()); DBG("\n");
+    DBG("byte at 0x0C= "); DRW_DBGH(buf->getRawChar8()); DBG("\n");
     seekerImageData = buf->getRawLong32(); //+ page header size (0x20).
     DBG("seekerImageData= "); DBG(seekerImageData); DBG("\n");
-    DBG("app Dwg verion= "); DBGH(buf->getRawChar8()); DBG(", ");
-    DBG("app maintenance verion= "); DBGH(buf->getRawChar8()); DBG("\n");
+    DBG("app Dwg verion= "); DRW_DBGH(buf->getRawChar8()); DBG(", ");
+    DBG("app maintenance verion= "); DRW_DBGH(buf->getRawChar8()); DBG("\n");
     duint16 cp = buf->getRawShort16();
     DBG("codepage= "); DBG(cp); DBG("\n");
     if (cp == 30)
         decoder.setCodePage("ANSI_1252");
-    DBG("3 0x00 bytes(seems 0x00, appDwgV & appMaintV= "); DBGH(buf->getRawChar8()); DBG(", ");
-    DBGH(buf->getRawChar8()); DBG(", "); DBGH(buf->getRawChar8()); DBG("\n");
+    DBG("3 0x00 bytes(seems 0x00, appDwgV & appMaintV= "); DRW_DBGH(buf->getRawChar8()); DBG(", ");
+    DRW_DBGH(buf->getRawChar8()); DBG(", "); DRW_DBGH(buf->getRawChar8()); DBG("\n");
     duint32 secFlags = buf->getRawLong32();
     DBG("security flags= "); DBG(secFlags); DBG("\n");
     /* UNKNOUWN SECTION 4 bytes*/
@@ -73,7 +73,7 @@ bool dwgReader18::readFileHeader() {
     DBG("summary Info= "); DBG(sumInfo); DBG("\n");
     duint32 vbaAdd =    buf->getRawLong32();
     DBG("VBA address= "); DBG(vbaAdd); DBG("\n");
-    DBG("0x00000080= "); DBGH(buf->getRawLong32()); DBG("\n");
+    DBG("0x00000080= "); DRW_DBGH(buf->getRawLong32()); DBG("\n");
     if (! buf->setPosition(0x80))
         return false;
 
@@ -83,7 +83,7 @@ bool dwgReader18::readFileHeader() {
     for (int i=0, j=0; i< 0x6C;i++) {
 #ifdef DRWG_DBG
         duint8 ch = buf->getRawChar8();
-        DBGH(ch);
+        DRW_DBGH(ch);
         if (j == 15) {
             DBG("\n");
             j = 0;
@@ -100,7 +100,7 @@ bool dwgReader18::readFileHeader() {
 
     size =0x6C;
     for (int i=0, j = 0; i< size;i++) {
-        DBGH( (unsigned char)byteStr[i]);
+        DRW_DBGH( (unsigned char)byteStr[i]);
         if (j == 15) {
             DBG("\n");
             j = 0;
@@ -115,35 +115,35 @@ bool dwgReader18::readFileHeader() {
     DBG("File ID string (AcFssFcAJMB)= "); DBG(name.c_str());DBG("\n");
     //ID string + NULL = 12
     buff.setPosition(12);
-    DBG("0x00 long= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("0x6c long= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("0x04 long= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("Root tree node gap= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("Lowermost left tree node gap= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("Lowermost right tree node gap= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("Unknown long (1)= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("Last section page Id= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("Last section page end address 64b= "); DBGH(buff.getRawLong64()); DBG("\n");
-    DBG("Second header data address 64b= "); DBGH(buff.getRawLong64()); DBG("\n");
-    DBG("Gap amount= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("Section page amount= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("0x20 long= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("0x80 long= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("0x40 long= "); DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("0x00 long= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("0x6c long= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("0x04 long= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("Root tree node gap= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("Lowermost left tree node gap= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("Lowermost right tree node gap= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("Unknown long (1)= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("Last section page Id= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("Last section page end address 64b= "); DRW_DBGH(buff.getRawLong64()); DBG("\n");
+    DBG("Second header data address 64b= "); DRW_DBGH(buff.getRawLong64()); DBG("\n");
+    DBG("Gap amount= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("Section page amount= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("0x20 long= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("0x80 long= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("0x40 long= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
     dint32 secPageMapId = buff.getRawLong32();
-    DBG("Section Page Map Id= "); DBGH(secPageMapId); DBG("\n");
+    DBG("Section Page Map Id= "); DRW_DBGH(secPageMapId); DBG("\n");
     duint64 secPageMapAddr = buff.getRawLong64()+0x100;
-    DBG("Section Page Map address 64b= "); DBGH(secPageMapAddr); DBG("\n");
+    DBG("Section Page Map address 64b= "); DRW_DBGH(secPageMapAddr); DBG("\n");
     DBG("Section Page Map address 64b dec= "); DBG(secPageMapAddr); DBG("\n");
     duint32 secMapId = buff.getRawLong32();
-    DBG("Section Map Id= "); DBGH(secMapId); DBG("\n");
-    DBG("Section page array size= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("Gap array size= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("CRC32= "); DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("Section Map Id= "); DRW_DBGH(secMapId); DBG("\n");
+    DBG("Section page array size= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("Gap array size= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("CRC32= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
     DBG("End Encrypted Data 0x14 size:\n");
     for (int i=0, j=0; i< 0x14;i++) {
-        DBG("magic num: "); DBGH( (unsigned char)DRW_magicNumEnd18[i]);
-        DBG(",read "); DBGH( (unsigned char)buf->getRawChar8());
+        DBG("magic num: "); DRW_DBGH( (unsigned char)DRW_magicNumEnd18[i]);
+        DBG(",read "); DRW_DBGH( (unsigned char)buf->getRawChar8());
         if (j == 3) {
             DBG("\n");
             j = 0;
@@ -155,18 +155,18 @@ bool dwgReader18::readFileHeader() {
 
     if (! buf->setPosition(secPageMapAddr))
         return false;
-    DBG("Section page type= "); DBGH(buf->getRawLong32()); DBG("\n");
+    DBG("Section page type= "); DRW_DBGH(buf->getRawLong32()); DBG("\n");
     duint32 decompSize = buf->getRawLong32();
-    DBG("Decompressed size= "); DBG(decompSize); DBG(", "); DBGH(decompSize); DBG("\n");
+    DBG("Decompressed size= "); DBG(decompSize); DBG(", "); DRW_DBGH(decompSize); DBG("\n");
     duint32 compSize = buf->getRawLong32();
-    DBG("Compressed size= "); DBG(compSize); DBG(", "); DBGH(compSize); DBG("\n");
-    DBG("Compression type= "); DBGH(buf->getRawLong32()); DBG("\n");
-    DBG("Section page checksum= "); DBGH(buf->getRawLong32()); DBG("\n");
+    DBG("Compressed size= "); DBG(compSize); DBG(", "); DRW_DBGH(compSize); DBG("\n");
+    DBG("Compression type= "); DRW_DBGH(buf->getRawLong32()); DBG("\n");
+    DBG("Section page checksum= "); DRW_DBGH(buf->getRawLong32()); DBG("\n");
     char compSec[compSize];
     char decompSec[decompSize];
     buf->getBytes(compSec, compSize);
     for (unsigned int i=0, j=0; i< compSize;i++) {
-        DBGH( (unsigned char)compSec[i]);
+        DRW_DBGH( (unsigned char)compSec[i]);
         if (j == 7) {
             DBG("\n");
             j = 0;
@@ -178,7 +178,7 @@ bool dwgReader18::readFileHeader() {
     dwgCompressor comp;
     comp.decompress(compSec, decompSec, compSize, decompSize);
     for (unsigned int i=0, j=0; i< decompSize;i++) {
-        DBGH( (unsigned char)decompSec[i]);
+        DRW_DBGH( (unsigned char)decompSec[i]);
         if (j == 7) {
             DBG("\n");
             j = 0;
@@ -195,8 +195,8 @@ bool dwgReader18::readFileHeader() {
         dint32 num = buff2.getRawLong32();
         duint32 size = buff2.getRawLong32();
         i += 8;
-        DBG("Section num= "); DBG(num); DBG("seek= "); DBGH(seek);
-        DBG(" size= "); DBGH(size);  DBG("\n");
+        DBG("Section num= "); DBG(num); DBG("seek= "); DRW_DBGH(seek);
+        DBG(" size= "); DRW_DBGH(size);  DBG("\n");
         sectionMapTmp[num] = std::pair<dint32,dint32>(seek,size);
         //TODO num can be negative indicating gap
 /*        if (num == secPageMapId) {
@@ -212,18 +212,18 @@ bool dwgReader18::readFileHeader() {
     size = sectionMapTmp[secMapId].second;
     if (!buf->setPosition(seek))
         return false;
-    DBG("Section page type= "); DBGH(buf->getRawLong32()); DBG("\n");
+    DBG("Section page type= "); DRW_DBGH(buf->getRawLong32()); DBG("\n");
     decompSize = buf->getRawLong32();
-    DBG("Decompressed size= "); DBG(decompSize); DBG(", "); DBGH(decompSize); DBG("\n");
+    DBG("Decompressed size= "); DBG(decompSize); DBG(", "); DRW_DBGH(decompSize); DBG("\n");
     compSize = buf->getRawLong32();
-    DBG("Compressed size= "); DBG(compSize); DBG(", "); DBGH(compSize); DBG("\n");
-    DBG("Compression type= "); DBGH(buf->getRawLong32()); DBG("\n");
-    DBG("Section page checksum= "); DBGH(buf->getRawLong32()); DBG("\n");
+    DBG("Compressed size= "); DBG(compSize); DBG(", "); DRW_DBGH(compSize); DBG("\n");
+    DBG("Compression type= "); DRW_DBGH(buf->getRawLong32()); DBG("\n");
+    DBG("Section page checksum= "); DRW_DBGH(buf->getRawLong32()); DBG("\n");
     char compSec2[compSize];
     char decompSec2[decompSize];
     buf->getBytes(compSec2, compSize);
     for (unsigned int i=0, j=0; i< compSize;i++) {
-        DBGH( (unsigned char)compSec2[i]);
+        DRW_DBGH( (unsigned char)compSec2[i]);
         if (j == 7) {
             DBG("\n");
             j = 0;
@@ -234,7 +234,7 @@ bool dwgReader18::readFileHeader() {
     } DBG("\n");
     comp.decompress(compSec2, decompSec2, compSize, decompSize);
     for (unsigned int i=0, j=0; i< decompSize;i++) {
-        DBGH( (unsigned char)decompSec2[i]);
+        DRW_DBGH( (unsigned char)decompSec2[i]);
         if (j == 7) {
             DBG("\n");
             j = 0;
@@ -246,25 +246,25 @@ bool dwgReader18::readFileHeader() {
 
     dwgBuffer buff3(decompSec2, decompSize, &decoder);
     duint32 numDescriptions = buff3.getRawLong32();
-    DBG("numDescriptions= "); DBGH(numDescriptions); DBG("\n");
-    DBG("0x20 long= "); DBGH(buff3.getRawLong32()); DBG("\n");
-    DBG("0x00007400 long= "); DBGH(buff3.getRawLong32()); DBG("\n");
-    DBG("0x00 long= "); DBGH(buff3.getRawLong32()); DBG("\n");
-    DBG("unknown long (numDescriptions)= "); DBGH(buff3.getRawLong32()); DBG("\n");
+    DBG("numDescriptions= "); DRW_DBGH(numDescriptions); DBG("\n");
+    DBG("0x20 long= "); DRW_DBGH(buff3.getRawLong32()); DBG("\n");
+    DBG("0x00007400 long= "); DRW_DBGH(buff3.getRawLong32()); DBG("\n");
+    DBG("0x00 long= "); DRW_DBGH(buff3.getRawLong32()); DBG("\n");
+    DBG("unknown long (numDescriptions)= "); DRW_DBGH(buff3.getRawLong32()); DBG("\n");
     for (unsigned int i = 0; i < numDescriptions; i++) {
         dwgSectionInfo secInfo;
-        DBG("\n"); DBG("Size of section= "); DBGH(buff3.getRawLong64()); DBG("\n");
+        DBG("\n"); DBG("Size of section= "); DRW_DBGH(buff3.getRawLong64()); DBG("\n");
         duint8 pageCount = buff3.getRawLong32();
-        DBG("Page count= "); DBGH(pageCount); DBG("\n");
-        DBG("Max Decompressed Size= "); DBGH(buff3.getRawLong32()); DBG("\n");
-        DBG("unknown long= "); DBGH(buff3.getRawLong32()); DBG("\n");
+        DBG("Page count= "); DRW_DBGH(pageCount); DBG("\n");
+        DBG("Max Decompressed Size= "); DRW_DBGH(buff3.getRawLong32()); DBG("\n");
+        DBG("unknown long= "); DRW_DBGH(buff3.getRawLong32()); DBG("\n");
         secInfo.compresed = buff3.getRawLong32();
-        DBG("is Compressed?= "); DBGH(secInfo.compresed); DBG("\n");
+        DBG("is Compressed?= "); DRW_DBGH(secInfo.compresed); DBG("\n");
         secInfo.Id = buff3.getRawLong32();
-        DBG("Section Id= "); DBGH(secInfo.Id); DBG("\n");
+        DBG("Section Id= "); DRW_DBGH(secInfo.Id); DBG("\n");
         secInfo.encrypted = buff3.getRawLong32();
         //encrypted (doc: 0 no, 1 yes, 2 unkn) on read: objects 0 and encrypted yes
-        DBG("Encrypted= "); DBGH(secInfo.encrypted); DBG("\n");
+        DBG("Encrypted= "); DRW_DBGH(secInfo.encrypted); DBG("\n");
         char nameCStr[64];
         buff3.getBytes(nameCStr, 64);
         secInfo.name = nameCStr;
@@ -273,14 +273,14 @@ bool dwgReader18::readFileHeader() {
             duint32 pn = buff3.getRawLong32();
             duint32 ds = buff3.getRawLong32();
             secInfo.pages[pn] = std::pair<dint32,dint64>(ds,buff3.getRawLong64());
-            DBG("    Page number= "); DBGH(pn); DBG("\n");
-            DBG("    Data size= "); DBGH(secInfo.pages[pn].first); DBG("\n");
-            DBG("    Start offset= "); DBGH(secInfo.pages[pn].second); DBG("\n");
+            DBG("    Page number= "); DRW_DBGH(pn); DBG("\n");
+            DBG("    Data size= "); DRW_DBGH(secInfo.pages[pn].first); DBG("\n");
+            DBG("    Start offset= "); DRW_DBGH(secInfo.pages[pn].second); DBG("\n");
         }
         if (!secInfo.name.empty()) {
             DBG("Saved section Name= "); DBG( secInfo.name.c_str() );
-            DBG(" seek= "); DBGH(sectionMapTmp[secInfo.Id].first);
-            DBG(" size= "); DBGH(sectionMapTmp[secInfo.Id].second); DBG("\n");
+            DBG(" seek= "); DRW_DBGH(sectionMapTmp[secInfo.Id].first);
+            DBG(" size= "); DRW_DBGH(sectionMapTmp[secInfo.Id].second); DBG("\n");
             sections[secInfo.name] = sectionMapTmp[secInfo.Id];
             sectionInfo[secInfo.name] = secInfo;
         }
@@ -330,7 +330,7 @@ bool dwgReader18::readDwgObjectOffsets() {
 //    }
     DBG("Section OBJECTS page header= "); DBG("\n");
     for (unsigned int i=0, j=0; i< 32;i++) {
-        DBGH( (unsigned char)hdrData[i]);
+        DRW_DBGH( (unsigned char)hdrData[i]);
         if (j == 7) {
             DBG("\n");
             j = 0;
@@ -340,16 +340,16 @@ bool dwgReader18::readDwgObjectOffsets() {
         }
     } DBG("\n");
     dwgBuffer buff(hdrData, 32, &decoder);
-    DBG("section page type= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("section number= "); DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("section page type= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("section number= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
     duint32 cSize = buff.getRawLong32();
-    DBG("data size (compressed)= "); DBGH(cSize); DBG("\n");
+    DBG("data size (compressed)= "); DRW_DBGH(cSize); DBG("\n");
     duint32 dSize = buff.getRawLong32();
-    DBG("section size (decompressed)= "); DBGH(dSize); DBG("\n");
-    DBG("start offset (in decompressed buffer)= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("header checksum= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("data checksum= "); DBGH(buff.getRawLong32()); DBG("\n");
-    DBG("unknown= "); DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("section size (decompressed)= "); DRW_DBGH(dSize); DBG("\n");
+    DBG("start offset (in decompressed buffer)= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("header checksum= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("data checksum= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
+    DBG("unknown= "); DRW_DBGH(buff.getRawLong32()); DBG("\n");
     char cData[cSize];
     char dData[dSize];
     if (!buf->setPosition(offset+32))
@@ -358,7 +358,7 @@ bool dwgReader18::readDwgObjectOffsets() {
     dwgCompressor comp;
     comp.decompress(cData, dData, cSize, dSize);
     dwgBuffer buff2(dData, dSize, &decoder);
-    DBG("meaning unknown= "); DBGH(buff2.getRawLong32()); DBG("\n");
+    DBG("meaning unknown= "); DRW_DBGH(buff2.getRawLong32()); DBG("\n");
     dint32 lastLoc = buff2.getPosition();
     for (unsigned int i = lastLoc; i<dSize;){
     int size = buff2.getModularShort();

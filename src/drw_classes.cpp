@@ -65,7 +65,7 @@ bool DRW_Class::parseDwg(DRW::Version version, dwgBuffer *buf){
 
     DBG("proxy capabilities: "); DBG(proxyCapabilities);
     DBG(", proxy flag: "); DBG(proxyFlag);
-    DBG(", entity flag: "); DBGH(entityFlag); DBG("\n");
+    DBG(", entity flag: "); DRW_DBGH(entityFlag); DBG("\n");
 
     if (version > DRW::AC1018) {//2007+
 //TODO: complete it

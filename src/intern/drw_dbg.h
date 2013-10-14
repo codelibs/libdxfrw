@@ -23,9 +23,8 @@
 #define DRW_DBGH(a) DRW_dbg::getInstance()->printH(a)
 #define DRW_DBGB(a) DRW_dbg::getInstance()->printB(a)
 
-//change to DRW_DBG
+//change DBG to DRW_DBG
 #define DBG(a) DRW_dbg::getInstance()->print(a)
-#define DBGH(a) DRW_dbg::getInstance()->printH(a)
 
 class print_none;
 
