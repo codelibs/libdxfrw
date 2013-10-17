@@ -85,12 +85,18 @@ namespace DRW {
 
 }
 
+//friend class dwgReader;
+#define SETFRIENDS friend class dxfRW; \
+                   friend class dwgReader18; \
+                   friend class dwgReader15;
+
 //! Base class for entities
 /*!
 *  Base class for entities
 *  @author Rallaz
 */
 class DRW_Entity {
+    friend class dwgReader;
 public:
     //initializes default values
     DRW_Entity() {
@@ -115,7 +121,7 @@ public:
     virtual~DRW_Entity() {}
 
     virtual void applyExtrusion() = 0;
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf);
+
 protected:
     //! takes an action based on the provided code
     /*!
@@ -126,6 +132,7 @@ protected:
     bool parseCode(int code, dxfReader *reader);
     void calculateAxis(DRW_Coord extPoint);
     void extrudePoint(DRW_Coord extPoint, DRW_Coord *point);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf);
     bool parseDwgEntHandle(DRW::Version version, dwgBuffer *buf);
 
 public:
@@ -154,7 +161,7 @@ public:
     duint8 nextLinkers; //aka nolinks //B
     duint8 plotFlags; //presence of plot style //BB
 //    duint32 ownerHandle; //handle of owner object (like block)
-public: //only for read dwg
+protected: //only for read dwg
     dwgHandle lTypeH;
     dwgHandle layerH;
 private:
@@ -169,6 +176,7 @@ private:
 *  @author Rallaz
 */
 class DRW_Point : public DRW_Entity {
+    SETFRIENDS
 public:
     DRW_Point() {
         eType = DRW::POINT;
@@ -179,6 +187,7 @@ public:
 
     virtual void applyExtrusion(){}
 
+protected:
     void parseCode(int code, dxfReader *reader);
     virtual bool parseDwg(DRW::Version version, dwgBuffer *buf);
 
@@ -196,6 +205,7 @@ public:
 *  @author Rallaz
 */
 class DRW_Line : public DRW_Point {
+    SETFRIENDS
 public:
     DRW_Line() {
         eType = DRW::LINE;
@@ -203,6 +213,8 @@ public:
     }
 
     virtual void applyExtrusion(){}
+
+protected:
     void parseCode(int code, dxfReader *reader);
     virtual bool parseDwg(DRW::Version version, dwgBuffer *buf);
 
@@ -240,12 +252,15 @@ public:
 *  @author Rallaz
 */
 class DRW_Circle : public DRW_Point {
+    SETFRIENDS
 public:
     DRW_Circle() {
         eType = DRW::CIRCLE;
     }
 
     virtual void applyExtrusion();
+
+protected:
     void parseCode(int code, dxfReader *reader);
     virtual bool parseDwg(DRW::Version version, dwgBuffer *buf);
 
@@ -259,6 +274,7 @@ public:
 *  @author Rallaz
 */
 class DRW_Arc : public DRW_Circle {
+    SETFRIENDS
 public:
     DRW_Arc() {
         eType = DRW::ARC;
@@ -266,10 +282,6 @@ public:
     }
 
     virtual void applyExtrusion(){DRW_Circle::applyExtrusion();}
-    //! interpret code in dxf reading process or dispatch to inherited class
-    void parseCode(int code, dxfReader *reader);
-    //! interpret dwg data (was already determined to be part of this object)
-    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf);
 
     //! center point in OCS
     const DRW_Coord & center() { return basePoint; }
@@ -283,6 +295,12 @@ public:
     double thick() { return thickness; }
     //! extrusion
     const DRW_Coord & extrusion() { return extPoint; }
+
+protected:
+    //! interpret code in dxf reading process or dispatch to inherited class
+    void parseCode(int code, dxfReader *reader);
+    //! interpret dwg data (was already determined to be part of this object)
+    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf);
 
 public:
     double staangle;            /*!< start angle, code 50 in radians*/
@@ -298,17 +316,25 @@ public:
 *  @author Rallaz
 */
 class DRW_Ellipse : public DRW_Line {
+    SETFRIENDS
 public:
     DRW_Ellipse() {
         eType = DRW::ELLIPSE;
         isccw = 1;
     }
 
-    void parseCode(int code, dxfReader *reader);
     void toPolyline(DRW_Polyline *pol, int parts = 128);
-    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf);
     virtual void applyExtrusion();
+
+protected:
+    //! interpret code in dxf reading process or dispatch to inherited class
+    void parseCode(int code, dxfReader *reader);
+    //! interpret dwg data (was already determined to be part of this object)
+    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf);
+
+private:
     void correctAxis();
+
 public:
     double ratio;           /*!< ratio, code 40 */
     double staparam;        /*!< start parameter, code 41, 0.0 for full ellipse*/
@@ -322,6 +348,7 @@ public:
 *  @author Rallaz
 */
 class DRW_Trace : public DRW_Line {
+    friend class dxfRW;
 public:
     DRW_Trace() {
         eType = DRW::TRACE;
@@ -330,6 +357,8 @@ public:
     }
 
     virtual void applyExtrusion();
+
+protected:
     void parseCode(int code, dxfReader *reader);
 
 public:
@@ -343,16 +372,19 @@ public:
 *  @author Rallaz
 */
 class DRW_Solid : public DRW_Trace {
+    SETFRIENDS
 public:
     DRW_Solid() {
         eType = DRW::SOLID;
     }
 
+protected:
     //! interpret code in dxf reading process or dispatch to inherited class
     void parseCode(int code, dxfReader *reader);
     //! interpret dwg data (was already determined to be part of this object)
     virtual bool parseDwg(DRW::Version v, dwgBuffer *buf);
 
+public:
     //! first corner (2D)
     const DRW_Coord & firstCorner() { return basePoint; }
     //! second corner (2D)
@@ -376,6 +408,7 @@ public:
 *  @author Rallaz
 */
 class DRW_3Dface : public DRW_Trace {
+    SETFRIENDS
 public:
     enum EdgeFlags {
         NoEdge = 0x00,
@@ -393,11 +426,6 @@ public:
 
     virtual void applyExtrusion(){}
 
-    //! interpret code in dxf reading process or dispatch to inherited class
-    void parseCode(int code, dxfReader *reader);
-    //! interpret dwg data (was already determined to be part of this object)
-    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf);
-
     //! first corner in WCS
     const DRW_Coord & firstCorner() { return basePoint; }
     //! second corner in WCS
@@ -408,6 +436,12 @@ public:
     const DRW_Coord & fourthCorner() { return fourPoint; }
     //! edge visibility flags
     EdgeFlags edgeFlags() { return (EdgeFlags)invisibleflag; }
+
+protected:
+    //! interpret code in dxf reading process or dispatch to inherited class
+    void parseCode(int code, dxfReader *reader);
+    //! interpret dwg data (was already determined to be part of this object)
+    virtual bool parseDwg(DRW::Version v, dwgBuffer *buf);
 
 public:
     int invisibleflag;       /*!< invisible edge flag, code 70 */
@@ -420,6 +454,7 @@ public:
 *  @author Rallaz
 */
 class DRW_Block : public DRW_Point {
+    SETFRIENDS
 public:
     DRW_Block() {
         eType = DRW::BLOCK;
@@ -430,6 +465,8 @@ public:
     }
 
     virtual void applyExtrusion(){}
+
+protected:
     void parseCode(int code, dxfReader *reader);
     virtual bool parseDwg(DRW::Version v, dwgBuffer *buf);
 
@@ -446,6 +483,7 @@ public:
 *  @author Rallaz
 */
 class DRW_Insert : public DRW_Point {
+    SETFRIENDS
 public:
     DRW_Insert() {
         eType = DRW::INSERT;
@@ -460,6 +498,8 @@ public:
     }
 
     virtual void applyExtrusion(){DRW_Point::applyExtrusion();}
+
+protected:
     void parseCode(int code, dxfReader *reader);
     virtual bool parseDwg(DRW::Version v, dwgBuffer *buf);
 
@@ -483,6 +523,7 @@ public: //only for read dwg
 *  @author Rallaz
 */
 class DRW_LWPolyline : public DRW_Entity {
+    SETFRIENDS
 public:
     DRW_LWPolyline() {
         eType = DRW::LWPOLYLINE;
@@ -516,6 +557,7 @@ public:
         return vert;
     }
 
+protected:
     void parseCode(int code, dxfReader *reader);
      bool parseDwg(DRW::Version v, dwgBuffer *buf);
 
@@ -536,6 +578,7 @@ public:
 *  @author Rallaz
 */
 class DRW_Text : public DRW_Line {
+    SETFRIENDS
 public:
     //! Vertical alignments.
         enum VAlign {
@@ -567,6 +610,8 @@ public:
     }
 
     virtual void applyExtrusion(){} //RLZ TODO
+
+protected:
     void parseCode(int code, dxfReader *reader);
     virtual bool parseDwg(DRW::Version version, dwgBuffer *buf);
 
@@ -589,6 +634,7 @@ public:
 *  @author Rallaz
 */
 class DRW_MText : public DRW_Text {
+    SETFRIENDS
 public:
     //! Attachments.
     enum Attach {
@@ -611,6 +657,7 @@ public:
         haveXAxis = false;    //if true needed to recalculate angle
     }
 
+protected:
     void parseCode(int code, dxfReader *reader);
     void updateAngle();    //recalculate angle if 'haveXAxis' is true
     virtual bool parseDwg(DRW::Version version, dwgBuffer *buf);
@@ -627,6 +674,7 @@ private:
 *  @author Rallaz
 */
 class DRW_Vertex : public DRW_Point {
+    friend class dxfRW;
 public:
     DRW_Vertex() {
         eType = DRW::VERTEX;
@@ -644,6 +692,7 @@ public:
         bulge = b;
     }
 
+protected:
     void parseCode(int code, dxfReader *reader);
 
 public:
@@ -666,6 +715,7 @@ public:
 *  @author Rallaz
 */
 class DRW_Polyline : public DRW_Point {
+    friend class dxfRW;
 public:
     DRW_Polyline() {
         eType = DRW::POLYLINE;
@@ -693,6 +743,7 @@ public:
         vertlist.push_back(v);
     }
 
+protected:
     void parseCode(int code, dxfReader *reader);
 
 public:
@@ -715,6 +766,7 @@ public:
 *  @author Rallaz
 */
 class DRW_Spline : public DRW_Entity {
+    friend class dxfRW;
 public:
     DRW_Spline() {
         eType = DRW::SPLINE;
@@ -734,6 +786,7 @@ public:
     }
     virtual void applyExtrusion(){}
 
+protected:
     void parseCode(int code, dxfReader *reader);
     virtual bool parseDwg(DRW::Version v, dwgBuffer *buf){DRW_UNUSED(v);DRW_UNUSED(buf); return false;}
 
@@ -805,6 +858,7 @@ public:
 */
 //TODO: handle lwpolylines, splines and ellipses
 class DRW_Hatch : public DRW_Point {
+    friend class dxfRW;
 public:
     DRW_Hatch() {
         eType = DRW::HATCH;
@@ -828,6 +882,8 @@ public:
     }
 
     virtual void applyExtrusion(){}
+
+protected:
     void parseCode(int code, dxfReader *reader);
 
 public:
@@ -904,6 +960,7 @@ private:
 *  @author Rallaz
 */
 class DRW_Image : public DRW_Line {
+    friend class dxfRW;
 public:
     DRW_Image() {
         eType = DRW::IMAGE;
@@ -911,6 +968,7 @@ public:
         brightness = contrast = 50;
     }
 
+protected:
     void parseCode(int code, dxfReader *reader);
 
 public:
@@ -935,6 +993,7 @@ public:
 *  @author Rallaz
 */
 class DRW_Dimension : public DRW_Entity {
+    friend class dxfRW;
 public:
     DRW_Dimension() {
         eType = DRW::DIMENSION;
@@ -972,10 +1031,13 @@ public:
     }
     virtual ~DRW_Dimension() {}
 
-    void parseCode(int code, dxfReader *reader);
     virtual void applyExtrusion(){}
+
+protected:
+    void parseCode(int code, dxfReader *reader);
     virtual bool parseDwg(DRW::Version v, dwgBuffer *buf){DRW_UNUSED(v);DRW_UNUSED(buf); return false;}
 
+public:
     DRW_Coord getDefPoint() const {return defPoint;}      /*!< Definition point, code 10, 20 & 30 */
     void setDefPoint(const DRW_Coord p) {defPoint =p;}
     DRW_Coord getTextPoint() const {return textPoint;}    /*!< Middle point of text, code 11, 21 & 31 */
@@ -1212,6 +1274,7 @@ public:
 *  @author Rallaz
 */
 class DRW_Leader : public DRW_Entity {
+    friend class dxfRW;
 public:
     DRW_Leader() {
         eType = DRW::LEADER;
@@ -1228,6 +1291,8 @@ public:
     }
 
     virtual void applyExtrusion(){}
+
+protected:
     void parseCode(int code, dxfReader *reader);
     virtual bool parseDwg(DRW::Version v, dwgBuffer *buf){DRW_UNUSED(v);DRW_UNUSED(buf); return false;}
 
@@ -1260,6 +1325,7 @@ private:
 *  @author Rallaz
 */
 class DRW_Viewport : public DRW_Point {
+    friend class dxfRW;
 public:
     DRW_Viewport() {
         eType = DRW::VIEWPORT;
@@ -1271,6 +1337,8 @@ public:
     }
 
     virtual void applyExtrusion(){}
+
+protected:
     void parseCode(int code, dxfReader *reader);
 
 public:
