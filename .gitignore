@@ -6,6 +6,9 @@ libdxfrw.pro*
 Makefile
 *.a
 *so
+*lo
+*.la
+*.o
 *.dll
 *~
 *bz2
@@ -15,5 +18,5 @@ Makefile
 .deps
 config.log
 config.status
-libdxfrw.pc
+libdxfrw*.pc
 libtool
