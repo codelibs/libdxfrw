@@ -1544,7 +1544,7 @@ bool dxfRW::writeTables() {
         }
     }
     /* allways call writeBlockRecords to iface for prepare unnamed blocks */
-        iface->writeBlockRecords();
+    iface->writeBlockRecords();
     if (version > DRW::AC1009) {
         writer->writeString(0, "ENDTAB");
     }
@@ -2661,9 +2661,9 @@ bool dxfRW::processImageDef() {
  **/
 std::string dxfRW::toHexStr(int n){
 #if defined(__APPLE__)
-    std::string buffer(9, '\0');
-    snprintf(& buffer[0],9, "%X", n);
-    return buffer;
+    char buffer[9]= {'\0'};
+    snprintf(buffer,9, "%X", n);
+    return std::string(buffer);
 #else
     std::ostringstream Convert;
     Convert << std::uppercase << std::hex << n;
