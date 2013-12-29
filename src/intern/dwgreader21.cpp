@@ -127,11 +127,9 @@ bool dwgReader21::readFileHeader() {
     DBG("file header crc8 xor result= "); DBG(ckcrc); DBG("\n");
     DBG("file header CRC= "); DBG(buf->getRawShort16()); DBG("\n");
     DBG("file header sentinel= ");
-#ifdef DRWG_DBG
     for (int i=0; i<16;i++) {
         DBGH(buf->getRawChar8()); DBG(" ");
     }
-#endif
 
     DBG("position after read file header sentinel= "); DBG(buf->getPosition());
     DBG(", bit are= "); DBG(buf->getBitPos()); DBG("\n");*/
@@ -150,11 +148,9 @@ bool dwgReader21::readDwgClasses(){
     if (!buf->setPosition(offset))
         return false;
     DBG("file header sentinel= ");
-#ifdef DRWG_DBG
     for (int i=0; i<16;i++) {
         DBGH(buf->getRawChar8()); DBG(" ");
     }
-#endif
     dint32 size = buf->getRawLong32();
     if (size != (secSize - 38)) {
         DBG("WARNING dwgReader15::readDwgClasses size are "); DBG(size);

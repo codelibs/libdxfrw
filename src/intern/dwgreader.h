@@ -15,12 +15,14 @@
 
 #include <map>
 #include <list>
+//#include <unordered_map>//c++11 only
 #include "drw_textcodec.h"
 #include "dwgbuffer.h"
 #include "../libdwgr.h"
 
 class objHandle{
 public:
+    objHandle(){ handle = type = loc = 0; }
     objHandle(duint32 t, duint32 h, duint32 l){
         type = t;
         handle = h;
@@ -31,6 +33,22 @@ public:
     duint32 loc;
 };
 
+//! Class to handle dwg obj control entries
+/*!
+*  Class to handle dwg obj control entries
+*  @author Rallaz
+*/
+class DRW_ObjControl : public DRW_TableEntry {
+public:
+    DRW_ObjControl() { reset();}
+
+    void reset(){
+    }
+    bool parseDwg(DRW::Version version, dwgBuffer *buf);
+    std::list<duint32>hadlesList;
+};
+
+
 class dwgReader {
 public:
     dwgReader(std::ifstream *stream, dwgR *p){
@@ -39,17 +57,17 @@ public:
         parent = p;
         decoder.setVersion(DRW::AC1021);//default 2007 in utf8(no convert)
         decoder.setCodePage("UTF-8");
-#ifdef DRWG_DBG
-//        count =0;
-#endif
+        blockCtrl=layerCtrl=styleCtrl=linetypeCtrl=viewCtrl=0;
+        ucsCtrl=vportCtrl=appidCtrl=dimstyleCtrl=vpEntHeaderCtrl=0;
+        nextEntLink = prevEntLink = 0;
     }
     virtual ~dwgReader();
     virtual bool readFileHeader() = 0;
     //RLZ todo    virtual bool readDwgHeader() = 0;
-    //RLZ todo    virtual bool readDwgClasses() = 0;
     virtual bool readDwgClasses() = 0;
     virtual bool readDwgObjectOffsets() = 0;
     virtual bool readDwgTables() = 0;
+    virtual bool readDwgBlocks(DRW_Interface& intfa) = 0;
     virtual bool readDwgEntity(objHandle& obj, DRW_Interface& intfa) = 0;
     void parseAttribs(DRW_Entity* e);
     std::string findTableName(DRW::TTYPE table, dint32 handle);
@@ -58,15 +76,17 @@ public:
     std::string getCodePage(){ return decoder.getCodePage();}
 
 public:
-    std::list<objHandle>ObjectMap;
+//    std::list<objHandle>ObjectMap;
+//    std::unordered_map<duint32, objHandle>ObjectMap;//c++11 only
+    std::map<duint32, objHandle>ObjectMap;
     std::map<int, DRW_LType*> ltypemap;
     std::map<int, DRW_Layer*> layermap;
     std::map<int, DRW_Block_Record*> block_recmap;
-    std::map<int, DRW_Block*> blockmap;
+//    std::map<int, DRW_Block*> blockmap;
     std::map<int, DRW_Textstyle*> stylemap;
     std::map<int, DRW_Dimstyle*> dimstylemap;
     std::map<int, DRW_Vport*> vportmap;
-    int currBlock;
+    duint32 currBlock;
 
 protected:
     dwgBuffer *buf;
@@ -80,37 +100,31 @@ protected:
 
 protected:
     DRW_TextCodec decoder;
-};
-
-
-//! Class to handle dwg obj control entries
-/*!
-*  Class to handle dwg obj control entries
-*  @author Rallaz
-*/
-class DRW_ObjControl : public DRW_TableEntry {
-public:
-    DRW_ObjControl() { reset();}
-
-    void reset(){
-//        tType = DRW::LTYPE;
-//        desc = "";
-//        size = 0;
-//        length = 0.0;
-//        pathIdx = 0;
-    }
-
-//    void parseCode(int code, dxfReader *reader);
-    bool parseDwg(DRW::Version version, dwgBuffer *buf);
-//    void update();
-
-public:
-//    UTF8STRING desc;           /*!< descriptive string, code 3 */
-//    int size;                 /*!< element number, code 73 */
-//    double length;            /*!< total length of pattern, code 40 */
-//    std::vector<double> path;  /*!< trace, point or space length sequence, code 49 */
 private:
-//    int pathIdx;
+//    DRW_ObjControl blockCtrl;
+//    DRW_ObjControl layerCtrl;
+//    DRW_ObjControl styleCtrl;
+//    DRW_ObjControl linetypeCtrl;
+//    DRW_ObjControl viewCtrl;
+//    DRW_ObjControl ucsCtrl;
+//    DRW_ObjControl vportCtrl;
+//    DRW_ObjControl appidCtrl;
+//    DRW_ObjControl dimstyleCtrl;
+//    DRW_ObjControl vpEntHeaderCtrl;
+
+protected:
+    duint32 linetypeCtrl;
+    duint32 layerCtrl;
+    duint32 styleCtrl;
+    duint32 dimstyleCtrl;
+    duint32 appidCtrl;
+    duint32 blockCtrl;
+    duint32 viewCtrl;
+    duint32 ucsCtrl;
+    duint32 vportCtrl;
+    duint32 vpEntHeaderCtrl;
+    duint32 nextEntLink;
+    duint32 prevEntLink;
 };
 
 

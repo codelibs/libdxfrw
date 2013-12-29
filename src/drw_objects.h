@@ -39,6 +39,8 @@ namespace DRW {
 
 }
 
+#define SETOBJFRIENDS friend class dwgReader15;
+
 //! Base class for tables entries
 /*!
 *  Base class for tables entries
@@ -256,6 +258,7 @@ public:
 *  @author Rallaz
 */
 class DRW_Block_Record : public DRW_TableEntry {
+SETOBJFRIENDS
 public:
     DRW_Block_Record() { reset();}
     void reset() {
@@ -270,6 +273,13 @@ public:
 //Note:    int DRW_TableEntry::flags; contains code 70 of block
     int insUnits;             /*!< block insertion units, code 70 of block_record*/
     DRW_Coord basePoint;      /*!<  block insertion base point dwg only */
+protected:
+    //dwg parser
+//    dwgHandle blockH;
+    duint32 endBlock;//handle for end block entity
+private:
+    duint32 firstEH; //handle of first entity, only in pre-2004
+    duint32 lastEH; //handle of last entity, only in pre-2004
 };
 
 //! Class to handle text style entries

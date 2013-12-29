@@ -81,7 +81,6 @@ bool dwgReader18::readFileHeader() {
     char byteStr[0x6C];
     int size =0x6C;
     for (int i=0, j=0; i< 0x6C;i++) {
-#ifdef DRWG_DBG
         duint8 ch = buf->getRawChar8();
         DRW_DBGH(ch);
         if (j == 15) {
@@ -92,9 +91,6 @@ bool dwgReader18::readFileHeader() {
             j++;
         }
         byteStr[i] = DRW_magicNum18[i] ^ ch;
-#else
-        byteStr[i] = DRW_magicNum18[i] ^ buf->getRawChar8();
-#endif
     }
     DBG("\n");
 
@@ -368,7 +364,7 @@ bool dwgReader18::readDwgObjectOffsets() {
     DBG("readDwgObject object data size: "); DBG(buff2.getRawLong32()); DBG("\n");
     dwgHandle hl = buff2.getHandle();
     buff2.getRawLong32();
-    ObjectMap.push_back(objHandle(type, hl.ref, lastLoc));
+    ObjectMap.insert( std::pair<duint32, objHandle>(hl.ref, objHandle(type, hl.ref, lastLoc)) );
     DBG("readDwgObject object Handle: "); DBG(hl.code); DBG(".");
     DBG(hl.size); DBG("."); DBG(hl.ref); DBG("\n");
     i = lastLoc += size;
@@ -477,10 +473,11 @@ bool dwgReader18::readDwgTables() {
     std::list<objHandle>VportMap;
 
 //separate control object, layers and linetypes
-    for (std::list<objHandle>::iterator it=ObjectMap.begin(); it != ObjectMap.end(); /*++it*/){
-        if (it->type == 0x30 || it->type == 0x32 || it->type == 0x34 || it->type == 0x38 || it->type == 0x3C
-                || it->type == 0x3E || it->type == 0x40 || it->type == 0x42 || it->type == 0x44 || it->type == 0x46){
-            ObjectControlMap.push_back(*it);
+//    for (std::list<objHandle>::iterator it=ObjectMap.begin(); it != ObjectMap.end(); /*++it*/){
+/*    for (std::map<duint32, objHandle>::iterator it=ObjectMap.begin(); it != ObjectMap.end();){
+        if (it->second.type == 0x30 || it->second.type == 0x32 || it->second.type == 0x34 || it->second.type == 0x38 || it->second.type == 0x3C
+                || it->second.type == 0x3E || it->second.type == 0x40 || it->second.type == 0x42 || it->second.type == 0x44 || it->second.type == 0x46){
+            ObjectControlMap.push_back(it->second);
             it = ObjectMap.erase(it);
         } else if (it->type == 0x39){
             LineTypeMap.push_back(*it);
@@ -502,7 +499,7 @@ bool dwgReader18::readDwgTables() {
             it = ObjectMap.erase(it);
         } else
             it++;
-    }
+    }*/
     //parse object controls
     //parse linetypes
     for (std::list<objHandle>::iterator it=LineTypeMap.begin(); it != LineTypeMap.end(); ++it){
@@ -565,7 +562,7 @@ bool dwgReader18::readDwgTables() {
     }
 
     //parse vports
-    for (std::list<objHandle>::iterator it=VportMap.begin(); it != VportMap.end(); ++it){
+/*    for (std::list<objHandle>::iterator it=VportMap.begin(); it != VportMap.end(); ++it){
         DBG("VportMap map Handle= "); DBG(it->handle); DBG(" "); DBG(it->loc); DBG("\n");
         DRW_Vport *la = new DRW_Vport();
         buf->setPosition(it->loc);
@@ -577,7 +574,7 @@ bool dwgReader18::readDwgTables() {
         vportmap[la->handle] = la;
         if(ret)
             ret = ret2;
-    }
+    }*/
 
     //set linetype in layer
     for (std::map<int, DRW_Layer*>::iterator it=layermap.begin(); it!=layermap.end(); ++it) {
@@ -611,11 +608,11 @@ bool dwgReader18::readDwgTables() {
             ret2 = e.parseDwg(version, &buff);
             parseAttribs(&e);
             break; }
-        case 49: {
+/*        case 49: {
             DRW_Block_Record *br = new DRW_Block_Record();
             ret2 = br->parseDwg(version, &buff);
             block_recmap[br->handle] = br;
-            break; }
+            break; }*/
         default:
             break;
         }
@@ -624,7 +621,7 @@ bool dwgReader18::readDwgTables() {
     }
 
     //complete block entity with block record data
-    for (std::map<int, DRW_Block*>::iterator it=tmpBlockmap.begin(); it!=tmpBlockmap.end(); ++it) {
+/*    for (std::map<int, DRW_Block*>::iterator it=tmpBlockmap.begin(); it!=tmpBlockmap.end(); ++it) {
         DRW_Block* bk = it->second;
         std::map<int, DRW_Block_Record*>::iterator brit = block_recmap.find(bk->handleBlock);
         if (brit == block_recmap.end()){//fail, set error
@@ -642,7 +639,7 @@ bool dwgReader18::readDwgTables() {
             blockmap[bk->handleBlock] = bk;
         }
 
-    }
+    }*/
 
     return ret;
 }
@@ -659,7 +656,10 @@ bool dwgReader18::readDwgEntity(objHandle& obj, DRW_Interface& intfa){
                 currBlock = e.handleBlock; \
                 intfa.setBlock(e.handleBlock); \
             } \
-            parseAttribs(&e)
+            parseAttribs(&e); \
+            nextEntLink = e.nextEntLink; \
+            prevEntLink = e.prevEntLink;
+
 
         buf->setPosition(obj.loc);
         int size = buf->getModularShort();
@@ -680,60 +680,60 @@ bool dwgReader18::readDwgEntity(objHandle& obj, DRW_Interface& intfa){
         switch (obj.type){
         case 17: {
             DRW_Arc e;
-            ENTRY_PARSE(e);
+            ENTRY_PARSE(e)
             intfa.addArc(e);
             break; }
         case 18: {
             DRW_Circle e;
-            ENTRY_PARSE(e);
+            ENTRY_PARSE(e)
             intfa.addCircle(e);
             break; }
         case 19:{
             DRW_Line e;
-            ENTRY_PARSE(e);
+            ENTRY_PARSE(e)
             intfa.addLine(e);
             break;}
         case 27: {
             DRW_Point e;
-            ENTRY_PARSE(e);
+            ENTRY_PARSE(e)
             intfa.addPoint(e);
             break; }
         case 35: {
             DRW_Ellipse e;
-            ENTRY_PARSE(e);
+            ENTRY_PARSE(e)
             intfa.addEllipse(e);
             break; }
         case 7: {//minsert = 8
             DRW_Insert e;
-            ENTRY_PARSE(e);
+            ENTRY_PARSE(e)
             e.name = findTableName(DRW::BLOCK_RECORD, e.blockRecH.ref);
             intfa.addInsert(e);
             break; }
         case 77: {
             DRW_LWPolyline e;
-            ENTRY_PARSE(e);
+            ENTRY_PARSE(e)
             intfa.addLWPolyline(e);
             break; }
         case 1: {
             DRW_Text e;
-            ENTRY_PARSE(e);
+            ENTRY_PARSE(e)
             e.style = findTableName(DRW::STYLE, e.styleH.ref);
             intfa.addText(e);
             break; }
         case 44: {
             DRW_MText e;
-            ENTRY_PARSE(e);
+            ENTRY_PARSE(e)
             e.style = findTableName(DRW::STYLE, e.styleH.ref);
             intfa.addMText(e);
             break; }
         case 28: {
             DRW_3Dface e;
-            ENTRY_PARSE(e);
+            ENTRY_PARSE(e)
             intfa.add3dFace(e);
             break; }
         case 31: {
             DRW_Solid e;
-            ENTRY_PARSE(e);
+            ENTRY_PARSE(e)
             intfa.addSolid(e);
             break; }
 

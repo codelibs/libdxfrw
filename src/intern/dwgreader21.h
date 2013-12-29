@@ -30,6 +30,7 @@ public:
     bool readDwgClasses(){return false;}
     bool readDwgObjectOffsets(){return false;}
     bool readDwgTables(){return false;}
+    bool readDwgBlocks(DRW_Interface& intfa){DRW_UNUSED(intfa); return false;}
     bool readDwgEntity(objHandle& obj, DRW_Interface& intfa){
         DRW_UNUSED(obj);
         DRW_UNUSED(intfa);

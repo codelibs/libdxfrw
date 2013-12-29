@@ -407,20 +407,21 @@ dwgHandle dwgBuffer::getHandle(){ //H
     return hl;
 }
 
-dwgHandle dwgBuffer::getHardHandle(duint32 href){ //H
+dwgHandle dwgBuffer::getOffsetHandle(duint32 href){ //H
     dwgHandle hl = getHandle();
-//    dwgHandle hl = getHandle();
-    if (hl.code == 12)
-        hl.ref = href - hl.ref;
-    else if (hl.code == 10)
-        hl.ref = href + hl.ref;
-    else if (hl.code == 8)
-        hl.ref = href - 1;
-    else if (hl.code == 6)
-        hl.ref = href + 1;
-//    else
-//        handleBlock = ownerH.ref;
-    hl.code = 5;
+
+    if (hl.code > 5){
+        if (hl.code == 12)
+            hl.ref = href - hl.ref;
+        else if (hl.code == 10)
+            hl.ref = href + hl.ref;
+        else if (hl.code == 8)
+            hl.ref = href - 1;
+        else if (hl.code == 6)
+            hl.ref = href + 1;
+        if (hl.code > 5)
+            hl.code = 1;//used 1 to shows are calculated soft handle
+    }
     return hl;
 }
 

@@ -108,7 +108,7 @@ public:
         visible = true;
         layer = "0";
         lWeight = DRW_LW_Conv::widthByLayer; // default BYLAYER  (dxf -1, dwg 29)
-        handleBlock = 0; //handleBlock = no handle (0)
+        handleDict = handleBlock = 0; //no handle (0)
         space = DRW::ModelSpace; // default ModelSpace (0)
         haveExtrusion = false;
         color24 = -1; //default -1 not set
@@ -116,29 +116,30 @@ public:
         material = DRW::MaterialByLayer;
         plotStyle = DRW::DefaultPlotStyle;
         transparency = DRW::Opaque;
-        inGroup = false;
+//        inGroup = false;
+        nextEntLink = prevEntLink = 0;
     }
     virtual~DRW_Entity() {}
 
     virtual void applyExtrusion() = 0;
 
 protected:
-    //! takes an action based on the provided code
-    /*!
-     * \param code the code to interpret
-     * \param reader the reader to use (is asserted to be non-null)
-     * \return true if the code was parsed, false otherwise
-     */
+    //parses dxf pair to read entity
     bool parseCode(int code, dxfReader *reader);
+    //calculates extrusion axis (normal vector)
     void calculateAxis(DRW_Coord extPoint);
+    //apply extrusion to @extPoint and return data in @point
     void extrudePoint(DRW_Coord extPoint, DRW_Coord *point);
+    //parses dwg common start part to read entity
     virtual bool parseDwg(DRW::Version version, dwgBuffer *buf);
+    //parses dwg common handles part to read entity
     bool parseDwgEntHandle(DRW::Version version, dwgBuffer *buf);
 
 public:
     enum DRW::ETYPE eType;     /*!< enum: entity type, code 0 */
     int handle;                /*!< entity identifier, code 5 */
-    int handleBlock;           /*!< Soft-pointer ID/handle to owner BLOCK_RECORD object, code 330 */
+    duint32 handleDict;        /*!< Hard-pointer ID/handle to owner dictionary, code 360 */
+    duint32 handleBlock;       /*!< Soft-pointer ID/handle to owner BLOCK_RECORD object, code 330 */
     UTF8STRING layer;          /*!< layer name, code 8 */
     UTF8STRING lineType;       /*!< line type, code 6 */
     int color;                 /*!< entity color, code 62 */
@@ -150,20 +151,22 @@ public:
     DRW::Space space;          /*!< space indicator, code 67*/
     bool haveExtrusion;        /*!< set to true if the entity have extrusion*/
     std::string image;         /*!< proxy entity graphics, code 92 and 310 */
-    std::list<DRW::Group*> groups; /*!< list of groups, code 102 */
+//    std::list<DRW::Group*> groups; /*!< list of groups, code 102 */
     DRW::ShadowMode shadow;    /*!< shadow mode, code 284 */
     int material;              /*!< hard pointer id to material object, code 347 */
     int plotStyle;             /*!< hard pointer id to plot style object, code 420 */
     int transparency;          /*!< transparency, code 440 */
-    bool inGroup:1;            /*!< used to parse dxf groups */
+//    bool inGroup:1;            /*!< used to parse dxf groups */
 
 //***** dwg parse ********/
-    duint8 nextLinkers; //aka nolinks //B
+    duint8 haveNextLinks; //aka nolinks //B
     duint8 plotFlags; //presence of plot style //BB
 //    duint32 ownerHandle; //handle of owner object (like block)
 protected: //only for read dwg
     dwgHandle lTypeH;
     dwgHandle layerH;
+    duint32 nextEntLink;
+    duint32 prevEntLink;
 private:
     DRW_Coord extAxisX;
     DRW_Coord extAxisY;
@@ -336,9 +339,9 @@ private:
     void correctAxis();
 
 public:
-    double ratio;           /*!< ratio, code 40 */
-    double staparam;        /*!< start parameter, code 41, 0.0 for full ellipse*/
-    double endparam;        /*!< end parameter, code 42, 2*PI for full ellipse */
+    double ratio;        /*!< ratio, code 40 */
+    double staparam;     /*!< start parameter, code 41, 0.0 for full ellipse*/
+    double endparam;     /*!< end parameter, code 42, 2*PI for full ellipse */
     int isccw;           /*!< is counter clockwise arc?, only used in hatch, code 73 */
 };
 
@@ -1325,7 +1328,7 @@ private:
 *  @author Rallaz
 */
 class DRW_Viewport : public DRW_Point {
-    friend class dxfRW;
+    SETFRIENDS
 public:
     DRW_Viewport() {
         eType = DRW::VIEWPORT;
@@ -1340,14 +1343,24 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf);
 
 public:
     double pswidth;           /*!< Width in paper space units, code 40 */
     double psheight;          /*!< Height in paper space units, code 41 */
     int vpstatus;             /*!< Viewport status, code 68 */
     int vpID;                 /*!< Viewport ID, code 69 */
-    double centerPX;          /*!< view center piont X, code 12 */
-    double centerPY;          /*!< view center piont Y, code 22 */
+    double centerPX;          /*!< view center point X, code 12 */
+    double centerPY;          /*!< view center point Y, code 22 */
+    //TODO: complete in dxf
+    DRW_Coord viewDir;        /*!< View direction vector, code 16 */
+    DRW_Coord viewTarget;     /*!< View target point, code 17 */
+    double viewLength;        /*!< Perspective lens length, code 42 */
+    double frontClip;         /*!< Front clip plane Z value, code 43 */
+    double backClip;          /*!< Back clip plane Z value, code 44 */
+    double viewHeight;        /*!< View height in model space units, code 45 */
+    double snapAngle;         /*!< Snap angle, code 50 */
+    double twistAngle;        /*!< view twist angle, code 51 */
 };
 
 

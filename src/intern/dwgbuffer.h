@@ -103,7 +103,7 @@ public:
     dint32 getModularChar(); //MC
     dint32 getModularShort(); //MS
     dwgHandle getHandle(); //H
-    dwgHandle getHardHandle(duint32 href); //H converted to hard
+    dwgHandle getOffsetHandle(duint32 href); //H converted to hard
     //T, TU, TV, X, U, SN,
     std::string getVariableText();
     std::string getVariableUtf8Text();
@@ -120,9 +120,7 @@ public:
 //    dint16 crc8(duint16 dx,dint8 *p,dint32 n);
     duint16 crc8(duint16 dx,dint32 start,dint32 end);
 
-#ifdef DRWG_DBG
     duint8 getCurrByte(){return currByte;}
-#endif
     DRW_TextCodec *decoder;
 
 private:

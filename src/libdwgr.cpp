@@ -178,6 +178,13 @@ bool dwgR::processDwg() {
         iface->addVport(const_cast<DRW_Vport&>(*ly));
     }
 
+    ret2 = reader->readDwgBlocks(*iface);
+    if (ret && !ret2) {
+        error = DRW::BAD_READ_BLOCKS;
+        ret = ret2;
+    }
+
+/*
     for (std::map<int, DRW_Block*>::iterator it=reader->blockmap.begin(); it!=reader->blockmap.end(); ++it) {
         DRW_Block *bk = it->second;
         iface->addBlock(const_cast<DRW_Block&>(*bk));
@@ -189,11 +196,11 @@ bool dwgR::processDwg() {
         reader->currBlock = 0;
     } else
         reader->currBlock = 0;
-
+*/
     iface->setBlock(0);
-    for (std::list<objHandle>::iterator it=reader->ObjectMap.begin(); it != reader->ObjectMap.end(); ++it){
-        DBG("object map Handle= "); DBG(it->handle); DBG(" "); DBG(it->loc); DBG("\n");
-        ret2 = reader->readDwgEntity(*it, *iface);
+    for (std::map<duint32, objHandle>::iterator it=reader->ObjectMap.begin(); it != reader->ObjectMap.end(); ++it){
+        DBG("object map Handle= "); DBG(it->first); DBG(" "); DBG(it->second.loc); DBG("\n");
+        ret2 = reader->readDwgEntity(it->second, *iface);
     }
 
     if (ret && !ret2) {

@@ -162,7 +162,7 @@ bool DRW_Entity::parseDwg(DRW::Version version, dwgBuffer *buf){
         entmode = 0;
     space = (DRW::Space)entmode; //RLZ verify cast values
     DBG("entmode: "); DBG(entmode);
-    duint8 numReactors = buf->getBitLong(); //BL
+    duint8 numReactors = buf->getBitShort(); //BS
     DBG(", numReactors: "); DBG(numReactors);
 
     if (version < DRW::AC1015) {//14-
@@ -178,8 +178,8 @@ bool DRW_Entity::parseDwg(DRW::Version version, dwgBuffer *buf){
         /*duint8 xDictFlag =*/ buf->getBit();
     }
 
-    nextLinkers = buf->getBit(); //aka nolinks //B
-    DBG(", nextLinkers: "); DBG(nextLinkers);
+    haveNextLinks = buf->getBit(); //aka nolinks //B
+    DBG(", haveNextLinks (0 yes, 1 prev next): "); DBG(haveNextLinks); DBG("\n");
 
     color = buf->getBitShort(); //BS or CMC
     ltypeScale = buf->getBitDouble(); //BD
@@ -240,9 +240,9 @@ bool DRW_Entity::parseDwgEntHandle(DRW::Version version, dwgBuffer *buf){
         DBG("Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
 
         if (version > DRW::AC1014) {//2000+
-            if (nextLinkers == 0) {
+            if (haveNextLinks == 0) {
                 for (int i=0; i<2;i++) {
-                    dwgHandle nextLinkH = buf->getHandle();
+                    dwgHandle nextLinkH = buf->getOffsetHandle(handle);
                     DBG(" nextLinkers Handle: "); DBG(nextLinkH.code); DBG(".");
                     DBG(nextLinkH.size); DBG("."); DRW_DBGH(nextLinkH.ref); DBG("\n");
                     DBG("\n Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
@@ -250,30 +250,37 @@ bool DRW_Entity::parseDwgEntHandle(DRW::Version version, dwgBuffer *buf){
             }
         }
         //layer handle
-        layerH = buf->getHardHandle(handle);
+        layerH = buf->getOffsetHandle(handle);
         DBG(" layer Handle: "); DBG(layerH.code); DBG(".");
         DBG(layerH.size); DBG("."); DRW_DBGH(layerH.ref); DBG("\n");
         DBG("   Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
         //lineType handle
         if(lineType.empty()){
-            lTypeH = buf->getHardHandle(handle);
+            lTypeH = buf->getOffsetHandle(handle);
             DBG("linetype Handle: "); DBG(lTypeH.code); DBG(".");
             DBG(lTypeH.size); DBG("."); DRW_DBGH(lTypeH.ref); DBG("\n");
             DBG("   Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
         }
         if (version < DRW::AC1015) {//14-
-            if (nextLinkers == 0) {
-                for (int i=0; i<2;i++) {
-                    dwgHandle nextLinkH = buf->getHandle();
-                    DBG(" nextLinkers Handle: "); DBG(nextLinkH.code); DBG(".");
+            if (haveNextLinks == 0) {
+                    dwgHandle nextLinkH = buf->getOffsetHandle(handle);
+                    DBG(" prev nextLinkers Handle: "); DBG(nextLinkH.code); DBG(".");
                     DBG(nextLinkH.size); DBG("."); DRW_DBGH(nextLinkH.ref); DBG("\n");
                     DBG("\n Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
-                }
+                    prevEntLink = nextLinkH.ref;
+                    nextLinkH = buf->getOffsetHandle(handle);
+                    DBG(" next nextLinkers Handle: "); DBG(nextLinkH.code); DBG(".");
+                    DBG(nextLinkH.size); DBG("."); DRW_DBGH(nextLinkH.ref); DBG("\n");
+                    DBG("\n Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
+                    nextEntLink = nextLinkH.ref;
+            } else {
+                nextEntLink = handle+1;
+                prevEntLink = handle-1;
             }
         }
         if (version > DRW::AC1014) {//2000+
             if (plotFlags == 3) {
-                dwgHandle plotStyleH = buf->getHandle();
+                dwgHandle plotStyleH = buf->getOffsetHandle(handle);
                 DBG(" plot style Handle: "); DBG(plotStyleH.code); DBG(".");
                 DBG(plotStyleH.size); DBG("."); DBG(plotStyleH.ref); DBG("\n");
                 DBG("\n Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
@@ -1858,4 +1865,50 @@ void DRW_Viewport::parseCode(int code, dxfReader *reader){
         DRW_Point::parseCode(code, reader);
         break;
     }
+}
+//ex 22 dec 34
+bool DRW_Viewport::parseDwg(DRW::Version version, dwgBuffer *buf){
+    bool ret = DRW_Entity::parseDwg(version, buf);
+    if (!ret)
+        return ret;
+    DBG("\n***************************** parsing viewport *****************************************\n");
+
+    basePoint.x = buf->getBitDouble();
+    basePoint.y = buf->getBitDouble();
+    basePoint.z = buf->getBitDouble();
+    DBG("center X: "); DBG(basePoint.x); DBG(", Y: "); DBG(basePoint.y); DBG(", Z: "); DBG(basePoint.z); DBG("\n");
+    pswidth = buf->getBitDouble();
+    psheight = buf->getBitDouble();
+    //TODO: complete in dxf
+    if (version > DRW::AC1014) {//2000+
+        viewTarget.x = buf->getBitDouble();
+        viewTarget.y = buf->getBitDouble();
+        viewTarget.z = buf->getBitDouble();
+        DBG("view Target X: "); DBG(viewTarget.x); DBG(", Y: "); DBG(viewTarget.y); DBG(", Z: "); DBG(viewTarget.z); DBG("\n");
+        viewDir.x = buf->getBitDouble();
+        viewDir.y = buf->getBitDouble();
+        viewDir.z = buf->getBitDouble();
+        DBG("view direction X: "); DBG(viewDir.x); DBG(", Y: "); DBG(viewDir.y); DBG(", Z: "); DBG(viewDir.z); DBG("\n");
+        twistAngle = buf->getBitDouble();
+        DBG("twist Angle: "); DBG(twistAngle);DBG("\n");
+        viewHeight = buf->getBitDouble();
+        DBG("view Height: "); DBG(viewHeight);
+        viewLength = buf->getBitDouble();
+        DBG(" view Length: "); DBG(viewLength);DBG("\n");
+        frontClip = buf->getBitDouble();
+        DBG("front Clip: "); DBG(frontClip);
+        backClip = buf->getBitDouble();
+        DBG(" back Clip: "); DBG(backClip);DBG("\n");
+        snapAngle = buf->getBitDouble();
+        DBG("twist Angle: "); DBG(twistAngle);DBG("\n");
+        centerPX = buf->getRawDouble();
+        centerPY = buf->getRawDouble();
+        DBG("view center X: "); DBG(twistAngle); DBG(", Y: "); DBG(twistAngle);DBG("\n");
+    }
+    ret = DRW_Entity::parseDwgEntHandle(version, buf);
+//    X handleAssoc;   //X
+    if (!ret)
+        return ret;
+//    RS crc;   //RS */
+    return buf->isGood();
 }

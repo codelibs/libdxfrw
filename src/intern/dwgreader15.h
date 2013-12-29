@@ -32,6 +32,7 @@ public:
     bool readDwgClasses();
     bool readDwgObjectOffsets();
     bool readDwgTables();
+    bool readDwgBlocks(DRW_Interface& intfa);
     bool readDwgEntity(objHandle& obj, DRW_Interface& intfa);
 };
 
