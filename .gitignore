@@ -16,6 +16,8 @@ Makefile
 *.swp
 *.orig
 .deps
+.libs
+doc/
 config.log
 config.status
 libdxfrw*.pc
