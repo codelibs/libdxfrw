@@ -223,7 +223,7 @@ public:
         isccw = 1;
     }
 
-    virtual void applyExtrusion(){DRW_Circle::applyExtrusion();}
+    virtual void applyExtrusion();
     void parseCode(int code, dxfReader *reader);
 
 public:
@@ -811,7 +811,7 @@ public:
     int clip;                  /*!< Clipping state, code 280, 0=off 1=on */
     int brightness;            /*!< Brightness value, code 281, (0-100) default 50 */
     int contrast;              /*!< Brightness value, code 282, (0-100) default 50 */
-    int fade;                   /*!< Brightness value, code 283, (0-100) default 0 */
+    int fade;                  /*!< Brightness value, code 283, (0-100) default 0 */
 
 };
 
@@ -1117,7 +1117,7 @@ public:
     void parseCode(int code, dxfReader *reader);
 
 public:
-    UTF8STRING style;              /*!< Dimension style name, code 3 */
+    UTF8STRING style;          /*!< Dimension style name, code 3 */
     int arrow;                 /*!< Arrowhead flag, code 71, 0=Disabled; 1=Enabled */
     int leadertype;            /*!< Leader path type, code 72, 0=Straight line segments; 1=Spline */
     int flag;                  /*!< Leader creation flag, code 73, default 3 */
