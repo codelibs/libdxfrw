@@ -19,7 +19,8 @@ libdxfrw_la_SOURCES = src/drw_entities.cpp src/drw_objects.cpp src/drw_header.cp
 		      src/intern/dxfreader.cpp src/intern/dwgreader15.cpp src/intern/dwgreader18.cpp src/intern/dwgreader21.cpp \
 		      src/intern/dxfwriter.cpp src/intern/dwgreader.cpp src/intern/dwgbuffer.cpp src/intern/drw_textcodec.cpp
 
-libdxfrw_la_LDFLAGS = -version-number $(LIBRARY_AGE):$(LIBRARY_CURRENT):$(LIBRARY_REVISION)
+libdxfrw_la_LDFLAGS = -no-undefined -version-number $(LIBRARY_AGE):$(LIBRARY_CURRENT):$(LIBRARY_REVISION)
+
 libdxfrw_la_LIBADD =
 
 pkgconfigdir = ${libdir}/pkgconfig

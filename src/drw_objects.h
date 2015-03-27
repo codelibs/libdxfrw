@@ -33,7 +33,8 @@ namespace DRW {
          STYLE,
          DIMSTYLE,
          VPORT,
-         BLOCK_RECORD
+         BLOCK_RECORD,
+         APPID
      };
 
 
@@ -52,13 +53,26 @@ public:
     DRW_TableEntry() {
         tType = DRW::UNKNOWNT;
         flags = 0;
+        curr = NULL;
     }
-    virtual~DRW_TableEntry() {}
+
+    virtual~DRW_TableEntry() {
+        for (std::vector<DRW_Variant*>::iterator it=extData.begin(); it!=extData.end(); ++it)
+            delete *it;
+
+        extData.clear();
+    }
 
 
 protected:
     void parseCode(int code, dxfReader *reader);
     virtual bool parseDwg(DRW::Version version, dwgBuffer *buf);
+    void reset(){
+        flags =0;
+        for (std::vector<DRW_Variant*>::iterator it=extData.begin(); it!=extData.end(); ++it)
+            delete *it;
+        extData.clear();
+    }
 
 public:
     enum DRW::TTYPE tType;     /*!< enum: entity type, code 0 */
@@ -66,10 +80,15 @@ public:
     int handleBlock;           /*!< Soft-pointer ID/handle to owner BLOCK_RECORD object, code 330 */
     UTF8STRING name;           /*!< entry name, code 2 */
     int flags;                 /*!< Flags relevant to entry, code 70 */
+    std::vector<DRW_Variant*> extData; /*!< FIFO list of extended data, codes 1000 to 1071*/
+
     //***** dwg parse ********/
     dint32 numReactors; //
 protected:
     dint16 oType;
+
+private:
+    DRW_Variant* curr;
 };
 
 
@@ -104,6 +123,7 @@ public:
         dimfit = dimatfit = 3;
         dimdsep = '.';
         dimlwd = dimlwe = -2;
+        DRW_TableEntry::reset();
     }
 
     void parseCode(int code, dxfReader *reader);
@@ -197,10 +217,7 @@ public:
         size = 0;
         length = 0.0;
         pathIdx = 0;
-/*        color = 256; // default BYLAYER (256)
-        plotF = true; // default TRUE (plot yes)
-        lWeight = -1; // default BYLAYER (-1)*/
-//        align = 65; //always 65
+        DRW_TableEntry::reset();
     }
 
     void parseCode(int code, dxfReader *reader);
@@ -235,16 +252,17 @@ public:
         plotF = true; // default TRUE (plot yes)
         lWeight = DRW_LW_Conv::widthDefault; // default BYDEFAULT (dxf -3, dwg 31)
         color24 = -1; //default -1 not set
+        DRW_TableEntry::reset();
     }
 
     void parseCode(int code, dxfReader *reader);
     bool parseDwg(DRW::Version version, dwgBuffer *buf);
 
 public:
-    UTF8STRING lineType;           /*!< line type, code 6 */
-    int color;                 /*!< layer color, code 62 */
-    int color24;               /*!< 24-bit color, code 420 */
-    bool plotF;                 /*!< Plot flag, code 290 */
+    UTF8STRING lineType;            /*!< line type, code 6 */
+    int color;                      /*!< layer color, code 62 */
+    int color24;                    /*!< 24-bit color, code 420 */
+    bool plotF;                     /*!< Plot flag, code 290 */
     enum DRW_LW_Conv::lineWidth lWeight; /*!< layer lineweight, code 370 */
     std::string handlePlotS;        /*!< Hard-pointer ID/handle of plotstyle, code 390 */
     std::string handlePlotM;        /*!< Hard-pointer ID/handle of materialstyle, code 347 */
@@ -298,6 +316,7 @@ public:
         font="txt";
         genFlag = 0; //2= X mirror, 4= Y mirror
         fontFamily = 0;
+        DRW_TableEntry::reset();
     }
 
     void parseCode(int code, dxfReader *reader);
@@ -339,6 +358,7 @@ public:
         circleZoom = 100;
         ucsIcon = 3;
         gridBehavior = 7;
+        DRW_TableEntry::reset();
     }
 
     void parseCode(int code, dxfReader *reader);
@@ -393,7 +413,7 @@ public:
 
 public:
     std::string handle;       /*!< entity identifier, code 5 */
-    UTF8STRING name;              /*!< File name of image, code 1 */
+    UTF8STRING name;          /*!< File name of image, code 1 */
     int version;              /*!< class version, code 90, 0=R14 version */
     double u;                 /*!< image size in pixels U value, code 10 */
     double v;                 /*!< image size in pixels V value, code 20 */
@@ -403,6 +423,24 @@ public:
     int resolution;           /*!< resolution units, code 281, 0=no, 2=centimeters, 5=inch */
 
     std::map<std::string,std::string> reactors;
+};
+
+//! Class to handle AppId entries
+/*!
+*  Class to handle AppId symbol table entries
+*  @author Rallaz
+*/
+class DRW_AppId : public DRW_TableEntry {
+public:
+    DRW_AppId() { reset();}
+
+    void reset(){
+        tType = DRW::APPID;
+        flags = 0;
+        name = "";
+    }
+
+    void parseCode(int code, dxfReader *reader){DRW_TableEntry::parseCode(code, reader);}
 };
 
 namespace DRW {

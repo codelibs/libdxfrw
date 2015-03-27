@@ -45,6 +45,7 @@ public:
     bool writeDimstyle(DRW_Dimstyle *ent);
     bool writeTextstyle(DRW_Textstyle *ent);
     bool writeVport(DRW_Vport *ent);
+    bool writeAppId(DRW_AppId *ent);
     bool writePoint(DRW_Point *ent);
     bool writeLine(DRW_Line *ent);
     bool writeRay(DRW_Ray *ent);
@@ -85,6 +86,7 @@ private:
     bool processDimStyle();
     bool processTextStyle();
     bool processVports();
+    bool processAppId();
 
     bool processPoint();
     bool processLine();
@@ -115,6 +117,7 @@ private:
     bool writeTables();
     bool writeBlocks();
     bool writeObjects();
+    bool writeExtData(const std::vector<DRW_Variant*> &ed);
     std::string toHexStr(int n);
 
 private:

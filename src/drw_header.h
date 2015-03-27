@@ -30,13 +30,21 @@ public:
     DRW_Header() {
     }
     ~DRW_Header() {
+        for (std::map<std::string,DRW_Variant*>::iterator it=vars.begin(); it!=vars.end(); ++it)
+            delete it->second;
         vars.clear();
     }
 
-    void parseCode(int code, dxfReader *reader);
+    void addDouble(std::string key, double value, int code);
+    void addInt(std::string key, int value, int code);
+    void addStr(std::string key, std::string value, int code);
+    void addCoord(std::string key, DRW_Coord value, int code);
+     std::string getComments() const {return comments;}
+
+     void parseCode(int code, dxfReader *reader);
     void write(dxfWriter *writer, DRW::Version ver);
     void addComment(std::string c);
-    std::string getComments() const {return comments;}
+
 private:
     bool getDouble(std::string key, double *varDouble);
     bool getInt(std::string key, int *varInt);

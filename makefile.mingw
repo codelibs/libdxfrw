@@ -5,6 +5,7 @@
 ####### Compiler, tools and options
 
 VERSION       = 0.6.0
+
 CC            = gcc
 CXX           = g++
 DEFINES       = -DUNICODE

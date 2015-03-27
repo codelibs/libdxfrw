@@ -9,6 +9,9 @@ Makefile
 *.a
 *.la
 *so
+*lo
+*.la
+*.o
 *.dll
 *~
 *bz2
@@ -16,6 +19,8 @@ Makefile
 *.swp
 *.orig
 .deps
+.libs
+doc/
 config.log
 config.status
 libdxfrw*.pc

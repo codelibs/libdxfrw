@@ -43,7 +43,12 @@ dxfRW::dxfRW(const char* name){
 dxfRW::~dxfRW(){
     if (reader != NULL)
         delete reader;
+    if (writer != NULL)
+        delete writer;
+    for (std::vector<DRW_ImageDef*>::iterator it=imageDef.begin(); it!=imageDef.end(); ++it)
+        delete *it;
 
+    imageDef.clear();
 }
 
 void dxfRW::setDebug(DRW::DBG_LEVEL lvl){
@@ -249,6 +254,9 @@ bool dxfRW::writeLayer(DRW_Layer *ent){
         writer->writeString(390, "F");
     } else
         writer->writeUtf8Caps(6, ent->lineType);
+    if (!ent->extData.empty()){
+        writeExtData(ent->extData);
+    }
 //    writer->writeString(347, "10012");
     return true;
 }
@@ -485,6 +493,23 @@ bool dxfRW::writeDimstyle(DRW_Dimstyle *ent){
         writer->writeInt16(371, ent->dimlwd);
         writer->writeInt16(372, ent->dimlwe);
     }
+    return true;
+}
+
+bool dxfRW::writeAppId(DRW_AppId *ent){
+    writer->writeString(0, "APPID");
+    if (version > DRW::AC1009) {
+        writer->writeString(5, toHexStr(++entCount));
+        if (version > DRW::AC1014) {
+            writer->writeString(330, "9");
+        }
+        writer->writeString(100, "AcDbSymbolTableRecord");
+        writer->writeString(100, "AcDbRegAppTableRecord");
+        writer->writeUtf8String(2, ent->name);
+    } else {
+        writer->writeUtf8Caps(2, ent->name);
+    }
+    writer->writeInt16(70, ent->flags);
     return true;
 }
 
@@ -1240,7 +1265,7 @@ DRW_ImageDef* dxfRW::writeImage(DRW_Image *ent, std::string name){
         writer->writeInt16(282, ent->contrast);
         writer->writeInt16(283, ent->fade);
         writer->writeString(360, idReactor);
-        id->reactors[idReactor] = ent->handle;
+        id->reactors[idReactor] = toHexStr(ent->handle);
         return id;
     }
     return NULL; //not exist in acad 12
@@ -1485,6 +1510,7 @@ bool dxfRW::writeTables() {
     }
     writer->writeString(2, "ACAD");
     writer->writeInt16(70, 0);
+    iface->writeAppId();
     writer->writeString(0, "ENDTAB");
 
     writer->writeString(0, "TABLE");
@@ -1549,7 +1575,7 @@ bool dxfRW::writeTables() {
         }
     }
     /* allways call writeBlockRecords to iface for prepare unnamed blocks */
-        iface->writeBlockRecords();
+    iface->writeBlockRecords();
     if (version > DRW::AC1009) {
         writer->writeString(0, "ENDTAB");
     }
@@ -1671,7 +1697,7 @@ bool dxfRW::writeObjects() {
     for (unsigned int i=0; i<imageDef.size(); i++) {
         DRW_ImageDef *id = imageDef.at(i);
         std::map<std::string, std::string>::iterator it;
-        for ( it=id->reactors.begin() ; it != id->reactors.end(); it++ ) {
+        for ( it=id->reactors.begin() ; it != id->reactors.end(); ++it ) {
             writer->writeString(0, "IMAGEDEF_REACTOR");
             writer->writeString(5, (*it).first);
             writer->writeString(330, (*it).second);
@@ -1704,7 +1730,7 @@ bool dxfRW::writeObjects() {
         }
         writer->writeString(102, "{ACAD_REACTORS");
         std::map<std::string, std::string>::iterator it;
-        for ( it=id->reactors.begin() ; it != id->reactors.end(); it++ ) {
+        for ( it=id->reactors.begin() ; it != id->reactors.end(); ++it ) {
             writer->writeString(330, (*it).first);
         }
         writer->writeString(102, "}");
@@ -1723,6 +1749,51 @@ bool dxfRW::writeObjects() {
        imageDef.pop_back();
     }
 
+    return true;
+}
+
+bool dxfRW::writeExtData(const std::vector<DRW_Variant*> &ed){
+    for (std::vector<DRW_Variant*>::const_iterator it=ed.begin(); it!=ed.end(); ++it){
+        switch ((*it)->code) {
+        case 1000:
+        case 1001:
+        case 1002:
+        case 1003:
+        case 1004:
+        case 1005:
+        {int cc = (*it)->code;
+            if ((*it)->type == DRW_Variant::STRING)
+                writer->writeUtf8String(cc, *(*it)->content.s);
+//            writer->writeUtf8String((*it)->code, (*it)->content.s);
+            break;}
+        case 1010:
+        case 1011:
+        case 1012:
+        case 1013:
+            if ((*it)->type == DRW_Variant::COORD) {
+                writer->writeDouble((*it)->code, (*it)->content.v->x);
+                writer->writeDouble((*it)->code+10 , (*it)->content.v->y);
+                writer->writeDouble((*it)->code+20 , (*it)->content.v->z);
+            }
+            break;
+        case 1040:
+        case 1041:
+        case 1042:
+            if ((*it)->type == DRW_Variant::DOUBLE)
+                writer->writeDouble((*it)->code, (*it)->content.d);
+            break;
+        case 1070:
+            if ((*it)->type == DRW_Variant::INTEGER)
+                writer->writeInt16((*it)->code, (*it)->content.i);
+            break;
+        case 1071:
+            if ((*it)->type == DRW_Variant::INTEGER)
+                writer->writeInt32((*it)->code, (*it)->content.i);
+            break;
+        default:
+            break;
+        }
+    }
     return true;
 }
 
@@ -1829,7 +1900,7 @@ bool dxfRW::processTables() {
                     } else if (sectionstr == "UCS") {
 //                        processUCS();
                     } else if (sectionstr == "APPID") {
-//                        processAppId();
+                        processAppId();
                     } else if (sectionstr == "DIMSTYLE") {
                         processDimStyle();
                     } else if (sectionstr == "BLOCK_RECORD") {
@@ -1960,6 +2031,31 @@ bool dxfRW::processVports(){
             sectionstr = reader->getString();
             DBG(sectionstr); DBG("\n");
             if (sectionstr == "VPORT") {
+                reading = true;
+                vp.reset();
+            } else if (sectionstr == "ENDTAB") {
+                return true;  //found ENDTAB terminate
+            }
+        } else if (reading)
+            vp.parseCode(code, reader);
+    }
+    return true;
+}
+
+bool dxfRW::processAppId(){
+    DBG("dxfRW::processAppId");
+    int code;
+    std::string sectionstr;
+    bool reading = false;
+    DRW_AppId vp;
+    while (reader->readRec(&code, !binary)) {
+        DBG(code); DBG("\n");
+        if (code == 0) {
+            if (reading)
+                iface->addAppId(vp);
+            sectionstr = reader->getString();
+            DBG(sectionstr); DBG("\n");
+            if (sectionstr == "APPID") {
                 reading = true;
                 vp.reset();
             } else if (sectionstr == "ENDTAB") {
@@ -2666,9 +2762,9 @@ bool dxfRW::processImageDef() {
  **/
 std::string dxfRW::toHexStr(int n){
 #if defined(__APPLE__)
-    std::string buffer(9, '\0');
-    snprintf(& buffer[0],9, "%X", n);
-    return buffer;
+    char buffer[9]= {'\0'};
+    snprintf(buffer,9, "%X", n);
+    return std::string(buffer);
 #else
     std::ostringstream Convert;
     Convert << std::uppercase << std::hex << n;
