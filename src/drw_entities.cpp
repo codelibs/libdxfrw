@@ -539,6 +539,7 @@ bool DRW_Circle::parseDwg(DRW::Version version, dwgBuffer *buf){
         return ret;
 //    RS crc;   //RS */
     return buf->isGood();
+}
 
 void DRW_Arc::applyExtrusion(){
     DRW_Circle::applyExtrusion();

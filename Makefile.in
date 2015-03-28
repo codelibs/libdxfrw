@@ -132,17 +132,14 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgconfigdir)" \
 	"$(DESTDIR)$(library_includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libdxfrw_la_DEPENDENCIES =
-<<<<<<< HEAD
-am_libdxfrw_la_OBJECTS = drw_entities.lo drw_objects.lo drw_header.lo \
-	drw_classes.lo libdwgr.lo libdxfrw.lo dwgutil.lo dxfreader.lo \
-	dwgreader15.lo dwgreader18.lo dwgreader21.lo dxfwriter.lo \
-	dwgreader.lo dwgbuffer.lo drw_textcodec.lo
-=======
 am__dirstamp = $(am__leading_dot)dirstamp
 am_libdxfrw_la_OBJECTS = src/drw_entities.lo src/drw_objects.lo \
-	src/libdxfrw.lo src/intern/dxfreader.lo \
-	src/intern/dxfwriter.lo src/intern/drw_textcodec.lo
->>>>>>> 0_5
+	src/drw_header.lo src/drw_classes.lo src/libdwgr.lo \
+	src/libdxfrw.lo src/intern/dwgutil.lo src/intern/dxfreader.lo \
+	src/intern/dwgreader15.lo src/intern/dwgreader18.lo \
+	src/intern/dwgreader21.lo src/intern/dxfwriter.lo \
+	src/intern/dwgreader.lo src/intern/dwgbuffer.lo \
+	src/intern/drw_textcodec.lo
 libdxfrw_la_OBJECTS = $(am_libdxfrw_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -461,6 +458,9 @@ src/$(DEPDIR)/$(am__dirstamp):
 	@: > src/$(DEPDIR)/$(am__dirstamp)
 src/drw_entities.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
 src/drw_objects.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
+src/drw_header.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
+src/drw_classes.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
+src/libdwgr.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
 src/libdxfrw.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
 src/intern/$(am__dirstamp):
 	@$(MKDIR_P) src/intern
@@ -468,9 +468,21 @@ src/intern/$(am__dirstamp):
 src/intern/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/intern/$(DEPDIR)
 	@: > src/intern/$(DEPDIR)/$(am__dirstamp)
+src/intern/dwgutil.lo: src/intern/$(am__dirstamp) \
+	src/intern/$(DEPDIR)/$(am__dirstamp)
 src/intern/dxfreader.lo: src/intern/$(am__dirstamp) \
 	src/intern/$(DEPDIR)/$(am__dirstamp)
+src/intern/dwgreader15.lo: src/intern/$(am__dirstamp) \
+	src/intern/$(DEPDIR)/$(am__dirstamp)
+src/intern/dwgreader18.lo: src/intern/$(am__dirstamp) \
+	src/intern/$(DEPDIR)/$(am__dirstamp)
+src/intern/dwgreader21.lo: src/intern/$(am__dirstamp) \
+	src/intern/$(DEPDIR)/$(am__dirstamp)
 src/intern/dxfwriter.lo: src/intern/$(am__dirstamp) \
+	src/intern/$(DEPDIR)/$(am__dirstamp)
+src/intern/dwgreader.lo: src/intern/$(am__dirstamp) \
+	src/intern/$(DEPDIR)/$(am__dirstamp)
+src/intern/dwgbuffer.lo: src/intern/$(am__dirstamp) \
 	src/intern/$(DEPDIR)/$(am__dirstamp)
 src/intern/drw_textcodec.lo: src/intern/$(am__dirstamp) \
 	src/intern/$(DEPDIR)/$(am__dirstamp)
@@ -488,30 +500,21 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-<<<<<<< HEAD
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drw_classes.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drw_entities.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drw_header.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drw_objects.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/drw_textcodec.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwgbuffer.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwgreader.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwgreader15.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwgreader18.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwgreader21.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwgutil.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dxfreader.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dxfwriter.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdwgr.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdxfrw.Plo@am__quote@
-=======
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/drw_classes.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/drw_entities.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/drw_header.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/drw_objects.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/libdwgr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/libdxfrw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/drw_textcodec.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dwgbuffer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dwgreader.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dwgreader15.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dwgreader18.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dwgreader21.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dwgutil.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dxfreader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dxfwriter.Plo@am__quote@
->>>>>>> 0_5
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -535,102 +538,7 @@ distclean-compile:
 @am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-<<<<<<< HEAD
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o drw_objects.lo `test -f 'src/drw_objects.cpp' || echo '$(srcdir)/'`src/drw_objects.cpp
-
-drw_header.lo: src/drw_header.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT drw_header.lo -MD -MP -MF $(DEPDIR)/drw_header.Tpo -c -o drw_header.lo `test -f 'src/drw_header.cpp' || echo '$(srcdir)/'`src/drw_header.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/drw_header.Tpo $(DEPDIR)/drw_header.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/drw_header.cpp' object='drw_header.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o drw_header.lo `test -f 'src/drw_header.cpp' || echo '$(srcdir)/'`src/drw_header.cpp
-
-drw_classes.lo: src/drw_classes.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT drw_classes.lo -MD -MP -MF $(DEPDIR)/drw_classes.Tpo -c -o drw_classes.lo `test -f 'src/drw_classes.cpp' || echo '$(srcdir)/'`src/drw_classes.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/drw_classes.Tpo $(DEPDIR)/drw_classes.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/drw_classes.cpp' object='drw_classes.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o drw_classes.lo `test -f 'src/drw_classes.cpp' || echo '$(srcdir)/'`src/drw_classes.cpp
-
-libdwgr.lo: src/libdwgr.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libdwgr.lo -MD -MP -MF $(DEPDIR)/libdwgr.Tpo -c -o libdwgr.lo `test -f 'src/libdwgr.cpp' || echo '$(srcdir)/'`src/libdwgr.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libdwgr.Tpo $(DEPDIR)/libdwgr.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/libdwgr.cpp' object='libdwgr.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libdwgr.lo `test -f 'src/libdwgr.cpp' || echo '$(srcdir)/'`src/libdwgr.cpp
-
-libdxfrw.lo: src/libdxfrw.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libdxfrw.lo -MD -MP -MF $(DEPDIR)/libdxfrw.Tpo -c -o libdxfrw.lo `test -f 'src/libdxfrw.cpp' || echo '$(srcdir)/'`src/libdxfrw.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libdxfrw.Tpo $(DEPDIR)/libdxfrw.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/libdxfrw.cpp' object='libdxfrw.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libdxfrw.lo `test -f 'src/libdxfrw.cpp' || echo '$(srcdir)/'`src/libdxfrw.cpp
-
-dwgutil.lo: src/intern/dwgutil.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dwgutil.lo -MD -MP -MF $(DEPDIR)/dwgutil.Tpo -c -o dwgutil.lo `test -f 'src/intern/dwgutil.cpp' || echo '$(srcdir)/'`src/intern/dwgutil.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/dwgutil.Tpo $(DEPDIR)/dwgutil.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/intern/dwgutil.cpp' object='dwgutil.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dwgutil.lo `test -f 'src/intern/dwgutil.cpp' || echo '$(srcdir)/'`src/intern/dwgutil.cpp
-
-dxfreader.lo: src/intern/dxfreader.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dxfreader.lo -MD -MP -MF $(DEPDIR)/dxfreader.Tpo -c -o dxfreader.lo `test -f 'src/intern/dxfreader.cpp' || echo '$(srcdir)/'`src/intern/dxfreader.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/dxfreader.Tpo $(DEPDIR)/dxfreader.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/intern/dxfreader.cpp' object='dxfreader.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dxfreader.lo `test -f 'src/intern/dxfreader.cpp' || echo '$(srcdir)/'`src/intern/dxfreader.cpp
-
-dwgreader15.lo: src/intern/dwgreader15.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dwgreader15.lo -MD -MP -MF $(DEPDIR)/dwgreader15.Tpo -c -o dwgreader15.lo `test -f 'src/intern/dwgreader15.cpp' || echo '$(srcdir)/'`src/intern/dwgreader15.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/dwgreader15.Tpo $(DEPDIR)/dwgreader15.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/intern/dwgreader15.cpp' object='dwgreader15.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dwgreader15.lo `test -f 'src/intern/dwgreader15.cpp' || echo '$(srcdir)/'`src/intern/dwgreader15.cpp
-
-dwgreader18.lo: src/intern/dwgreader18.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dwgreader18.lo -MD -MP -MF $(DEPDIR)/dwgreader18.Tpo -c -o dwgreader18.lo `test -f 'src/intern/dwgreader18.cpp' || echo '$(srcdir)/'`src/intern/dwgreader18.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/dwgreader18.Tpo $(DEPDIR)/dwgreader18.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/intern/dwgreader18.cpp' object='dwgreader18.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dwgreader18.lo `test -f 'src/intern/dwgreader18.cpp' || echo '$(srcdir)/'`src/intern/dwgreader18.cpp
-
-dwgreader21.lo: src/intern/dwgreader21.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dwgreader21.lo -MD -MP -MF $(DEPDIR)/dwgreader21.Tpo -c -o dwgreader21.lo `test -f 'src/intern/dwgreader21.cpp' || echo '$(srcdir)/'`src/intern/dwgreader21.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/dwgreader21.Tpo $(DEPDIR)/dwgreader21.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/intern/dwgreader21.cpp' object='dwgreader21.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dwgreader21.lo `test -f 'src/intern/dwgreader21.cpp' || echo '$(srcdir)/'`src/intern/dwgreader21.cpp
-
-dxfwriter.lo: src/intern/dxfwriter.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dxfwriter.lo -MD -MP -MF $(DEPDIR)/dxfwriter.Tpo -c -o dxfwriter.lo `test -f 'src/intern/dxfwriter.cpp' || echo '$(srcdir)/'`src/intern/dxfwriter.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/dxfwriter.Tpo $(DEPDIR)/dxfwriter.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/intern/dxfwriter.cpp' object='dxfwriter.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dxfwriter.lo `test -f 'src/intern/dxfwriter.cpp' || echo '$(srcdir)/'`src/intern/dxfwriter.cpp
-
-dwgreader.lo: src/intern/dwgreader.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dwgreader.lo -MD -MP -MF $(DEPDIR)/dwgreader.Tpo -c -o dwgreader.lo `test -f 'src/intern/dwgreader.cpp' || echo '$(srcdir)/'`src/intern/dwgreader.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/dwgreader.Tpo $(DEPDIR)/dwgreader.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/intern/dwgreader.cpp' object='dwgreader.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dwgreader.lo `test -f 'src/intern/dwgreader.cpp' || echo '$(srcdir)/'`src/intern/dwgreader.cpp
-
-dwgbuffer.lo: src/intern/dwgbuffer.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dwgbuffer.lo -MD -MP -MF $(DEPDIR)/dwgbuffer.Tpo -c -o dwgbuffer.lo `test -f 'src/intern/dwgbuffer.cpp' || echo '$(srcdir)/'`src/intern/dwgbuffer.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/dwgbuffer.Tpo $(DEPDIR)/dwgbuffer.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/intern/dwgbuffer.cpp' object='dwgbuffer.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dwgbuffer.lo `test -f 'src/intern/dwgbuffer.cpp' || echo '$(srcdir)/'`src/intern/dwgbuffer.cpp
-
-drw_textcodec.lo: src/intern/drw_textcodec.cpp
-@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT drw_textcodec.lo -MD -MP -MF $(DEPDIR)/drw_textcodec.Tpo -c -o drw_textcodec.lo `test -f 'src/intern/drw_textcodec.cpp' || echo '$(srcdir)/'`src/intern/drw_textcodec.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/drw_textcodec.Tpo $(DEPDIR)/drw_textcodec.Plo
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='src/intern/drw_textcodec.cpp' object='drw_textcodec.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o drw_textcodec.lo `test -f 'src/intern/drw_textcodec.cpp' || echo '$(srcdir)/'`src/intern/drw_textcodec.cpp
-=======
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
->>>>>>> 0_5
 
 mostlyclean-libtool:
 	-rm -f *.lo

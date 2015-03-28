@@ -3,7 +3,6 @@
 
 AC_PREREQ([2.63])
 AC_INIT([libdxfrw], [0.6.0], [https://sourceforge.net/projects/libdxfrw/])
-AC_INIT([libdxfrw], [0.5.13], [https://sourceforge.net/projects/libdxfrw/])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror dist-bzip2 subdir-objects])
 AC_CONFIG_SRCDIR([src/drw_interface.h])
 
