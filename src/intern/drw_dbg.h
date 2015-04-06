@@ -1,7 +1,7 @@
 /******************************************************************************
 **  libDXFrw - Library to read/write DXF files (ascii & binary)              **
 **                                                                           **
-**  Copyright (C) 2011-2013 Rallaz, rallazz@gmail.com                        **
+**  Copyright (C) 2011-2015 José F. Soriano, rallazz@gmail.com               **
 **                                                                           **
 **  This library is free software, licensed under the terms of the GNU       **
 **  General Public License as published by the Free Software Foundation,     **
@@ -22,9 +22,9 @@
 #define DRW_DBG(a) DRW_dbg::getInstance()->print(a)
 #define DRW_DBGH(a) DRW_dbg::getInstance()->printH(a)
 #define DRW_DBGB(a) DRW_dbg::getInstance()->printB(a)
+#define DRW_DBGHL(a, b, c) DRW_dbg::getInstance()->printHL(a, b ,c)
+#define DRW_DBGPT(a, b, c) DRW_dbg::getInstance()->printPT(a, b, c)
 
-//change DBG to DRW_DBG
-#define DBG(a) DRW_dbg::getInstance()->print(a)
 
 class print_none;
 
@@ -44,8 +44,11 @@ public:
     void print(long unsigned int i);
     void print(long long unsigned int i);
     void print(double d);
-    void printH(int i);
+    void printH(long long int i);
     void printB(int i);
+    void printHL(int c, int s, int h);
+    void printPT(double x, double y, double z);
+
 private:
     DRW_dbg();
     static DRW_dbg *instance;
