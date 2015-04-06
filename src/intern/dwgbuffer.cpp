@@ -1,7 +1,7 @@
 /******************************************************************************
 **  libDXFrw - Library to read/write DXF files (ascii & binary)              **
 **                                                                           **
-**  Copyright (C) 2011 Rallaz, rallazz@gmail.com                             **
+**  Copyright (C) 2011-2015 José F. Soriano, rallazz@gmail.com               **
 **                                                                           **
 **  This library is free software, licensed under the terms of the GNU       **
 **  General Public License as published by the Free Software Foundation,     **
@@ -14,6 +14,7 @@
 #include "dwgbuffer.h"
 #include "../libdwgr.h"
 #include "drw_textcodec.h"
+#include "drw_dbg.h"
 //#include <bitset>
 /*#include <fstream>
 #include <algorithm>
@@ -67,6 +68,39 @@ static unsigned int crctable[256]= {
 0x4400,0x84C1,0x8581,0x4540,0x8701,0x47C0,0x4680,0x8641,
 0x8201,0x42C0,0x4380,0x8341,0x4100,0x81C1,0x8081,0x4040 };
 
+static unsigned int crc32Table[256] ={
+0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f, 0xe963a535, 0x9e6495a3,
+0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988, 0x09b64c2b, 0x7eb17cbd, 0xe7b82d07, 0x90bf1d91,
+0x1db71064, 0x6ab020f2, 0xf3b97148, 0x84be41de, 0x1adad47d, 0x6ddde4eb, 0xf4d4b551, 0x83d385c7,
+0x136c9856, 0x646ba8c0, 0xfd62f97a, 0x8a65c9ec, 0x14015c4f, 0x63066cd9, 0xfa0f3d63, 0x8d080df5,
+0x3b6e20c8, 0x4c69105e, 0xd56041e4, 0xa2677172, 0x3c03e4d1, 0x4b04d447, 0xd20d85fd, 0xa50ab56b,
+0x35b5a8fa, 0x42b2986c, 0xdbbbc9d6, 0xacbcf940, 0x32d86ce3, 0x45df5c75, 0xdcd60dcf, 0xabd13d59,
+0x26d930ac, 0x51de003a, 0xc8d75180, 0xbfd06116, 0x21b4f4b5, 0x56b3c423, 0xcfba9599, 0xb8bda50f,
+0x2802b89e, 0x5f058808, 0xc60cd9b2, 0xb10be924, 0x2f6f7c87, 0x58684c11, 0xc1611dab, 0xb6662d3d,
+0x76dc4190, 0x01db7106, 0x98d220bc, 0xefd5102a, 0x71b18589, 0x06b6b51f, 0x9fbfe4a5, 0xe8b8d433,
+0x7807c9a2, 0x0f00f934, 0x9609a88e, 0xe10e9818, 0x7f6a0dbb, 0x086d3d2d, 0x91646c97, 0xe6635c01,
+0x6b6b51f4, 0x1c6c6162, 0x856530d8, 0xf262004e, 0x6c0695ed, 0x1b01a57b, 0x8208f4c1, 0xf50fc457,
+0x65b0d9c6, 0x12b7e950, 0x8bbeb8ea, 0xfcb9887c, 0x62dd1ddf, 0x15da2d49, 0x8cd37cf3, 0xfbd44c65,
+0x4db26158, 0x3ab551ce, 0xa3bc0074, 0xd4bb30e2, 0x4adfa541, 0x3dd895d7, 0xa4d1c46d, 0xd3d6f4fb,
+0x4369e96a, 0x346ed9fc, 0xad678846, 0xda60b8d0, 0x44042d73, 0x33031de5, 0xaa0a4c5f, 0xdd0d7cc9,
+0x5005713c, 0x270241aa, 0xbe0b1010, 0xc90c2086, 0x5768b525, 0x206f85b3, 0xb966d409, 0xce61e49f,
+0x5edef90e, 0x29d9c998, 0xb0d09822, 0xc7d7a8b4, 0x59b33d17, 0x2eb40d81, 0xb7bd5c3b, 0xc0ba6cad,
+0xedb88320, 0x9abfb3b6, 0x03b6e20c, 0x74b1d29a, 0xead54739, 0x9dd277af, 0x04db2615, 0x73dc1683,
+0xe3630b12, 0x94643b84, 0x0d6d6a3e, 0x7a6a5aa8, 0xe40ecf0b, 0x9309ff9d, 0x0a00ae27, 0x7d079eb1,
+0xf00f9344, 0x8708a3d2, 0x1e01f268, 0x6906c2fe, 0xf762575d, 0x806567cb, 0x196c3671, 0x6e6b06e7,
+0xfed41b76, 0x89d32be0, 0x10da7a5a, 0x67dd4acc, 0xf9b9df6f, 0x8ebeeff9, 0x17b7be43, 0x60b08ed5,
+0xd6d6a3e8, 0xa1d1937e, 0x38d8c2c4, 0x4fdff252, 0xd1bb67f1, 0xa6bc5767, 0x3fb506dd, 0x48b2364b,
+0xd80d2bda, 0xaf0a1b4c, 0x36034af6, 0x41047a60, 0xdf60efc3, 0xa867df55, 0x316e8eef, 0x4669be79,
+0xcb61b38c, 0xbc66831a, 0x256fd2a0, 0x5268e236, 0xcc0c7795, 0xbb0b4703, 0x220216b9, 0x5505262f,
+0xc5ba3bbe, 0xb2bd0b28, 0x2bb45a92, 0x5cb36a04, 0xc2d7ffa7, 0xb5d0cf31, 0x2cd99e8b, 0x5bdeae1d,
+0x9b64c2b0, 0xec63f226, 0x756aa39c, 0x026d930a, 0x9c0906a9, 0xeb0e363f, 0x72076785, 0x05005713,
+0x95bf4a82, 0xe2b87a14, 0x7bb12bae, 0x0cb61b38, 0x92d28e9b, 0xe5d5be0d, 0x7cdcefb7, 0x0bdbdf21,
+0x86d3d2d4, 0xf1d4e242, 0x68ddb3f8, 0x1fda836e, 0x81be16cd, 0xf6b9265b, 0x6fb077e1, 0x18b74777,
+0x88085ae6, 0xff0f6a70, 0x66063bca, 0x11010b5c, 0x8f659eff, 0xf862ae69, 0x616bffd3, 0x166ccf45,
+0xa00ae278, 0xd70dd2ee, 0x4e048354, 0x3903b3c2, 0xa7672661, 0xd06016f7, 0x4969474d, 0x3e6e77db,
+0xaed16a4a, 0xd9d65adc, 0x40df0b66, 0x37d83bf0, 0xa9bcae53, 0xdebb9ec5, 0x47b2cf7f, 0x30b5ffe9,
+0xbdbdf21c, 0xcabac28a, 0x53b39330, 0x24b4a3a6, 0xbad03605, 0xcdd70693, 0x54de5729, 0x23d967bf,
+0xb3667a2e, 0xc4614ab8, 0x5d681b02, 0x2a6f2b94, 0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d};
 
 union typeCast  {
     char buf[8];
@@ -76,24 +110,21 @@ union typeCast  {
     ddouble64 d64;
 };
 
-bool dwgFileStream::setPos(int p){
-/*    bool chac = p<0;
-    bool pop = p >= sz;
-    if (chac || pop)*/
-    if (p<0 || p >= sz)
+bool dwgFileStream::setPos(duint64 p){
+    if (p >= sz)
         return false;
 
     stream->seekg(p);
     return stream->good();
 }
 
-bool dwgFileStream::read(char* s, int n){
-    stream->read (s,n);
+bool dwgFileStream::read(duint8* s, duint64 n){
+    stream->read (reinterpret_cast<char*>(s),n);
     return stream->good();
 }
 
-bool dwgCharStream::setPos(int p){
-    if (p<0 || p > size()) {
+bool dwgCharStream::setPos(duint64 p){
+    if (p > size()) {
         isOk = false;
         return false;
     }
@@ -102,23 +133,22 @@ bool dwgCharStream::setPos(int p){
     return true;
 }
 
-bool dwgCharStream::read(char* s, int n){
+bool dwgCharStream::read(duint8* s, duint64 n){
     if ( n > (sz - pos) ) {
         isOk = false;
         return false;
     }
-    for (int i=0; i<n; i++){
+    for (duint64 i=0; i<n; i++){
         s[i]= stream[pos++];
     }
     return true;
 }
 
-dwgBuffer::dwgBuffer(char *buf, int size, DRW_TextCodec *dc){
+dwgBuffer::dwgBuffer(duint8 *buf, int size, DRW_TextCodec *dc){
     filestr = new dwgCharStream(buf, size);
     decoder = dc;
     maxSize = size;
     bitPos = 0;
-
 }
 
 dwgBuffer::dwgBuffer(std::ifstream *stream, DRW_TextCodec *dc){
@@ -126,15 +156,38 @@ dwgBuffer::dwgBuffer(std::ifstream *stream, DRW_TextCodec *dc){
     decoder = dc;
     maxSize = filestr->size();
     bitPos = 0;
+}
 
+dwgBuffer::dwgBuffer( const dwgBuffer& org ){
+    filestr = org.filestr->clone();
+    decoder = org.decoder;
+    maxSize = filestr->size();
+    currByte = org.currByte;
+    bitPos = org.bitPos;
+}
+
+dwgBuffer& dwgBuffer::operator=( const dwgBuffer& org ){
+    filestr = org.filestr->clone();
+    decoder = org.decoder;
+    maxSize = filestr->size();
+    currByte = org.currByte;
+    bitPos = org.bitPos;
+    return *this;
 }
 
 dwgBuffer::~dwgBuffer(){
     delete filestr;
 }
 
+/**Gets the current byte position in buffer **/
+duint64 dwgBuffer::getPosition(){
+     if (bitPos != 0)
+         return filestr->getPos() -1;
+     return filestr->getPos();
+ }
+
 /**Sets the buffer position in pos byte, reset the bit position **/
-bool dwgBuffer::setPosition(int pos){
+bool dwgBuffer::setPosition(duint64 pos){
     bitPos = 0;
 /*    if (pos>=maxSize)
         return false;*/
@@ -142,20 +195,37 @@ bool dwgBuffer::setPosition(int pos){
 //    return true;
 }
 
-void dwgBuffer::setBitPos(int pos){
-    if (pos<0 || pos>7)
+//RLZ: Fails if ... ???
+void dwgBuffer::setBitPos(duint8 pos){
+    if (pos>7)
         return;
-    bitPos = pos;
-    if (bitPos != 0){
-        char buffer;
+    if (pos != 0 && bitPos == 0){
+        duint8 buffer;
         filestr->read (&buffer,1);
         currByte = buffer;
     }
+    if (pos == 0 && bitPos != 0){//reset current byte
+        filestr->setPos(filestr->getPos()-1);
+    }
+    bitPos = pos;
+}
+
+bool dwgBuffer::moveBitPos(dint32 size){
+    if (size == 0) return true;
+
+    dint32 b= size + bitPos;
+    filestr->setPos(getPosition() + (b >> 3) );
+    bitPos = b & 7;
+
+    if (bitPos != 0){
+        filestr->read (&currByte,1);
+    }
+    return filestr->good();
 }
 
 /**Reads one Bit returns a char with value 0/1 (B) **/
 duint8 dwgBuffer::getBit(){
-    char buffer;
+    duint8 buffer;
     duint8 ret = 0;
     if (bitPos == 0){
         filestr->read (&buffer,1);
@@ -172,7 +242,7 @@ duint8 dwgBuffer::getBit(){
 
 /**Reads two Bits returns a char (BB) **/
 duint8 dwgBuffer::get2Bits(){
-    char buffer;
+    duint8 buffer;
     duint8 ret = 0;
     if (bitPos == 0){
         filestr->read (&buffer,1);
@@ -195,16 +265,54 @@ duint8 dwgBuffer::get2Bits(){
     return ret;
 }
 
+/**Reads thee Bits returns a char (3B) **/
+//RLZ: todo verify this
+duint8 dwgBuffer::get3Bits(){
+    duint8 buffer;
+    duint8 ret = 0;
+    if (bitPos == 0){
+        filestr->read (&buffer,1);
+        currByte = buffer;
+    }
+
+    bitPos +=3;
+    if (bitPos < 9)
+        ret = currByte >>(8 - bitPos);
+    else {//read one bit per byte
+        ret = currByte << 1;
+        filestr->read (&buffer,1);
+        currByte = buffer;
+        bitPos = 1;
+        ret = ret | currByte >> 7;
+    }
+    if (bitPos == 8)
+        bitPos = 0;
+    ret = ret & 7;
+    return ret;
+}
+
 /**Reads tree Bits returns a char (3B) for R24 **/
 //to be written
 
-/**Reads compresed Short (max. 16 + 2 bits) little-endian order, returns a signed 16 bits (BS) **/
-dint16 dwgBuffer::getBitShort(){
-    dint8 b = get2Bits();
+/**Reads compresed Short (max. 16 + 2 bits) little-endian order, returns a UNsigned 16 bits (BS) **/
+duint16 dwgBuffer::getBitShort(){
+    duint8 b = get2Bits();
     if (b == 0)
         return getRawShort16();
     else if (b== 1)
         return getRawChar8();
+    else if (b == 2)
+        return 0;
+    else
+        return 256;
+}
+/**Reads compresed Short (max. 16 + 2 bits) little-endian order, returns a signed 16 bits (BS) **/
+dint16 dwgBuffer::getSBitShort(){
+    duint8 b = get2Bits();
+    if (b == 0)
+        return (dint16)getRawShort16();
+    else if (b== 1)
+        return (dint16)getRawChar8();
     else if (b == 2)
         return 0;
     else
@@ -223,9 +331,16 @@ dint32 dwgBuffer::getBitLong(){
         return 0;
 }
 
-/**Reads compresed LongLong (max. 56 + 7 bits) returns a unsigned 64 bits (BLL) (R24) **/
-//to be written
-//dint64 dwgBuffer::getBitLongLong(){}
+/**Reads compresed 64 bits Int (max. 56 + 3 bits) little-endian order, returns a unsigned 64 bits (BLL) **/
+duint64 dwgBuffer::getBitLongLong(){
+    dint8 b = get3Bits();
+    duint64 ret=0;
+    for (duint8 i=0; i<b; i++){
+        ret = ret << 8;
+        ret |= getRawChar8();
+    }
+    return ret;
+}
 
 /**Reads compresed Double (max. 64 + 2 bits) returns a floating point double of 64 bits (BD) **/
 double dwgBuffer::getBitDouble(){
@@ -233,7 +348,7 @@ double dwgBuffer::getBitDouble(){
     if (b == 1)
         return 1.0;
     else if (b == 0){
-        char buffer[8];
+        duint8 buffer[8];
         if (bitPos != 0) {
             for (int i = 0; i < 8; i++)
                 buffer[i] = getRawChar8();
@@ -247,10 +362,19 @@ double dwgBuffer::getBitDouble(){
     return 0.0;
 }
 
+/**Reads 3 compresed Double (max. 64 + 2 bits) returns a DRW_Coord of floating point double of 64 bits (3BD) **/
+DRW_Coord dwgBuffer::get3BitDouble(){
+    DRW_Coord crd;
+    crd.x = getBitDouble();
+    crd.y = getBitDouble();
+    crd.z = getBitDouble();
+    return crd;
+}
+
 /**Reads raw char 8 bits returns a unsigned char (RC) **/
 duint8 dwgBuffer::getRawChar8(){
     duint8 ret;
-    char buffer;
+    duint8 buffer;
     filestr->read (&buffer,1);
     if (bitPos == 0)
         return buffer;
@@ -264,7 +388,7 @@ duint8 dwgBuffer::getRawChar8(){
 
 /**Reads raw short 16 bits little-endian order, returns a unsigned short (RS) **/
 duint16 dwgBuffer::getRawShort16(){
-    char buffer[2];
+    duint8 buffer[2];
     duint16 ret;
 
     filestr->read (buffer,2);
@@ -285,7 +409,7 @@ duint16 dwgBuffer::getRawShort16(){
 
 /**Reads raw double IEEE standard 64 bits returns a double (RD) **/
 double dwgBuffer::getRawDouble(){
-    char buffer[8];
+    duint8 buffer[8];
     if (bitPos == 0)
         filestr->read (buffer,8);
     else {
@@ -300,6 +424,15 @@ double dwgBuffer::getRawDouble(){
     double nOffset = *reinterpret_cast<double*>( buffer );
     return nOffset;
 }
+
+/**Reads 2 raw double IEEE standard 64 bits returns a DRW_Coord of floating point double 64 bits (2RD) **/
+DRW_Coord dwgBuffer::get2RawDouble(){
+    DRW_Coord crd;
+    crd.x = getRawDouble();
+    crd.y = getRawDouble();
+    return crd;
+}
+
 
 /**Reads raw int 32 bits little-endian order, returns a unsigned int (RL) **/
 duint32 dwgBuffer::getRawLong32(){
@@ -321,8 +454,8 @@ duint64 dwgBuffer::getRawLong64(){
 
 /**Reads modular unsigner int, char based, compresed form, little-endian order, returns a unsigned int (U-MC) **/
 duint32 dwgBuffer::getUModularChar(){
-    std::vector<dint8> buffer;
-    dint32 result =0;
+    std::vector<duint8> buffer;
+    duint32 result =0;
     for (int i=0; i<4;i++){
         duint8 b= getRawChar8();
         buffer.push_back(b & 0x7F);
@@ -334,6 +467,8 @@ duint32 dwgBuffer::getUModularChar(){
         result += buffer[i] << offset;
         offset +=7;
     }
+//RLZ: WARNING!!! needed to verify on read handles
+    //result = result & 0x7F;
     return result;
 }
 
@@ -411,57 +546,133 @@ dwgHandle dwgBuffer::getOffsetHandle(duint32 href){ //H
     dwgHandle hl = getHandle();
 
     if (hl.code > 5){
-        if (hl.code == 12)
+        if (hl.code == 0x0C)
             hl.ref = href - hl.ref;
-        else if (hl.code == 10)
+        else if (hl.code == 0x0A)
             hl.ref = href + hl.ref;
-        else if (hl.code == 8)
+        else if (hl.code == 0x08)
             hl.ref = href - 1;
-        else if (hl.code == 6)
+        else if (hl.code == 0x06)
             hl.ref = href + 1;
-        if (hl.code > 5)
-            hl.code = 1;//used 1 to shows are calculated soft handle
+//all are soft pointer reference change to 7 (without offset)
+            hl.code = 7;
     }
     return hl;
 }
 
-std::string dwgBuffer::getVariableText(){
-    dint16 textSize = getBitShort();
+//internal until 2004
+std::string dwgBuffer::get8bitStr(){
+    duint16 textSize = getBitShort();
     if (textSize == 0)
         return std::string();
-    char buffer[textSize+1];
-    filestr->read (buffer,textSize);
+    duint8 buffer[textSize+1];
+    bool good = getBytes(buffer, textSize);
+    if (!good)
+        return std::string();
+
+/*    filestr->read (buffer,textSize);
     if (!filestr->good())
         return std::string();
 
-    unsigned char tmp;
+    duint8 tmp;
     if (bitPos != 0){
         for (int i=0; i<textSize;i++){
             tmp =  buffer[i];
             buffer[i] = (currByte << bitPos) | (tmp >> (8 - bitPos));
             currByte = tmp;
         }
-    }
+    }*/
     buffer[textSize]= '\0';
-    return std::string(buffer);
+    return std::string(reinterpret_cast<char*>(buffer));
 }
 
-std::string dwgBuffer::getVariableUtf8Text(){
+//internal since 2007 //pending: are 2 bytes null terminated??
+//nullTerm = true if string are 2 bytes null terminated from the stream
+std::string dwgBuffer::get16bitStr(duint16 textSize, bool nullTerm){
+    if (textSize == 0)
+        return std::string();
+    textSize *=2;
+    duint16 ts = textSize;
+    if (nullTerm)
+        ts += 2;
+    duint8 buffer[textSize +2];
+    bool good = getBytes(buffer, ts);
+    if (!good)
+        return std::string();
+
+    if (!nullTerm) {
+        buffer[textSize]= '\0';
+        buffer[textSize+1]= '\0';
+    }
+    return std::string(reinterpret_cast<char*>(buffer), ts);
+}
+
+//T 8 bit text converted from codepage to utf8
+std::string dwgBuffer::getCP8Text(){
     std::string strData;
-    strData = getVariableText();
+    strData = get8bitStr();//RLZ correct these function
     if (decoder == NULL)
         return strData;
 
     return decoder->toUtf8(strData);
 }
 
+//TU unicode 16 bit (UCS) text converted to utf8
+/**Reads 2-bytes char (UCS2, NULL terminated) and convert to std::string (only for Latin-1)
+   ts= total input size in bytes.
+**/
+std::string dwgBuffer::getUCSStr(duint16 ts){
+    std::string strData;
+    if (ts<4) //at least 1 char
+        return std::string();
+    strData = get16bitStr(ts/2, false);
+    if (decoder == NULL)
+        return strData;
+
+    return decoder->toUtf8(strData);
+}
+
+//TU unicode 16 bit (UCS) text converted to utf8
+//nullTerm = true if string are 2 bytes null terminated from the stream
+std::string dwgBuffer::getUCSText(bool nullTerm){
+    std::string strData;
+    duint16 ts = getBitShort();
+    if (ts == 0)
+        return std::string();
+
+    strData = get16bitStr(ts, nullTerm);
+    if (decoder == NULL)
+        return strData;
+
+    return decoder->toUtf8(strData);
+}
+
+//RLZ: read a T or TU if version is 2007+
+//nullTerm = true if string are 2 bytes null terminated from the stream
+std::string dwgBuffer::getVariableText(DRW::Version v, bool nullTerm){//TV
+    if (v > DRW::AC1018)
+        return getUCSText(nullTerm);
+    return getCP8Text();
+}
+duint16 dwgBuffer::getObjType(DRW::Version v){//OT
+    if (v > DRW::AC1021) {
+        duint8 b = get2Bits();
+        if (b == 0)
+            return getRawChar8();
+        else if (b== 1){
+            return (getRawChar8() + 0x01F0);
+        } else //b == 2
+            return getRawShort16();
+    }
+    return getBitShort();
+}
+
 /* Bit Extrusion
-* For R13-R14 this is 3BD. We are asserting that the version
-* is not R13-R14; this values should be read by the user
-* For R2000, this is a single bit, If the single bit is 1,
+* For R2000+, this is a single bit, If the single bit is 1,
 * the extrusion value is assumed to be 0,0,1 and no explicit
 * extrusion is stored. If the single bit is 0, then it will
 * be followed by 3BD.
+* For R13-R14 this is 3BD.
 */
 DRW_Coord dwgBuffer::getExtrusion(bool b_R2000_style) {
     DRW_Coord ext(0.0,0.0,1.0);
@@ -482,7 +693,7 @@ double dwgBuffer::getDefaultDouble(double d){
     if (b == 0)
         return d;
     else if (b == 1){
-        char buffer[4];
+        duint8 buffer[4];
         char *tmp;
         if (bitPos != 0) {
             for (int i = 0; i < 4; i++)
@@ -496,7 +707,7 @@ double dwgBuffer::getDefaultDouble(double d){
         double ret = *reinterpret_cast<double*>( tmp );
         return ret;
     } else if (b == 2){
-        char buffer[6];
+        duint8 buffer[6];
         char *tmp;
         if (bitPos != 0) {
             for (int i = 0; i < 6; i++)
@@ -518,8 +729,7 @@ double dwgBuffer::getDefaultDouble(double d){
 
 
 /* BitThickness
-* For R13-R14, this is a BD. We are asserting that the version
-* is not R13-R14; this value should be read by the user
+* For R13-R14, this is a BD.
 * For R2000+, this is a single bit, If the bit is one,
 * the thickness value is assumed to be 0.0, if not a BD follow
 */
@@ -532,6 +742,90 @@ double dwgBuffer::getThickness(bool b_R2000_style) {
     return getBitDouble();
 }
 
+/* CmColor (CMC)
+* For R15 and earlier call directly BS as ACIS color.
+* For R2004+, can be CMC or ENC
+* RGB value, first 4bits 0xC0 => ByLayer, 0xC1 => ByBlock, 0xC2 => RGB,  0xC3 => last 4 are ACIS
+*/
+duint32 dwgBuffer::getCmColor(DRW::Version v) {
+    if (v < DRW::AC1018) //2000-
+        return getSBitShort();
+    duint16 idx = getBitShort();
+    duint32 rgb = getBitLong();
+    duint8 cb = getRawChar8();
+    duint8 type = rgb >> 24;
+    DRW_DBG("\ntype COLOR: "); DRW_DBGH(type);
+    DRW_DBG("\nindex COLOR: "); DRW_DBGH(idx);
+    DRW_DBG("\nRGB COLOR: "); DRW_DBGH(rgb);
+    DRW_DBG("\nbyte COLOR: "); DRW_DBGH(cb);
+    if (cb&1){
+        std::string colorName = getVariableText(v, false);
+        DRW_DBG("\ncolorName: "); DRW_DBG(colorName);
+    }
+    if (cb&2){
+        std::string bookName = getVariableText(v, false);
+        DRW_DBG("\nbookName: "); DRW_DBG(bookName);
+    }
+    switch (type) {
+    case 0xC0:
+        return 256;//ByLayer
+        break;
+    case 0xC1:
+        return 0;//ByBlock
+        break;
+    case 0xC2:
+        return 256;//RGB RLZ TODO
+        break;
+    case 0xC3:
+        return rgb&0xFF;//ACIS
+        break;
+    default:
+        break;
+    }
+    //check cb if strings follows RLZ TODO
+    return 256; //default return ByLayer
+}
+
+/* EnColor (ENC)
+* For R15 and earlier call directly BS as ACIS color.
+* For R2004+, can be CMC or ENC
+* RGB value, first 4bits 0xC0 => ByLayer, 0xC1 => ByBlock, 0xC2 => RGB,  0xC3 => last 4 are ACIS
+*/
+duint32 dwgBuffer::getEnColor(DRW::Version v) {
+    if (v < DRW::AC1018) //2000-
+        return getSBitShort();
+    duint32 rgb = 0;
+    duint32 cb = 0;
+    duint16 idx = getBitShort();
+    DRW_DBG("idx reads COLOR: "); DRW_DBGH(idx);
+    duint16 flags = idx>>8;
+    idx = idx & 0x1FF; //RLZ: warning this is correct?
+    DRW_DBG("\nflag COLOR: "); DRW_DBGH(flags);
+    DRW_DBG(", index COLOR: "); DRW_DBGH(idx);
+//    if (flags & 0x80) {
+//        rgb = getBitLong();
+//        DRW_DBG("\nRGB COLOR: "); DRW_DBGH(rgb);
+//    }
+    if (flags & 0x20) {
+        cb = getBitLong();
+        DRW_DBG("\nTransparency COLOR: "); DRW_DBGH(cb);
+    }
+    if (flags & 0x40)
+        DRW_DBG("\nacdbColor COLOR are present");
+    else {
+        if (flags & 0x80) {
+            rgb = getBitLong();
+            DRW_DBG("\nRGB COLOR: "); DRW_DBGH(rgb);
+        }
+    }
+
+/*    if (flags & 0x80)
+        return getBitLong();*/
+
+    return idx; //default return ByLayer
+}
+
+
 /**Reads raw short 16 bits big-endian order, returns a unsigned short crc & size **/
 duint16 dwgBuffer::getBERawShort16(){
     char buffer[2];
@@ -542,8 +836,8 @@ duint16 dwgBuffer::getBERawShort16(){
 }
 
 /* reads "size" bytes and stores in "buf" return false if fail */
-bool dwgBuffer::getBytes(char *buf, int size){
-    unsigned char tmp;
+bool dwgBuffer::getBytes(unsigned char *buf, int size){
+    duint8 tmp;
     filestr->read (buf,size);
     if (!filestr->good())
         return false;
@@ -562,8 +856,8 @@ duint16 dwgBuffer::crc8(duint16 dx,dint32 start,dint32 end){
     int pos = filestr->getPos();
     filestr->setPos(start);
     int n = end-start;
-    char buf[n];
-    unsigned char *p = (unsigned char *)buf;
+    duint8 buf[n];
+    duint8 *p = buf;
     filestr->read (buf,n);
     filestr->setPos(pos);
     if (!filestr->good())
@@ -579,6 +873,26 @@ duint16 dwgBuffer::crc8(duint16 dx,dint32 start,dint32 end){
   }
   return(dx);
 }
+
+duint32 dwgBuffer::crc32(duint32 seed,dint32 start,dint32 end){
+    int pos = filestr->getPos();
+    filestr->setPos(start);
+    int n = end-start;
+    duint8 buf[n];
+    duint8 *p = buf;
+    filestr->read (buf,n);
+    filestr->setPos(pos);
+    if (!filestr->good())
+        return 0;
+
+    duint32 invertedCrc = ~seed;
+    while (n-- > 0) {
+    duint8 data = *p++;
+    invertedCrc = (invertedCrc >> 8) ^ crc32Table[(invertedCrc ^ data) & 0xff];
+    }
+    return ~invertedCrc;
+}
+
 
 /*std::string dwgBuffer::getBytes(int size){
     char buffer[size];
