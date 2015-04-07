@@ -1,7 +1,7 @@
 /******************************************************************************
 **  libDXFrw - Library to read/write DXF files (ascii & binary)              **
 **                                                                           **
-**  Copyright (C) 2011-2013 Rallaz, rallazz@gmail.com                        **
+**  Copyright (C) 2011-2015 José F. Soriano, rallazz@gmail.com               **
 **                                                                           **
 **  This library is free software, licensed under the terms of the GNU       **
 **  General Public License as published by the Free Software Foundation,     **
@@ -91,10 +91,10 @@ public:
 
 private:
     DRW_Variant* curr;
+
     //***** dwg parse ********/
 protected:
     dint16 oType;
-
     duint8 xDictFlag;
     dint32 numReactors; //
     duint32 objSize;  //RL 32bits object data size in bits
@@ -285,22 +285,25 @@ public:
     dwgHandle lTypeH;
 };
 
-//! Class to handle layer entries
+//! Class to handle block record entries
 /*!
 *  Class to handle block record table entries
 *  @author Rallaz
 */
 class DRW_Block_Record : public DRW_TableEntry {
-SETOBJFRIENDS
+    SETOBJFRIENDS
 public:
     DRW_Block_Record() { reset();}
     void reset() {
         tType = DRW::BLOCK_RECORD;
         flags = 0;
+        firstEH = lastEH = DRW::NoHandle;
+        DRW_TableEntry::reset();
     }
 
+protected:
 //    void parseCode(int code, dxfReader *reader);
-    bool parseDwg(DRW::Version version, dwgBuffer *buf);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
 
 public:
 //Note:    int DRW_TableEntry::flags; contains code 70 of block
@@ -308,11 +311,12 @@ public:
     DRW_Coord basePoint;      /*!<  block insertion base point dwg only */
 protected:
     //dwg parser
-//    dwgHandle blockH;
-    duint32 endBlock;//handle for end block entity
 private:
+    duint32 block;   //handle for block entity
+    duint32 endBlock;//handle for end block entity
     duint32 firstEH; //handle of first entity, only in pre-2004
-    duint32 lastEH; //handle of last entity, only in pre-2004
+    duint32 lastEH;  //handle of last entity, only in pre-2004
+    std::vector<duint32>entMap;
 };
 
 //! Class to handle text style entries
@@ -321,6 +325,7 @@ private:
 *  @author Rallaz
 */
 class DRW_Textstyle : public DRW_TableEntry {
+    SETOBJFRIENDS
 public:
     DRW_Textstyle() { reset();}
 
@@ -334,8 +339,9 @@ public:
         DRW_TableEntry::reset();
     }
 
+protected:
     void parseCode(int code, dxfReader *reader);
-    bool parseDwg(DRW::Version version, dwgBuffer *buf);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
 
 public:
     double height;          /*!< Fixed text height (0 not set), code 40 */
@@ -354,6 +360,7 @@ public:
 *  @author Rallaz
 */
 class DRW_Vport : public DRW_TableEntry {
+    SETOBJFRIENDS
 public:
     DRW_Vport() { reset();}
 
@@ -376,8 +383,9 @@ public:
         DRW_TableEntry::reset();
     }
 
+protected:
     void parseCode(int code, dxfReader *reader);
-    bool parseDwg(DRW::Version version, dwgBuffer *buf);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
 
 public:
     DRW_Coord lowerLeft;     /*!< Lower left corner, code 10 & 20 */
@@ -419,11 +427,13 @@ public:
 *  @author Rallaz
 */
 class DRW_ImageDef {
+    SETOBJFRIENDS
 public:
     DRW_ImageDef() {
         version = 0;
     }
 
+protected:
     void parseCode(int code, dxfReader *reader);
 
 public:
@@ -446,6 +456,7 @@ public:
 *  @author Rallaz
 */
 class DRW_AppId : public DRW_TableEntry {
+    SETOBJFRIENDS
 public:
     DRW_AppId() { reset();}
 
@@ -455,7 +466,9 @@ public:
         name = "";
     }
 
+protected:
     void parseCode(int code, dxfReader *reader){DRW_TableEntry::parseCode(code, reader);}
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
 };
 
 namespace DRW {
