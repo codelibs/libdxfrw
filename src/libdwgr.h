@@ -1,7 +1,7 @@
 /******************************************************************************
 **  libDXFrw - Library to read/write DXF files (ascii & binary)              **
 **                                                                           **
-**  Copyright (C) 2011 Rallaz, rallazz@gmail.com                             **
+**  Copyright (C) 2011-2015 José F. Soriano, rallazz@gmail.com               **
 **                                                                           **
 **  This library is free software, licensed under the terms of the GNU       **
 **  General Public License as published by the Free Software Foundation,     **
@@ -28,12 +28,14 @@ public:
     ~dwgR();
     //read: return true if all ok
     bool read(DRW_Interface *interface_, bool ext);
+    bool getPreview();
     DRW::Version getVersion(){return version;}
     DRW::error getError(){return error;}
-
+bool testReader();
     void setDebug(DRW::DBG_LEVEL lvl);
 
 private:
+    bool openFile(std::ifstream *filestr);
     bool processDwg();
 private:
     DRW::Version version;
