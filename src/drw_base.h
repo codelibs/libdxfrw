@@ -1,7 +1,7 @@
 /******************************************************************************
 **  libDXFrw - Library to read/write DXF files (ascii & binary)              **
 **                                                                           **
-**  Copyright (C) 2011-2013 Rallaz, rallazz@gmail.com                        **
+**  Copyright (C) 2011-2015 José F. Soriano, rallazz@gmail.com               **
 **                                                                           **
 **  This library is free software, licensed under the terms of the GNU       **
 **  General Public License as published by the Free Software Foundation,     **
@@ -74,7 +74,8 @@ enum Version {
     AC1015,       /*!< ACAD 2000. */
     AC1018,       /*!< ACAD 2004. */
     AC1021,       /*!< ACAD 2007. */
-    AC1024        /*!< ACAD 2010. */
+    AC1024,       /*!< ACAD 2010. */
+    AC1027        /*!< ACAD 2013. */
 };
 
 enum error {
@@ -82,9 +83,10 @@ BAD_NONE,             /*!< No error. */
 BAD_UNKNOWN,          /*!< UNKNOWN. */
 BAD_OPEN,             /*!< error opening file. */
 BAD_VERSION,          /*!< unsupported version. */
+BAD_READ_METADATA,    /*!< error reading matadata. */
 BAD_READ_FILE_HEADER, /*!< error in file header read process. */
 BAD_READ_HEADER,      /*!< error in header vars read process. */
-BAD_READ_OFFSETS,     /*!< error in object map read process. */
+BAD_READ_HANDLES,     /*!< error in object map read process. */
 BAD_READ_CLASSES,     /*!< error in classes read process. */
 BAD_READ_TABLES,      /*!< error in tables read process. */
 BAD_READ_BLOCKS,      /*!< error in block read process. */
@@ -110,13 +112,7 @@ enum Space {
 
 //! Special kinds of handles
 enum HandleCodes {
-    NoHandle = -1
-};
-
-//! A group in dxf file
-struct Group {
-    std::string name;
-    std::string content;
+    NoHandle = 0
 };
 
 //! Shadow mode
@@ -220,9 +216,25 @@ public:
         COORD,
         INVALID
     };
-
+//TODO: add INT64 support
     DRW_Variant() {
         type = INVALID;
+    }
+
+    DRW_Variant(int c, dint32 i) {
+        code = c; addInt(i);
+    }
+    DRW_Variant(int c, duint32 i) {
+        code = c; addInt(static_cast<dint32>(i));//RLZ: verify if worrk with big numbers
+    }
+    DRW_Variant(int c, double d) {
+        code = c; addDouble(d);
+    }
+    DRW_Variant(int c, UTF8STRING s) {
+        code = c; addString(s);
+    }
+    DRW_Variant(int c, DRW_Coord crd) {
+        code = c; addCoord(crd);
     }
     DRW_Variant(const DRW_Variant& d) {
         code = d.code;
@@ -231,11 +243,6 @@ public:
         if (d.type == STRING) sdata = d.sdata;
         content = d.content;
     }
-
-    DRW_Variant(int c, UTF8STRING s) { addString(s); code=c;}
-    DRW_Variant(int c, int i) { addInt(i); code=c;}
-    DRW_Variant(int c, double d) { addDouble(d); code=c;}
-    DRW_Variant(int c, double x, double y, double z) { setType(COORD); vdata.x=x; vdata.y=y; vdata.z=z; content.v = &vdata; code=c;}
 
     ~DRW_Variant() {
     }
@@ -253,7 +260,7 @@ public:
 private:
     typedef union {
         UTF8STRING *s;
-        int i;
+        dint32 i;
         double d;
         DRW_Coord *v;
     } DRW_VarContent;
