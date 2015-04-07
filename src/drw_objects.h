@@ -219,6 +219,7 @@ public:
 */
 /*TODO: handle complex lineType*/
 class DRW_LType : public DRW_TableEntry {
+    SETOBJFRIENDS
 public:
     DRW_LType() { reset();}
 
@@ -231,8 +232,9 @@ public:
         DRW_TableEntry::reset();
     }
 
+protected:
     void parseCode(int code, dxfReader *reader);
-    bool parseDwg(DRW::Version version, dwgBuffer *buf);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
     void update();
 
 public:
@@ -253,6 +255,7 @@ private:
 *  @author Rallaz
 */
 class DRW_Layer : public DRW_TableEntry {
+    SETOBJFRIENDS
 public:
     DRW_Layer() { reset();}
 
@@ -266,8 +269,9 @@ public:
         DRW_TableEntry::reset();
     }
 
+protected:
     void parseCode(int code, dxfReader *reader);
-    bool parseDwg(DRW::Version version, dwgBuffer *buf);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
 
 public:
     UTF8STRING lineType;            /*!< line type, code 6 */
@@ -276,7 +280,7 @@ public:
     bool plotF;                     /*!< Plot flag, code 290 */
     enum DRW_LW_Conv::lineWidth lWeight; /*!< layer lineweight, code 370 */
     std::string handlePlotS;        /*!< Hard-pointer ID/handle of plotstyle, code 390 */
-    std::string handlePlotM;        /*!< Hard-pointer ID/handle of materialstyle, code 347 */
+    std::string handleMaterialS;        /*!< Hard-pointer ID/handle of materialstyle, code 347 */
 /*only used for read dwg*/
     dwgHandle lTypeH;
 };

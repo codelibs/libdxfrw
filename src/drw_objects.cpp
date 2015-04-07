@@ -457,34 +457,39 @@ void DRW_LType::update(){
     length = d;
 }
 
-bool DRW_LType::parseDwg(DRW::Version version, dwgBuffer *buf){
-    bool ret = DRW_TableEntry::parseDwg(version, buf);
-    DBG("\n***************************** parsing line type *********************************************\n");
+bool DRW_LType::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
+    dwgBuffer sBuff = *buf;
+    dwgBuffer *sBuf = buf;
+    if (version > DRW::AC1018) {//2007+
+        sBuf = &sBuff; //separate buffer for strings
+    }
+    bool ret = DRW_TableEntry::parseDwg(version, buf, sBuf, bs);
+    DRW_DBG("\n***************************** parsing line type *********************************************\n");
     if (!ret)
         return ret;
-    if (version > DRW::AC1018) {//2007+
-        name = buf->getVariableText();
-    } else {//2004-
-        name = buf->getVariableUtf8Text();
-    }
-    DBG("linetype name: "); DBG(name.c_str()); DBG("\n");
+    name = sBuf->getVariableText(version, false);
+    DRW_DBG("linetype name: "); DRW_DBG(name.c_str()); DRW_DBG("\n");
     flags = buf->getBit()<< 6;
-    DBG("flags: "); DBG(flags);
-    dint16 xrefindex = buf->getBitShort();
-    DBG(" xrefindex: "); DBG(xrefindex);
+    DRW_DBG("flags: "); DRW_DBG(flags);
+    if (version > DRW::AC1018) {//2007+
+    } else {//2004- //RLZ: verify in 2004, 2010 &2013
+        dint16 xrefindex = buf->getBitShort();
+        DRW_DBG(" xrefindex: "); DRW_DBG(xrefindex);
+    }
     duint8 xdep = buf->getBit();
-    DBG(" xdep: "); DBG(xdep);
+    DRW_DBG(" xdep: "); DRW_DBG(xdep);
     flags |= xdep<< 4;
-    DBG(" flags: "); DBG(flags);
-    desc = buf->getVariableUtf8Text();
-    DBG(" desc: "); DBG(desc.c_str());
+    DRW_DBG(" flags: "); DRW_DBG(flags);
+    desc = sBuf->getVariableText(version, false);
+    DRW_DBG(" desc: "); DRW_DBG(desc.c_str());
     length = buf->getBitDouble();
-    DBG(" length: "); DBG(length);
+    DRW_DBG(" pattern length: "); DRW_DBG(length);
     char align = buf->getRawChar8();
-    DBG(" align: "); DBG(std::string(&align, 1));
+    DRW_DBG(" align: "); DRW_DBG(std::string(&align, 1));
     size = buf->getRawChar8();
-    DBG(" num dashes, size: "); DBG(size);
-    DBG("\n    dashes:\n");
+    DRW_DBG(" num dashes, size: "); DRW_DBG(size);
+    DRW_DBG("\n    dashes:\n");
+    bool haveStrArea = false;
     for (int i=0; i< size; i++){
         path.push_back(buf->getBitDouble());
         /*int bs1 =*/ buf->getBitShort();
@@ -492,40 +497,64 @@ bool DRW_LType::parseDwg(DRW::Version version, dwgBuffer *buf){
         /*double d2=*/ buf->getRawDouble();
         /*double d3= */buf->getBitDouble();
         /*double d4= */buf->getBitDouble();
-        /*int bs2 = */buf->getBitShort();
+        int bs2 = buf->getBitShort();
+        if((bs2 & 2) !=0) haveStrArea = true;
     }
-    DBG("\n Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
+    for (unsigned i=0; i<path.size() ; i++){
+        DRW_DBG(", "); DRW_DBG(path[i]); DRW_DBG("\n");
+    }
+    DRW_DBG("\n Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
     if (version < DRW::AC1021) { //2004-
-        char strarea[256];
+        duint8 strarea[256];
         buf->getBytes(strarea, 256);
-        DBG("string area 256 bytes:\n"); DBG(strarea); DBG("\n");
+        DRW_DBG("string area 256 bytes:\n"); DRW_DBG(reinterpret_cast<char*>(strarea)); DRW_DBG("\n");
     } else { //2007+
-        char strarea[512];
+        //first verify flag
+        if (haveStrArea) {
+            duint8 strarea[512];
         buf->getBytes(strarea, 512);
-        DBG("string area 512 bytes:\n"); DBG(strarea); DBG("\n");
+            DRW_DBG("string area 512 bytes:\n"); DRW_DBG(reinterpret_cast<char*>(strarea)); DRW_DBG("\n");
+        } else
+            DRW_DBG("string area 512 bytes not present\n");
     }
 
-//    DBG("\n Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
+    if (version > DRW::AC1021) {//2007+ skip string area
+        DRW_DBG(" ltype end of object data pos 2010: "); DRW_DBG(buf->getPosition()); DRW_DBG(" strBuf bpos 2007: "); DRW_DBG(buf->getBitPos()); DRW_DBG("\n");
+    }
+    if (version > DRW::AC1018) {//2007+ skip string area
+        buf->setPosition(objSize >> 3);
+        buf->setBitPos(objSize & 7);
+    }
+
+    if (version > DRW::AC1021) {//2007+ skip string area
+        DRW_DBG(" ltype start of handles data pos 2010: "); DRW_DBG(buf->getPosition()); DRW_DBG(" strBuf bpos 2007: "); DRW_DBG(buf->getBitPos()); DRW_DBG("\n");
+    }
+
+    DRW_DBG("\n Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
     dwgHandle ltControlH = buf->getHandle();
-    DBG("linetype control Handle: "); DBG(ltControlH.code); DBG(".");
-    DBG(ltControlH.size); DBG("."); DBG(ltControlH.ref);
-    DBG("\n Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
+    DRW_DBG("linetype control Handle: "); DRW_DBGHL(ltControlH.code, ltControlH.size, ltControlH.ref);
+    parentHandle = ltControlH.ref;
+    DRW_DBG("\n Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
+    for (int i=0; i< numReactors;++i) {
     dwgHandle reactorsH = buf->getHandle();
-    DBG(" reactorsH control Handle: "); DBG(reactorsH.code); DBG(".");
-    DBG(reactorsH.size); DBG("."); DBG(reactorsH.ref); DBG("\n");
+        DRW_DBG(" reactorsH control Handle: "); DRW_DBGHL(reactorsH.code, reactorsH.size, reactorsH.ref); DRW_DBG("\n");
+    }
+    if (xDictFlag !=1){//linetype in 2004 seems not have XDicObjH or NULL handle
     dwgHandle XDicObjH = buf->getHandle();
-    DBG(" XDicObj control Handle: "); DBG(XDicObjH.code); DBG(".");
-    DBG(XDicObjH.size); DBG("."); DBG(XDicObjH.ref); DBG("\n");
+        DRW_DBG(" XDicObj control Handle: "); DRW_DBGHL(XDicObjH.code, XDicObjH.size, XDicObjH.ref); DRW_DBG("\n");
+        DRW_DBG("\n Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
+    }
     if(size>0){
         dwgHandle XRefH = buf->getHandle();
-        DBG(" XRefH control Handle: "); DBG(XRefH.code); DBG(".");
-        DBG(XRefH.size); DBG("."); DBG(XRefH.ref); DBG("\n");
+        DRW_DBG(" XRefH control Handle: "); DRW_DBGHL(XRefH.code, XRefH.size, XRefH.ref); DRW_DBG("\n");
         dwgHandle shpHandle = buf->getHandle();
-        DBG(" shapeFile Handle: "); DBG(shpHandle.code); DBG(".");
-        DBG(shpHandle.size); DBG("."); DBG(shpHandle.ref); DBG("\n");
+        DRW_DBG(" shapeFile Handle: "); DRW_DBGHL(shpHandle.code, shpHandle.size, shpHandle.ref);
+        DRW_DBG("\n Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
     }
+    dwgHandle shpHandle = buf->getHandle();
+    DRW_DBG(" shapeFile +1 Handle ??: "); DRW_DBGHL(shpHandle.code, shpHandle.size, shpHandle.ref); DRW_DBG("\n");
 
-    DBG("\n Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
+    DRW_DBG("\n Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
 //    RS crc;   //RS */
     return buf->isGood();
 }
@@ -553,7 +582,7 @@ void DRW_Layer::parseCode(int code, dxfReader *reader){
         handlePlotS = reader->getString();
         break;
     case 347:
-        handlePlotM = reader->getString();
+        handleMaterialS = reader->getString();
         break;
     case 420:
         color24 = reader->getInt32();
@@ -564,20 +593,24 @@ void DRW_Layer::parseCode(int code, dxfReader *reader){
     }
 }
 
-bool DRW_Layer::parseDwg(DRW::Version version, dwgBuffer *buf){
-    bool ret = DRW_TableEntry::parseDwg(version, buf);
-    DBG("\n***************************** parsing layer *********************************************\n");
+bool DRW_Layer::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
+    dwgBuffer sBuff = *buf;
+    dwgBuffer *sBuf = buf;
+    if (version > DRW::AC1018) {//2007+
+        sBuf = &sBuff; //separate buffer for strings
+    }
+    bool ret = DRW_TableEntry::parseDwg(version, buf, sBuf, bs);
+    DRW_DBG("\n***************************** parsing layer *********************************************\n");
     if (!ret)
         return ret;
-    if (version > DRW::AC1018) {//2007+
-        name = buf->getVariableText();
-    } else {//2004-
-        name = buf->getVariableUtf8Text();
-    }
-    DBG("layer name: "); DBG(name.c_str());
+    name = sBuf->getVariableText(version, false);
+    DRW_DBG("layer name: "); DRW_DBG(name.c_str());
 
     flags |= buf->getBit()<< 6;//layer have entity
-    /*dint16 xrefindex =*/ buf->getBitShort();
+    if (version < DRW::AC1021) {//2004-
+        DRW_DBG(", xrefindex = "); DRW_DBG(buf->getBitShort()); DRW_DBG("\n");
+        //dint16 xrefindex = buf->getBitShort();
+    }
     flags |= buf->getBit() << 4;//is refx dependent
     if (version < DRW::AC1015) {//14-
         flags |= buf->getBit(); //layer frozen
@@ -586,37 +619,46 @@ bool DRW_Layer::parseDwg(DRW::Version version, dwgBuffer *buf){
         flags |= buf->getBit()<< 3;//locked
     }
     if (version > DRW::AC1014) {//2000+
-        dint16 f = buf->getBitShort();//bit2 are layer on
-        DBG(", flags 2000+: "); DBG(f); DBG("\n");
+        dint16 f = buf->getSBitShort();//bit2 are layer on
+        DRW_DBG(", flags 2000+: "); DRW_DBG(f); DRW_DBG("\n");
         flags |= f & 0x0001; //layer frozen
         flags |= ( f>> 1) & 0x0002;//frozen in new
         flags |= ( f>> 1) & 0x0004;//locked
         plotF = ( f>> 4) & 0x0001;
         lWeight = DRW_LW_Conv::dwgInt2lineWidth( (f & 0x03E0) >> 5 );
     }
-    color = buf->getBitShort(); //BS or CMC //ok for R14 or negate
-    DBG(", entity color: "); DBG(color); DBG("\n");
+    color = buf->getCmColor(version); //BS or CMC //ok for R14 or negate
+    DRW_DBG(", entity color: "); DRW_DBG(color); DRW_DBG("\n");
 
+    if (version > DRW::AC1018) {//2007+ skip string area
+        buf->setPosition(objSize >> 3);
+        buf->setBitPos(objSize & 7);
+    }
     dwgHandle layerControlH = buf->getHandle();
-    DBG("layer control Handle: "); DBG(layerControlH.code); DBG(".");
-    DBG(layerControlH.size); DBG("."); DBG(layerControlH.ref);
+    DRW_DBG("layer control Handle: "); DRW_DBGHL(layerControlH.code, layerControlH.size, layerControlH.ref);
+    parentHandle = layerControlH.ref;
 
+    if (xDictFlag !=1){//linetype in 2004 seems not have XDicObjH or NULL handle
     dwgHandle XDicObjH = buf->getHandle();
-    DBG(" XDicObj control Handle: "); DBG(XDicObjH.code); DBG(".");
-    DBG(XDicObjH.size); DBG("."); DBG(XDicObjH.ref); DBG("\n");
+        DRW_DBG(" XDicObj control Handle: "); DRW_DBGHL(XDicObjH.code, XDicObjH.size, XDicObjH.ref); DRW_DBG("\n");
+    }
     dwgHandle XRefH = buf->getHandle();
-    DBG(" XRefH control Handle: "); DBG(XRefH.code); DBG(".");
-    DBG(XRefH.size); DBG("."); DBG(XRefH.ref); DBG("\n");
+    DRW_DBG(" XRefH control Handle: "); DRW_DBGHL(XRefH.code, XRefH.size, XRefH.ref); DRW_DBG("\n");
     if (version > DRW::AC1014) {//2000+
         dwgHandle plotStyH = buf->getHandle();
-        DBG(" PLot style control Handle: "); DBG(plotStyH.code); DBG(".");
-        DBG(plotStyH.size); DBG("."); DBG(plotStyH.ref); DBG("\n");
+        DRW_DBG(" PLot style control Handle: "); DRW_DBGHL(plotStyH.code, plotStyH.size, plotStyH.ref); DRW_DBG("\n");
+        handlePlotS = DRW::toHexStr(plotStyH.ref);// std::string(plotStyH.ref);//RLZ: verify conversion
+    }
+    if (version > DRW::AC1018) {//2007+
+        dwgHandle materialH = buf->getHandle();
+        DRW_DBG(" Material control Handle: "); DRW_DBGHL(materialH.code, materialH.size, materialH.ref); DRW_DBG("\n");
+        handleMaterialS = DRW::toHexStr(materialH.ref);//RLZ: verify conversion
     }
     //lineType handle
+    DRW_DBG("Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
     lTypeH = buf->getHandle();
-    DBG("line type Handle: "); DBG(lTypeH.code); DBG(".");
-    DBG(lTypeH.size); DBG("."); DBG(lTypeH.ref);
-    DBG("\n Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
+    DRW_DBG("line type Handle: "); DRW_DBGHL(lTypeH.code, lTypeH.size, lTypeH.ref);
+    DRW_DBG("\n Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
 //    RS crc;   //RS */
     return buf->isGood();
 }
