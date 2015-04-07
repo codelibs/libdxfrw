@@ -1,7 +1,7 @@
 /******************************************************************************
 **  libDXFrw - Library to read/write DXF files (ascii & binary)              **
 **                                                                           **
-**  Copyright (C) 2011-2013 Rallaz, rallazz@gmail.com                        **
+**  Copyright (C) 2011-2015 José F. Soriano, rallazz@gmail.com               **
 **                                                                           **
 **  This library is free software, licensed under the terms of the GNU       **
 **  General Public License as published by the Free Software Foundation,     **
@@ -18,23 +18,38 @@
 #include "drw_textcodec.h"
 #include "dwgbuffer.h"
 #include "dwgreader.h"
-//#include "../libdwgr.h"
 
+//reader for AC1021 aka v2007, chapter 5
 class dwgReader21 : public dwgReader {
 public:
-    dwgReader21(std::ifstream *stream, dwgR *p):dwgReader(stream, p){ }
-    virtual ~dwgReader21(){}
+    dwgReader21(std::ifstream *stream, dwgR *p):dwgReader(stream, p){
+        objData = NULL;
+    }
+    virtual ~dwgReader21(){
+        if (objData != NULL)
+            delete[] objData;
+    }
+    bool readMetaData();
     bool readFileHeader();
-    //RLZ todo    bool readDwgHeader();
-    //RLZ todo    bool readDwgClasses();
-    bool readDwgClasses(){return false;}
-    bool readDwgObjectOffsets(){return false;}
-    bool readDwgTables(){return false;}
-    bool readDwgBlocks(DRW_Interface& intfa){DRW_UNUSED(intfa); return false;}
-    bool readDwgEntity(objHandle& obj, DRW_Interface& intfa){
-        DRW_UNUSED(obj);
-        DRW_UNUSED(intfa);
-        return false;}
+    bool readDwgHeader(DRW_Header& hdr);
+    bool readDwgClasses();
+    bool readDwgHandles();
+    bool readDwgTables(DRW_Header& hdr);
+    bool readDwgBlocks(DRW_Interface& intfa);
+    virtual bool readDwgEntities(DRW_Interface& intfa){
+        bool ret = true;
+        dwgBuffer dataBuf(objData, uncompSize, &decoder);
+        ret = dwgReader::readDwgEntities(intfa, &dataBuf);
+        return ret;
+    }
+//bool readDwgEntity(objHandle& obj, DRW_Interface& intfa){
+//    return false;
+//}
+
+private:
+    duint8 *objData;
+    duint64 uncompSize;
+
 };
 
 #endif // DWGREADER21_H
