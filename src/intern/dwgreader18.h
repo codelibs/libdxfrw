@@ -1,7 +1,7 @@
 /******************************************************************************
 **  libDXFrw - Library to read/write DXF files (ascii & binary)              **
 **                                                                           **
-**  Copyright (C) 2011-2013 Rallaz, rallazz@gmail.com                        **
+**  Copyright (C) 2011-2015 José F. Soriano, rallazz@gmail.com               **
 **                                                                           **
 **  This library is free software, licensed under the terms of the GNU       **
 **  General Public License as published by the Free Software Foundation,     **
@@ -41,33 +41,53 @@ static const int DRW_magicNumEnd18[] = {
     0x16, 0x2f, 0x67, 0x68, 0xd4, 0xf7, 0x4a, 0x4a,
     0xd0, 0x57, 0x68, 0x76};
 
-class dwgSectionInfo {
-public:
-    dwgSectionInfo(){}
-    ~dwgSectionInfo(){}
-    duint8 Id;
-    std::string name;
-    duint32 compresed;
-    duint32 encrypted;
-    std::map<dint32, std::pair<dint32,dint64 > >pages;//name, size, offset
-};
-
 class dwgReader18 : public dwgReader {
 public:
-    dwgReader18(std::ifstream *stream, dwgR *p):dwgReader(stream, p){ }
-    virtual ~dwgReader18(){}
+    dwgReader18(std::ifstream *stream, dwgR *p):dwgReader(stream, p){
+        objData = NULL;
+    }
+    virtual ~dwgReader18(){
+        if (objData != NULL)
+            delete[] objData;
+    }
+    bool readMetaData();
     bool readFileHeader();
-    //RLZ todo    bool readDwgHeader();
-    //RLZ todo    bool readDwgClasses();
+    bool readDwgHeader(DRW_Header& hdr);
     bool readDwgClasses();
-    bool readDwgObjectOffsets();
-    bool readDwgTables();
-    bool readDwgBlocks(DRW_Interface& intfa){DRW_UNUSED(intfa); return false;}
-    bool readDwgEntity(objHandle& obj, DRW_Interface& intfa);
+    bool readDwgHandles();
+    bool readDwgTables(DRW_Header& hdr);
+    bool readDwgBlocks(DRW_Interface& intfa){
+        bool ret = true;
+        dwgBuffer dataBuf(objData, uncompSize, &decoder);
+        ret = dwgReader::readDwgBlocks(intfa, &dataBuf);
+        return ret;
+    }
+
+    virtual bool readDwgEntities(DRW_Interface& intfa){
+        bool ret = true;
+        dwgBuffer dataBuf(objData, uncompSize, &decoder);
+        ret = dwgReader::readDwgEntities(intfa, &dataBuf);
+        return ret;
+    }
+
+//    bool readDwgEntity(objHandle& obj, DRW_Interface& intfa){
+//        bool ret = true;
+//        return ret;
+//    }
+
+protected:
+    duint8 *objData;
+    duint64 uncompSize;
+
 private:
     void genMagicNumber();
-    std::map<std::string, dwgSectionInfo >sectionInfo;//name, Section Info
+//    dwgBuffer* bufObj;
+    void parseSysPage(duint8 *decompSec, duint32 decompSize); //called: Section page map: 0x41630e3b
+    bool parseDataPage(dwgSectionInfo si/*, duint8 *dData*/); //called ???: Section map: 0x4163003b
+    duint32 checksum(duint32 seed, duint8* data, duint32 sz);
 
+private:
+duint32 securityFlags;
 };
 
 #endif // DWGREADER18_H
