@@ -1,7 +1,7 @@
 /******************************************************************************
 **  libDXFrw - Library to read/write DXF files (ascii & binary)              **
 **                                                                           **
-**  Copyright (C) 2011-2013 Rallaz, rallazz@gmail.com                        **
+**  Copyright (C) 2011-2015 José F. Soriano, rallazz@gmail.com               **
 **                                                                           **
 **  This library is free software, licensed under the terms of the GNU       **
 **  General Public License as published by the Free Software Foundation,     **
@@ -37,7 +37,7 @@ public:
      * @return true for success
      */
     bool read(DRW_Interface *interface_, bool ext);
-    void setBinary(bool b) {binary = b;}
+    void setBinary(bool b) {binFile = b;}
 
     bool write(DRW_Interface *interface_, DRW::Version ver, bool bin);
     bool writeLineType(DRW_LType *ent);
@@ -118,13 +118,14 @@ private:
     bool writeBlocks();
     bool writeObjects();
     bool writeExtData(const std::vector<DRW_Variant*> &ed);
-    std::string toHexStr(int n);
+    /*use version from dwgutil.h*/
+    std::string toHexStr(int n);//RLZ removeme
 
 private:
     DRW::Version version;
     std::string fileName;
     std::string codePage;
-    bool binary;
+    bool binFile;
     dxfReader *reader;
     dxfWriter *writer;
     DRW_Interface *iface;
