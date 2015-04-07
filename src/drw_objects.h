@@ -37,10 +37,15 @@ namespace DRW {
          APPID
      };
 
-
+//pending VIEW, UCS, APPID, VP_ENT_HDR, GROUP, MLINESTYLE, LONG_TRANSACTION, XRECORD,
+//ACDBPLACEHOLDER, VBA_PROJECT, ACAD_TABLE, CELLSTYLEMAP, DBCOLOR, DICTIONARYVAR,
+//DICTIONARYWDFLT, FIELD, IDBUFFER, IMAGEDEF, IMAGEDEFREACTOR, LAYER_INDEX, LAYOUT
+//MATERIAL, PLACEHOLDER, PLOTSETTINGS, RASTERVARIABLES, SCALE, SORTENTSTABLE,
+//SPATIAL_INDEX, SPATIAL_FILTER, TABLEGEOMETRY, TABLESTYLES,VISUALSTYLE,
 }
 
-#define SETOBJFRIENDS friend class dwgReader15;
+#define SETOBJFRIENDS  friend class dxfRW; \
+                       friend class dwgReader;
 
 //! Base class for tables entries
 /*!
@@ -53,6 +58,8 @@ public:
     DRW_TableEntry() {
         tType = DRW::UNKNOWNT;
         flags = 0;
+        numReactors = xDictFlag = 0;
+        parentHandle = 0;
         curr = NULL;
     }
 
@@ -66,7 +73,7 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer* strBuf, duint32 bs=0);
     void reset(){
         flags =0;
         for (std::vector<DRW_Variant*>::iterator it=extData.begin(); it!=extData.end(); ++it)
@@ -77,18 +84,20 @@ protected:
 public:
     enum DRW::TTYPE tType;     /*!< enum: entity type, code 0 */
     int handle;                /*!< entity identifier, code 5 */
-    int handleBlock;           /*!< Soft-pointer ID/handle to owner BLOCK_RECORD object, code 330 */
+    int parentHandle;          /*!< Soft-pointer ID/handle to owner object, code 330 */
     UTF8STRING name;           /*!< entry name, code 2 */
     int flags;                 /*!< Flags relevant to entry, code 70 */
     std::vector<DRW_Variant*> extData; /*!< FIFO list of extended data, codes 1000 to 1071*/
 
+private:
+    DRW_Variant* curr;
     //***** dwg parse ********/
-    dint32 numReactors; //
 protected:
     dint16 oType;
 
-private:
-    DRW_Variant* curr;
+    duint8 xDictFlag;
+    dint32 numReactors; //
+    duint32 objSize;  //RL 32bits object data size in bits
 };
 
 
@@ -98,6 +107,7 @@ private:
 *  @author Rallaz
 */
 class DRW_Dimstyle : public DRW_TableEntry {
+    SETOBJFRIENDS
 public:
     DRW_Dimstyle() { reset();}
 
@@ -126,8 +136,9 @@ public:
         DRW_TableEntry::reset();
     }
 
+protected:
     void parseCode(int code, dxfReader *reader);
-    bool parseDwg(DRW::Version version, dwgBuffer *buf);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
 
 public:
     //V12

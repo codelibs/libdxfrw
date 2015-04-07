@@ -17,6 +17,7 @@
 #include "intern/dxfwriter.h"
 #include "intern/dwgbuffer.h"
 #include "intern/drw_dbg.h"
+#include "intern/dwgutil.h"
 
 //! Base class for tables entries
 /*!
@@ -29,7 +30,7 @@ void DRW_TableEntry::parseCode(int code, dxfReader *reader){
         handle = reader->getHandleString();
         break;
     case 330:
-        handleBlock = reader->getHandleString();
+        parentHandle = reader->getHandleString();
         break;
     case 2:
         name = reader->getUtf8String();
@@ -84,42 +85,67 @@ void DRW_TableEntry::parseCode(int code, dxfReader *reader){
     }
 }
 
-bool DRW_TableEntry::parseDwg(DRW::Version version, dwgBuffer *buf){
-    duint32 objSize;
-//    duint8 ltFlags; //BB
-//    duint8 plotFlags; //BB
-DBG("\n***************************** parsing table entry *********************************************\n");
-    oType = buf->getBitShort();
-    if (version > DRW::AC1014) {//2000+
-        objSize = buf->getRawLong32();  //RL 32bits size in bits
+bool DRW_TableEntry::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *strBuf, duint32 bs){
+DRW_DBG("\n***************************** parsing table entry *********************************************\n");
+    objSize=0;
+    oType = buf->getObjType(version);
+    DRW_DBG("Object type: "); DRW_DBG(oType); DRW_DBG(", "); DRW_DBGH(oType);
+    if (version > DRW::AC1014 && version < DRW::AC1024) {//2000 to 2007
+        objSize = buf->getRawLong32();  //RL 32bits object size in bits
+        DRW_DBG(" Object size: "); DRW_DBG(objSize); DRW_DBG("\n");
     }
+    if (version > DRW::AC1021) {//2010+
+        duint32 ms = buf->size();
+        objSize = ms*8 - bs;
+        DRW_DBG(" Object size: "); DRW_DBG(objSize); DRW_DBG("\n");
+    }
+    if (strBuf != NULL && version > DRW::AC1018) {//2007+
+        strBuf->moveBitPos(objSize-1);
+        DRW_DBG(" strBuf strbit pos 2007: "); DRW_DBG(strBuf->getPosition()); DRW_DBG(" strBuf bpos 2007: "); DRW_DBG(strBuf->getBitPos()); DRW_DBG("\n");
+        if (strBuf->getBit() == 1){
+            DRW_DBG("DRW_TableEntry::parseDwg string bit is 1\n");
+            strBuf->moveBitPos(-17);
+            duint16 strDataSize = strBuf->getRawShort16();
+            DRW_DBG("\nDRW_TableEntry::parseDwg string strDataSize: "); DRW_DBGH(strDataSize); DRW_DBG("\n");
+            if ( (strDataSize& 0x8000) == 0x8000){
+                DRW_DBG("\nDRW_TableEntry::parseDwg string 0x8000 bit is set");
+                strBuf->moveBitPos(-33);//RLZ pending to verify
+                duint16 hiSize = strBuf->getRawShort16();
+                strDataSize = ((strDataSize&0x7fff) | (hiSize<<15));
+            }
+            strBuf->moveBitPos( -strDataSize -16); //-14
+            DRW_DBG("strBuf start strDataSize pos 2007: "); DRW_DBG(strBuf->getPosition()); DRW_DBG(" strBuf bpos 2007: "); DRW_DBG(strBuf->getBitPos()); DRW_DBG("\n");
+        } else
+            DRW_DBG("\nDRW_TableEntry::parseDwg string bit is 0");
+        DRW_DBG("strBuf start pos 2007: "); DRW_DBG(strBuf->getPosition()); DRW_DBG(" strBuf bpos 2007: "); DRW_DBG(strBuf->getBitPos()); DRW_DBG("\n");
+    }
+
     dwgHandle ho = buf->getHandle();
     handle = ho.ref;
-    DBG("TableEntry Handle: "); DBG(ho.code); DBG(".");
-    DBG(ho.size); DBG("."); DRW_DBGH(ho.ref);
+    DRW_DBG("TableEntry Handle: "); DRW_DBGHL(ho.code, ho.size, ho.ref);
     dint16 extDataSize = buf->getBitShort(); //BS
-    DBG(" ext data size: "); DBG(extDataSize);
+    DRW_DBG(" ext data size: "); DRW_DBG(extDataSize);
     while (extDataSize>0 && buf->isGood()) {
         /* RLZ: TODO */
         dwgHandle ah = buf->getHandle();
-        DBG("App Handle: "); DBG(ah.code); DBG("."); DBG(ah.size); DBG("."); DBG(ah.ref);
-        char byteStr[extDataSize];
+        DRW_DBG("App Handle: "); DRW_DBGHL(ah.code, ah.size, ah.ref);
+        duint8 byteStr[extDataSize];
         buf->getBytes(byteStr, extDataSize);
         dwgBuffer buff(byteStr, extDataSize, buf->decoder);
         int pos = buff.getPosition();
         int bpos = buff.getBitPos();
-        DBG("ext data pos: "); DBG(pos); DBG("."); DBG(bpos); DBG("\n");
+        DRW_DBG("ext data pos: "); DRW_DBG(pos); DRW_DBG("."); DRW_DBG(bpos); DRW_DBG("\n");
         duint8 dxfCode = buff.getRawChar8();
-        DBG(" dxfCode: "); DBG(dxfCode);
+        DRW_DBG(" dxfCode: "); DRW_DBG(dxfCode);
         switch (dxfCode){
         case 0:{
             duint8 strLength = buff.getRawChar8();
-            DBG(" strLength: "); DBG(strLength);
+            DRW_DBG(" strLength: "); DRW_DBG(strLength);
             duint16 cp = buff.getBERawShort16();
-            DBG(" str codepage: "); DBG(cp);
+            DRW_DBG(" str codepage: "); DRW_DBG(cp);
             for (int i=0;i< strLength+1;i++) {//string length + null terminating char
                 duint8 dxfChar = buff.getRawChar8();
-                DBG(" dxfChar: "); DBG(dxfChar);
+                DRW_DBG(" dxfChar: "); DRW_DBG(dxfChar);
             }
             break;
         }
@@ -127,19 +153,24 @@ DBG("\n***************************** parsing table entry ***********************
             /* RLZ: TODO */
             break;
         }
-        DBG("ext data pos: "); DBG(buff.getPosition()); DBG("."); DBG(buff.getBitPos()); DBG("\n");
+        DRW_DBG("ext data pos: "); DRW_DBG(buff.getPosition()); DRW_DBG("."); DRW_DBG(buff.getBitPos()); DRW_DBG("\n");
         extDataSize = buf->getBitShort(); //BS
-        DBG(" ext data size: "); DBG(extDataSize);
+        DRW_DBG(" ext data size: "); DRW_DBG(extDataSize);
     } //end parsing extData (EED)
     if (version < DRW::AC1015) {//14-
         objSize = buf->getRawLong32();  //RL 32bits size in bits
     }
-    DBG(" objSize in bits: "); DBG(objSize);
+    DRW_DBG(" objSize in bits: "); DRW_DBG(objSize);
 
     numReactors = buf->getBitLong(); //BL
-    DBG(", numReactors: "); DBG(numReactors); DBG("\n");
+    DRW_DBG(", numReactors: "); DRW_DBG(numReactors); DRW_DBG("\n");
     if (version > DRW::AC1015) {//2004+
-        /*duint8 xDictFlag =*/ buf->getBit();
+        xDictFlag = buf->getBit();
+        DRW_DBG("xDictFlag: "); DRW_DBG(xDictFlag);
+    }
+    if (version > DRW::AC1024) {//2013+
+        duint8 bd = buf->getBit();
+        DRW_DBG(" Have binary data: "); DRW_DBG(bd); DRW_DBG("\n");
     }
     return buf->isGood();
 }
@@ -361,19 +392,21 @@ void DRW_Dimstyle::parseCode(int code, dxfReader *reader){
     }
 }
 
-bool DRW_Dimstyle::parseDwg(DRW::Version version, dwgBuffer *buf){
-    bool ret = DRW_TableEntry::parseDwg(version, buf);
-    DBG("\n***************************** parsing dimension style **************************************\n");
+bool DRW_Dimstyle::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
+    dwgBuffer sBuff = *buf;
+    dwgBuffer *sBuf = buf;
+    if (version > DRW::AC1018) {//2007+
+        sBuf = &sBuff; //separate buffer for strings
+    }
+    bool ret = DRW_TableEntry::parseDwg(version, buf, sBuf, bs);
+    DRW_DBG("\n***************************** parsing dimension style **************************************\n");
     if (!ret)
         return ret;
-    if (version > DRW::AC1018) {//2007+
-        name = buf->getVariableText();
-    } else {//2004-
-        name = buf->getVariableUtf8Text();
-    }
-    DBG("dimension style name: "); DBG(name.c_str()); DBG("\n");
+    name = sBuf->getVariableText(version, false);
+    DRW_DBG("dimension style name: "); DRW_DBG(name.c_str()); DRW_DBG("\n");
 
-    DBG("\n Remaining bytes: "); DBG(buf->numRemainingBytes()); DBG("\n");
+//    handleObj = shpControlH.ref;
+    DRW_DBG("\n Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
     //    RS crc;   //RS */
     return buf->isGood();
 }
