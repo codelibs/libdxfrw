@@ -1,7 +1,7 @@
 /******************************************************************************
 **  libDXFrw - Library to read/write DXF files (ascii & binary)              **
 **                                                                           **
-**  Copyright (C) 2011-2013 Rallaz, rallazz@gmail.com                        **
+**  Copyright (C) 2011-2015 José F. Soriano, rallazz@gmail.com               **
 **                                                                           **
 **  This library is free software, licensed under the terms of the GNU       **
 **  General Public License as published by the Free Software Foundation,     **
@@ -18,22 +18,24 @@
 #include "drw_textcodec.h"
 #include "dwgbuffer.h"
 #include "dwgreader.h"
-//#include "../libdwgr.h"
 
 class dwgReader15 : public dwgReader {
 public:
     dwgReader15(std::ifstream *stream, dwgR *p):dwgReader(stream, p){ }
-    virtual ~dwgReader15() {
-        //RLZ: clear & destroy ltmap;
-    }
+    virtual ~dwgReader15() {}
+    bool readMetaData();
     bool readFileHeader();
-    //RLZ todo    bool readDwgHeader();
-    //RLZ todo    bool readDwgClasses();
+    bool readDwgHeader(DRW_Header& hdr);
     bool readDwgClasses();
-    bool readDwgObjectOffsets();
-    bool readDwgTables();
+    bool readDwgHandles();
+    bool readDwgTables(DRW_Header& hdr);
     bool readDwgBlocks(DRW_Interface& intfa);
-    bool readDwgEntity(objHandle& obj, DRW_Interface& intfa);
+    bool readDwgEntities(DRW_Interface& intfa){
+        bool ret = true;
+        ret = dwgReader::readDwgEntities(intfa, fileBuf);
+        return ret;
+    }
+//    bool readDwgEntity(objHandle& obj, DRW_Interface& intfa);
 };
 
 
