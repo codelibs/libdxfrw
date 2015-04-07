@@ -1,7 +1,7 @@
 /******************************************************************************
 **  libDXFrw - Library to read/write DXF files (ascii & binary)              **
 **                                                                           **
-**  Copyright (C) 2011-2013 Rallaz, rallazz@gmail.com                        **
+**  Copyright (C) 2011-2015 José F. Soriano, rallazz@gmail.com               **
 **                                                                           **
 **  This library is free software, licensed under the terms of the GNU       **
 **  General Public License as published by the Free Software Foundation,     **
@@ -36,16 +36,17 @@ public:
 
     void parseCode(int code, dxfReader *reader);
     void write(dxfWriter *writer, DRW::Version ver);
-    bool parseDwg(DRW::Version version, dwgBuffer *buf);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *strBuf);
 
 private:
     void toDwgType();
 public:
-    UTF8STRING recNane;      /*!< record name, code 1 */
+    UTF8STRING recName;      /*!< record name, code 1 */
     UTF8STRING className;    /*!< C++ class name, code 2 */
     UTF8STRING appName;      /*!< app name, code 3 */
-    int proxyCapabilities;   /*!< proxy capabilities, code 90 */
-    int proxyFlag;           /*!< proxy flag (app loaded on save), code 280 */
+    int proxyFlag;           /*!< Proxy capabilities flag, code 90 */
+    int instanceCount;       /*!< number of instances for a custom class, code 91*/
+    int wasaProxyFlag;       /*!< proxy flag (app loaded on save), code 280 */
     int entityFlag;          /*!< entity flag, code 281 (0 object, 1 entity)*/
 public: //only for read dwg
     duint16 classNum;
