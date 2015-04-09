@@ -919,7 +919,6 @@ bool dwgReader::readDwgEntities(DRW_Interface& intfa, dwgBuffer *dbuf){
     bool ret = true;
     bool ret2 = true;
 
-    duint32 i=0;
     DRW_DBG("\nobject map total size= "); DRW_DBG(ObjectMap.size());
     std::map<duint32, objHandle>::iterator itB=ObjectMap.begin();
     std::map<duint32, objHandle>::iterator itE=ObjectMap.end();
@@ -941,8 +940,8 @@ bool dwgReader::readDwgEntity(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& in
     duint32 bs = 0;
 
 #define ENTRY_PARSE(e) \
-            ret = e.parseDwg(version, &buff, bs); \
-            parseAttribs(&e); \
+    ret = e.parseDwg(version, &buff, bs); \
+    parseAttribs(&e); \
     nextEntLink = e.nextEntLink; \
     prevEntLink = e.prevEntLink;
 
@@ -967,7 +966,6 @@ bool dwgReader::readDwgEntity(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& in
         dwgBuffer buff(byteStr, size, &decoder);
         dint16 oType = buff.getObjType(version);
         buff.resetPosition();
-        DRW_DBG(" object type= "); DRW_DBG(oType); DRW_DBG("\n");
 
         if (oType > 499){
             std::map<duint32, DRW_Class*>::iterator it = classesmap.find(oType);
@@ -1133,6 +1131,11 @@ bool dwgReader::readDwgEntity(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& in
             ENTRY_PARSE(e)
             intfa.addXline(e);
             break; }
+        case 101: {
+            DRW_Image e;
+            ENTRY_PARSE(e)
+            intfa.addImage(&e);
+            break; }
 
         default:
             //not supported or are object add to remaining map
@@ -1140,7 +1143,7 @@ bool dwgReader::readDwgEntity(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& in
             break;
         }
         if (!ret){
-            DRW_DBG("Object type "); DRW_DBG(oType);DRW_DBG("has failed, handle: "); DRW_DBG(obj.handle); DRW_DBG("\n");
+            DRW_DBG("Warning: Entity type "); DRW_DBG(oType);DRW_DBG("has failed, handle: "); DRW_DBG(obj.handle); DRW_DBG("\n");
         }
     return ret;
 }
@@ -1163,7 +1166,7 @@ bool dwgReader::readDwgObjects(DRW_Interface& intfa, dwgBuffer *dbuf){
     }
     if (DRW_DBGGL == DRW_dbg::DEBUG) {
         for (std::map<duint32, objHandle>::iterator it=remainingMap.begin(); it != remainingMap.end(); ++it){
-            DRW_DBG("\nnum.# "); DRW_DBG(i++); DRW_DBG("Remaining object Handle, loc, type= "); DRW_DBG(it->first);
+            DRW_DBG("\nnum.# "); DRW_DBG(i++); DRW_DBG(" Remaining object Handle, loc, type= "); DRW_DBG(it->first);
             DRW_DBG(" "); DRW_DBG(it->second.loc); DRW_DBG(" "); DRW_DBG(it->second.type);
         }
         DRW_DBG("\n");
@@ -1178,13 +1181,6 @@ bool dwgReader::readDwgObject(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& in
     bool ret = true;
     duint32 bs = 0;
 
-/*#define ENTRY_PARSE(e) \
-            ret = e.parseDwg(version, &buff, bs); \
-            parseAttribs(&e); \
-    nextEntLink = e.nextEntLink; \
-    prevEntLink = e.prevEntLink;
-
-    nextEntLink = prevEntLink = 0;// set to 0 to skip unimplemented entities*/
         dbuf->setPosition(obj.loc);
         //verify if position is ok:
         if (!dbuf->isGood()){
@@ -1205,15 +1201,12 @@ bool dwgReader::readDwgObject(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& in
         dwgBuffer buff(byteStr, size, &decoder);
         //oType are set parsing entities
         dint16 oType = obj.type;
-//        dint16 oType = buff.getObjType(version);
-//        buff.resetPosition();
-        DRW_DBG(" object type= "); DRW_DBG(oType); DRW_DBG("\n");
 
         switch (oType){
         case 102: {
-//            DRW_Arc e;
-//            ENTRY_PARSE(e)
-//            intfa.addArc(e);
+            DRW_ImageDef e;
+            ret = e.parseDwg(version, &buff, bs);
+            intfa.linkImage(&e);
             break; }
         default:
             //not supported object or entity add to remaining map for debug
@@ -1221,7 +1214,7 @@ bool dwgReader::readDwgObject(dwgBuffer *dbuf, objHandle& obj, DRW_Interface& in
             break;
         }
         if (!ret){
-            DRW_DBG("Object type "); DRW_DBG(oType);DRW_DBG("has failed, handle: "); DRW_DBG(obj.handle); DRW_DBG("\n");
+            DRW_DBG("Warning: Object type "); DRW_DBG(oType);DRW_DBG("has failed, handle: "); DRW_DBG(obj.handle); DRW_DBG("\n");
         }
     return ret;
 }
