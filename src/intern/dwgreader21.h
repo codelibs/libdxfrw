@@ -47,6 +47,9 @@ public:
 //}
 
 private:
+    bool parseSysPage(duint64 sizeCompressed, duint64 sizeUncompressed, duint64 correctionFactor, duint64 offset, duint8 *decompData);
+    bool parseDataPage(dwgSectionInfo si/*, duint8 *dData*/);
+
     duint8 *objData;
     duint64 uncompSize;
 
