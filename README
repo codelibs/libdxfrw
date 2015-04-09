@@ -1,6 +1,7 @@
 libdxfrw
 
 libdxfrw is a free C++ library to read and write DXF files in both formats, ascii and binary form.
+Also can read DWG files from R14 to the last V2015.
  It is licensed under the terms of the GNU General Public License version 2 (or at you option
 any later version).
 
