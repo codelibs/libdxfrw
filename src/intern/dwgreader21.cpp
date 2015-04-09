@@ -433,48 +433,7 @@ bool dwgReader21::readDwgHandles(){
 
     dwgBuffer dataBuf(handlesData, si.size, &decoder);
 
-    duint32 offset =  dataBuf.getPosition();
-    duint32 maxPos = dataBuf.size();
-
-    DRW_DBG("\nSection HANDLES offset= "); DRW_DBG(offset);
-    DRW_DBG("\nSection HANDLES size= "); DRW_DBG(si.size);
-    DRW_DBG("\nSection HANDLES maxPos= "); DRW_DBG(maxPos);
-
-//    int startPos = offset;
-    dint64 lastHandle = 0;
-    dint64 lastLoc = 0;
-    duint16 size = 0;
-
-    while ( (size != 2) && maxPos > dataBuf.getPosition()) {
-        DRW_DBG("start object section buf->curPosition()= "); DRW_DBG(dataBuf.getPosition()); DRW_DBG("\n");
-        size = dataBuf.getBERawShort16();
-        DRW_DBG("object map section size= "); DRW_DBG(size); DRW_DBG("\n");
-        if (size != 2){
-            duint16 readTo = dataBuf.getPosition() + size -3;
-//            buff.setPosition(2);
-            //read data
-            while(dataBuf.getPosition()< readTo){
-                lastHandle += dataBuf.getUModularChar();
-                DRW_DBG("object map lastHandle= "); DRW_DBGH(lastHandle);
-                lastLoc += dataBuf.getModularChar();
-                DRW_DBG(" lastLoc= "); DRW_DBG(lastLoc); DRW_DBG("\n");
-                ObjectMap[lastHandle]= objHandle(0, lastHandle, lastLoc);
-                if (dataBuf.getPosition()> maxPos || dataBuf.getPosition()== dataBuf.size()){
-                    readTo = 0;
-                    size = 2;
-                }
-            }
-        }
-        //verify crc
-        duint16 crcCalc = dataBuf.crc8(0xc0c1,0,size);
-        duint16 crcRead = dataBuf.getBERawShort16();
-        DRW_DBG("object map section crc8 read= "); DRW_DBG(crcRead);
-        DRW_DBG("\nobject map section crc8 calculated= "); DRW_DBG(crcCalc);
-        DRW_DBG("\nobject section buf->curPosition()= "); DRW_DBG(dataBuf.getPosition()); DRW_DBG("\n");
-//        startPos = dataBuf.getPosition();
-    }
-
-    ret = dataBuf.isGood();
+    ret = dwgReader::readDwgHandles(&dataBuf, 0, si.size);
 
     return ret;
 

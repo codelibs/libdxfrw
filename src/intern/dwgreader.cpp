@@ -113,6 +113,59 @@ bool dwgReader::checkSentinel(dwgBuffer *buf, enum secEnum::DWGSection, bool sta
     return true;
 }
 
+/*********** objects map ************************/
+/** Note: object map are split in sections with max size 2035?
+ *  heach section are 2 bytes size + data bytes + 2 bytes crc
+ *  size value are data bytes + 2 and to calculate crc are used
+ *  2 bytes size + data bytes
+ *  last section are 2 bytes size + 2 bytes crc (size value always 2)
+**/
+bool dwgReader::readDwgHandles(dwgBuffer *dbuf, duint32 offset, duint32 size) {
+    DRW_DBG("\ndwgReader::readDwgHandles\n");
+    if (!dbuf->setPosition(offset))
+        return false;
+
+    duint32 maxPos = offset + size;
+    DRW_DBG("\nSection HANDLES offset= "); DRW_DBG(offset);
+    DRW_DBG("\nSection HANDLES size= "); DRW_DBG(size);
+    DRW_DBG("\nSection HANDLES maxPos= "); DRW_DBG(maxPos);
+
+    int startPos = offset;
+
+    while (maxPos > dbuf->getPosition()) {
+        DRW_DBG("\nstart handles section buf->curPosition()= "); DRW_DBG(dbuf->getPosition()); DRW_DBG("\n");
+        duint16 size = dbuf->getBERawShort16();
+        DRW_DBG("object map section size= "); DRW_DBG(size); DRW_DBG("\n");
+        dbuf->setPosition(startPos);
+        duint8 byteStr[size];
+        dbuf->getBytes(byteStr, size);
+        dwgBuffer buff(byteStr, size, &decoder);
+        if (size != 2){
+            buff.setPosition(2);
+            int lastHandle = 0;
+            int lastLoc = 0;
+            //read data
+            while(buff.getPosition()< size){
+                lastHandle += buff.getUModularChar();
+                DRW_DBG("object map lastHandle= "); DRW_DBGH(lastHandle);
+                lastLoc += buff.getModularChar();
+                DRW_DBG(" lastLoc= "); DRW_DBG(lastLoc); DRW_DBG("\n");
+                ObjectMap[lastHandle]= objHandle(0, lastHandle, lastLoc);
+            }
+        }
+        //verify crc
+        duint16 crcCalc = buff.crc8(0xc0c1,0,size);
+        duint16 crcRead = dbuf->getBERawShort16();
+        DRW_DBG("object map section crc8 read= "); DRW_DBG(crcRead);
+        DRW_DBG("\nobject map section crc8 calculated= "); DRW_DBG(crcCalc);
+        DRW_DBG("\nobject section buf->curPosition()= "); DRW_DBG(dbuf->getPosition()); DRW_DBG("\n");
+        startPos = dbuf->getPosition();
+    }
+
+    bool ret = dbuf->isGood();
+    return ret;
+}
+
 /*********** objects ************************/
 /**
  * Reads all the object referenced in the object map section of the DWG file

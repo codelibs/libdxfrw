@@ -151,6 +151,7 @@ protected:
     void setCodePage(std::string *c){decoder.setCodePage(c, false);}
     std::string getCodePage(){ return decoder.getCodePage();}
     bool readDwgHeader(DRW_Header& hdr, dwgBuffer *buf, dwgBuffer *hBuf);
+    bool readDwgHandles(dwgBuffer *dbuf, duint32 offset, duint32 size);
     bool readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf);
     bool checkSentinel(dwgBuffer *buf, enum secEnum::DWGSection, bool start);
 
@@ -160,6 +161,7 @@ protected:
 
 public:
     std::map<duint32, objHandle>ObjectMap;
+    std::map<duint32, objHandle>remainingMap; //stores the ojects & entities not read in readDwgEntities
     std::map<duint32, DRW_LType*> ltypemap;
     std::map<duint32, DRW_Layer*> layermap;
     std::map<duint32, DRW_Block*> blockmap;
