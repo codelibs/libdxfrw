@@ -137,9 +137,10 @@ am_libdxfrw_la_OBJECTS = src/drw_entities.lo src/drw_objects.lo \
 	src/drw_header.lo src/drw_classes.lo src/libdwgr.lo \
 	src/libdxfrw.lo src/intern/dwgutil.lo src/intern/dxfreader.lo \
 	src/intern/dwgreader15.lo src/intern/dwgreader18.lo \
-	src/intern/dwgreader21.lo src/intern/dxfwriter.lo \
+	src/intern/dwgreader21.lo src/intern/dwgreader24.lo \
+	src/intern/dwgreader27.lo src/intern/dxfwriter.lo \
 	src/intern/dwgreader.lo src/intern/dwgbuffer.lo \
-	src/intern/drw_textcodec.lo
+	src/intern/drw_textcodec.lo src/intern/rscodec.lo
 libdxfrw_la_OBJECTS = $(am_libdxfrw_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -360,15 +361,17 @@ library_include_HEADERS = src/drw_base.h src/drw_entities.h src/drw_interface.h 
 
 dist_noinst_HEADERS = src/intern/dxfreader.h src/intern/dxfwriter.h src/intern/drw_dbg.h \
 	src/intern/dwgutil.h src/intern/dwgreader.h src/intern/dwgreader15.h \
-	src/intern/dwgreader18.h src/intern/dwgreader21.h src/intern/dwgbuffer.h \
-	src/intern/drw_cptable932.h src/intern/drw_cptable936.h src/intern/drw_cptable949.h \
-	src/intern/drw_cptable950.h src/intern/drw_cptables.h src/intern/drw_textcodec.h
+	src/intern/dwgreader18.h src/intern/dwgreader21.h src/intern/dwgreader24.h \
+	src/intern/dwgreader27.h  src/intern/dwgbuffer.h src/intern/drw_cptable932.h \
+	src/intern/drw_cptable936.h src/intern/drw_cptable949.h src/intern/drw_cptable950.h \
+	src/intern/drw_cptables.h src/intern/drw_textcodec.h src/intern/rscodec.h
 
 lib_LTLIBRARIES = libdxfrw.la
 libdxfrw_la_SOURCES = src/drw_entities.cpp src/drw_objects.cpp src/drw_header.cpp \
 		      src/drw_classes.cpp src/libdwgr.cpp src/libdxfrw.cpp src/intern/dwgutil.cpp \
 		      src/intern/dxfreader.cpp src/intern/dwgreader15.cpp src/intern/dwgreader18.cpp src/intern/dwgreader21.cpp \
-		      src/intern/dxfwriter.cpp src/intern/dwgreader.cpp src/intern/dwgbuffer.cpp src/intern/drw_textcodec.cpp
+		      src/intern/dwgreader24.cpp src/intern/dwgreader27.cpp src/intern/dxfwriter.cpp src/intern/dwgreader.cpp \
+		      src/intern/dwgbuffer.cpp src/intern/drw_textcodec.cpp src/intern/rscodec.cpp
 
 libdxfrw_la_LDFLAGS = -no-undefined -version-number $(LIBRARY_AGE):$(LIBRARY_CURRENT):$(LIBRARY_REVISION)
 libdxfrw_la_LIBADD = 
@@ -478,6 +481,10 @@ src/intern/dwgreader18.lo: src/intern/$(am__dirstamp) \
 	src/intern/$(DEPDIR)/$(am__dirstamp)
 src/intern/dwgreader21.lo: src/intern/$(am__dirstamp) \
 	src/intern/$(DEPDIR)/$(am__dirstamp)
+src/intern/dwgreader24.lo: src/intern/$(am__dirstamp) \
+	src/intern/$(DEPDIR)/$(am__dirstamp)
+src/intern/dwgreader27.lo: src/intern/$(am__dirstamp) \
+	src/intern/$(DEPDIR)/$(am__dirstamp)
 src/intern/dxfwriter.lo: src/intern/$(am__dirstamp) \
 	src/intern/$(DEPDIR)/$(am__dirstamp)
 src/intern/dwgreader.lo: src/intern/$(am__dirstamp) \
@@ -485,6 +492,8 @@ src/intern/dwgreader.lo: src/intern/$(am__dirstamp) \
 src/intern/dwgbuffer.lo: src/intern/$(am__dirstamp) \
 	src/intern/$(DEPDIR)/$(am__dirstamp)
 src/intern/drw_textcodec.lo: src/intern/$(am__dirstamp) \
+	src/intern/$(DEPDIR)/$(am__dirstamp)
+src/intern/rscodec.lo: src/intern/$(am__dirstamp) \
 	src/intern/$(DEPDIR)/$(am__dirstamp)
 
 libdxfrw.la: $(libdxfrw_la_OBJECTS) $(libdxfrw_la_DEPENDENCIES) $(EXTRA_libdxfrw_la_DEPENDENCIES) 
@@ -512,9 +521,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dwgreader15.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dwgreader18.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dwgreader21.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dwgreader24.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dwgreader27.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dwgutil.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dxfreader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dxfwriter.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/rscodec.Plo@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
