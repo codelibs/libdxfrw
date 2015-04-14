@@ -15,7 +15,7 @@ dist_noinst_HEADERS = src/intern/dxfreader.h src/intern/dxfwriter.h src/intern/d
 
 lib_LTLIBRARIES = libdxfrw.la
 
-libdxfrw_la_SOURCES = src/drw_entities.cpp src/drw_objects.cpp src/drw_header.cpp \
+libdxfrw_la_SOURCES = src/drw_entities.cpp src/drw_objects.cpp src/drw_header.cpp src/intern/drw_dbg.cpp \
 		      src/drw_classes.cpp src/libdwgr.cpp src/libdxfrw.cpp src/intern/dwgutil.cpp \
 		      src/intern/dxfreader.cpp src/intern/dwgreader15.cpp src/intern/dwgreader18.cpp src/intern/dwgreader21.cpp \
 		      src/intern/dwgreader24.cpp src/intern/dwgreader27.cpp src/intern/dxfwriter.cpp src/intern/dwgreader.cpp \

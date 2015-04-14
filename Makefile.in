@@ -134,13 +134,14 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 libdxfrw_la_DEPENDENCIES =
 am__dirstamp = $(am__leading_dot)dirstamp
 am_libdxfrw_la_OBJECTS = src/drw_entities.lo src/drw_objects.lo \
-	src/drw_header.lo src/drw_classes.lo src/libdwgr.lo \
-	src/libdxfrw.lo src/intern/dwgutil.lo src/intern/dxfreader.lo \
-	src/intern/dwgreader15.lo src/intern/dwgreader18.lo \
-	src/intern/dwgreader21.lo src/intern/dwgreader24.lo \
-	src/intern/dwgreader27.lo src/intern/dxfwriter.lo \
-	src/intern/dwgreader.lo src/intern/dwgbuffer.lo \
-	src/intern/drw_textcodec.lo src/intern/rscodec.lo
+	src/drw_header.lo src/intern/drw_dbg.lo src/drw_classes.lo \
+	src/libdwgr.lo src/libdxfrw.lo src/intern/dwgutil.lo \
+	src/intern/dxfreader.lo src/intern/dwgreader15.lo \
+	src/intern/dwgreader18.lo src/intern/dwgreader21.lo \
+	src/intern/dwgreader24.lo src/intern/dwgreader27.lo \
+	src/intern/dxfwriter.lo src/intern/dwgreader.lo \
+	src/intern/dwgbuffer.lo src/intern/drw_textcodec.lo \
+	src/intern/rscodec.lo
 libdxfrw_la_OBJECTS = $(am_libdxfrw_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -367,7 +368,7 @@ dist_noinst_HEADERS = src/intern/dxfreader.h src/intern/dxfwriter.h src/intern/d
 	src/intern/drw_cptables.h src/intern/drw_textcodec.h src/intern/rscodec.h
 
 lib_LTLIBRARIES = libdxfrw.la
-libdxfrw_la_SOURCES = src/drw_entities.cpp src/drw_objects.cpp src/drw_header.cpp \
+libdxfrw_la_SOURCES = src/drw_entities.cpp src/drw_objects.cpp src/drw_header.cpp src/intern/drw_dbg.cpp \
 		      src/drw_classes.cpp src/libdwgr.cpp src/libdxfrw.cpp src/intern/dwgutil.cpp \
 		      src/intern/dxfreader.cpp src/intern/dwgreader15.cpp src/intern/dwgreader18.cpp src/intern/dwgreader21.cpp \
 		      src/intern/dwgreader24.cpp src/intern/dwgreader27.cpp src/intern/dxfwriter.cpp src/intern/dwgreader.cpp \
@@ -462,15 +463,17 @@ src/$(DEPDIR)/$(am__dirstamp):
 src/drw_entities.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
 src/drw_objects.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
 src/drw_header.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
-src/drw_classes.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
-src/libdwgr.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
-src/libdxfrw.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
 src/intern/$(am__dirstamp):
 	@$(MKDIR_P) src/intern
 	@: > src/intern/$(am__dirstamp)
 src/intern/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/intern/$(DEPDIR)
 	@: > src/intern/$(DEPDIR)/$(am__dirstamp)
+src/intern/drw_dbg.lo: src/intern/$(am__dirstamp) \
+	src/intern/$(DEPDIR)/$(am__dirstamp)
+src/drw_classes.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
+src/libdwgr.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
+src/libdxfrw.lo: src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
 src/intern/dwgutil.lo: src/intern/$(am__dirstamp) \
 	src/intern/$(DEPDIR)/$(am__dirstamp)
 src/intern/dxfreader.lo: src/intern/$(am__dirstamp) \
@@ -515,6 +518,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/drw_objects.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/libdwgr.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/libdxfrw.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/drw_dbg.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/drw_textcodec.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dwgbuffer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/intern/$(DEPDIR)/dwgreader.Plo@am__quote@
