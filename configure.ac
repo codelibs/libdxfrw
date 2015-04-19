@@ -59,5 +59,10 @@ AC_CHECK_FUNCS([sqrt])
 AC_ENABLE_SHARED
 AC_ENABLE_STATIC
 
-AC_CONFIG_FILES([Makefile libdxfrw${LIBRARY_AGE}.pc:libdxfrw.pc.in])
+AC_CONFIG_FILES([
+	Makefile
+	src/Makefile
+	dwg2dxf/Makefile
+	libdxfrw${LIBRARY_AGE}.pc:libdxfrw.pc.in
+	])
 AC_OUTPUT
