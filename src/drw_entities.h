@@ -143,7 +143,8 @@ public:
         prevEntLink = e.prevEntLink;
         numReactors = e.numReactors;
         xDictFlag = e.xDictFlag;
-        curr = e.curr;
+        curr = NULL;
+//        curr = e.curr;
         for (std::vector<DRW_Variant*>::const_iterator it=e.extData.begin(); it!=e.extData.end(); ++it){
             extData.push_back(new DRW_Variant(*(*it)));
         }
@@ -594,8 +595,8 @@ public:
     }
     ~DRW_LWPolyline() {
         while (!vertlist.empty()) {
-           vertlist.pop_back();
-         }
+            vertlist.pop_back();
+        }
     }
     virtual void applyExtrusion();
     void addVertex (DRW_Vertex2D v) {
