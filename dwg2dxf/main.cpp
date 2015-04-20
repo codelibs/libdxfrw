@@ -24,7 +24,7 @@ void usage(){
     std::cout << "   -b         optional, sets output as binary dxf" << std::endl;
     std::cout << "   -B         optional, batch mode reads a text file whit a list of full path input" << std::endl;
     std::cout << "               files and saves with the same name in the indicated folder as output" << std::endl;
-    std::cout << "   -y         optional, Warning! if output dxf exist overwrite without ask" << std::endl;
+    std::cout << "   -y -Y      optional, Warning! if output dxf exist overwrite without ask" << std::endl;
     std::cout << "   -version   version output of dxf file" << std::endl;
     std::cout << "   output     output file name" << std::endl << std::endl;
     std::cout << "     version can be:" << std::endl;
@@ -32,6 +32,7 @@ void usage(){
     std::cout << "        -v2000 dxf version 2000" << std::endl;
     std::cout << "        -v2004 dxf version 2004" << std::endl;
     std::cout << "        -v2007 dxf version 2007" << std::endl;
+    std::cout << "        -v2010 dxf version 2010" << std::endl;
 }
 
 DRW::Version checkVersion(std::string param){
@@ -43,6 +44,8 @@ DRW::Version checkVersion(std::string param){
         return DRW::AC1018;
     else if (param == "-v2007")
         return DRW::AC1021;
+    else if (param == "-v2010")
+        return DRW::AC1024;
     return DRW::UNKNOWNV;
 }
 
