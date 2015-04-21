@@ -499,6 +499,11 @@ bool dxfRW::writeDimstyle(DRW_Dimstyle *ent){
 }
 
 bool dxfRW::writeAppId(DRW_AppId *ent){
+    std::string strname = ent->name;
+    transform(strname.begin(), strname.end(), strname.begin(),::toupper);
+//do not write mandatory ACAD appId, handled by library
+    if (strname == "ACAD")
+        return true;
     writer->writeString(0, "APPID");
     if (version > DRW::AC1009) {
         writer->writeString(5, toHexStr(++entCount));
