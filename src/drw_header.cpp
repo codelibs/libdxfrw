@@ -1724,6 +1724,7 @@ bool DRW_Header::getDouble(std::string key, double *varDouble){
             *varDouble = var->content.d;
             result = true;
         }
+        delete var;
         vars.erase (it);
     }
     return result;
@@ -1739,6 +1740,7 @@ bool DRW_Header::getInt(std::string key, int *varInt){
             *varInt = var->content.i;
             result = true;
         }
+        delete var;
         vars.erase (it);
     }
     return result;
@@ -1754,6 +1756,7 @@ bool DRW_Header::getStr(std::string key, std::string *varStr){
             *varStr = *var->content.s;
             result = true;
         }
+        delete var;
         vars.erase (it);
     }
     return result;
@@ -1769,6 +1772,7 @@ bool DRW_Header::getCoord(std::string key, DRW_Coord *varCoord){
             *varCoord = *var->content.v;
             result = true;
         }
+        delete var;
         vars.erase (it);
     }
     return result;

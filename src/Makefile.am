@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 
-AM_CPPFLAGS = ${my_CPPFLAGS} -Wall
+AM_CPPFLAGS = ${my_CPPFLAGS} -Wall -Woverloaded-virtual
 ACLOCAL_AMFLAGS = -I m4
 
 library_includedir=$(includedir)/libdxfrw$(LIBRARY_AGE)

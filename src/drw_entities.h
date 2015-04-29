@@ -150,12 +150,13 @@ public:
         }
     }
 
-    virtual~DRW_Entity() {
+    virtual ~DRW_Entity() {
         for (std::vector<DRW_Variant*>::iterator it=extData.begin(); it!=extData.end(); ++it)
             delete *it;
 
         extData.clear();
     }
+
     void reset(){
         for (std::vector<DRW_Variant*>::iterator it=extData.begin(); it!=extData.end(); ++it)
             delete *it;
@@ -171,8 +172,9 @@ protected:
     void calculateAxis(DRW_Coord extPoint);
     //apply extrusion to @extPoint and return data in @point
     void extrudePoint(DRW_Coord extPoint, DRW_Coord *point);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0)=0;
     //parses dwg common start part to read entity
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer* strBuf, duint32 bs=0);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer* strBuf, duint32 bs=0);
     //parses dwg common handles part to read entity
     bool parseDwgEntHandle(DRW::Version version, dwgBuffer *buf);
 
@@ -593,6 +595,21 @@ public:
         extPoint.z = 1;
         vertex = NULL;
     }
+    
+    DRW_LWPolyline(const DRW_LWPolyline& p):DRW_Entity(p){
+        this->eType = DRW::LWPOLYLINE;
+        this->elevation = p.elevation;
+        this->thickness = p.thickness;
+        this->width = p.width;
+        this->flags = p.flags;
+        this->extPoint = p.extPoint;
+        this->vertex = NULL;
+        for (unsigned i=0; i<p.vertlist.size(); i++)// RLZ ok or new
+          this->vertlist.push_back( new DRW_Vertex2D( *(p.vertlist.at(i)) ) );
+
+        this->vertex = NULL;
+    }
+
     ~DRW_LWPolyline() {
         while (!vertlist.empty()) {
             vertlist.pop_back();
@@ -754,7 +771,9 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0, double el=0);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0, double el=0);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer* buf, duint32 bs=0){
+        DRW_UNUSED(version); DRW_UNUSED(buf); DRW_UNUSED(bs); return true;}
 
 public:
     double stawidth;          /*!< Start width, code 40 */
@@ -1109,7 +1128,9 @@ public:
 
 protected:
     void parseCode(int code, dxfReader *reader);
-    virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *sBuf);
+    bool parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *sBuf);
+    virtual bool parseDwg(DRW::Version version, dwgBuffer* buf, duint32 bs=0){
+        DRW_UNUSED(version); DRW_UNUSED(buf); DRW_UNUSED(bs); return true;}
 
 public:
     DRW_Coord getDefPoint() const {return defPoint;}      /*!< Definition point, code 10, 20 & 30 */

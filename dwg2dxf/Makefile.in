@@ -14,8 +14,6 @@
 
 @SET_MAKE@
 
-# -*- Makefile.am -*-
-
 
 VPATH = @srcdir@
 am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'
@@ -289,6 +287,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+
+# -*- Makefile.am -*-
+ACLOCAL_AMFLAGS = -I m4
 dwg2dxfdir = $(srcdir)
 AM_LDFLAGS = -L../src -ldxfrw
 dist_noinst_HEADERS = dx_iface.h dx_data.h

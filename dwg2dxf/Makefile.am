@@ -1,4 +1,5 @@
 # -*- Makefile.am -*-
+ACLOCAL_AMFLAGS = -I m4
 
 dwg2dxfdir = $(srcdir)
 
