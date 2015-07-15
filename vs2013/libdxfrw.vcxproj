@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{357A8016-9AD4-47EF-B23C-2071C264793B}</ProjectGuid>
+    <RootNamespace>libdxfrw</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\drw_base.h" />
+    <ClInclude Include="..\src\drw_classes.h" />
+    <ClInclude Include="..\src\drw_entities.h" />
+    <ClInclude Include="..\src\drw_header.h" />
+    <ClInclude Include="..\src\drw_interface.h" />
+    <ClInclude Include="..\src\drw_objects.h" />
+    <ClInclude Include="..\src\intern\drw_cptable932.h" />
+    <ClInclude Include="..\src\intern\drw_cptable936.h" />
+    <ClInclude Include="..\src\intern\drw_cptable949.h" />
+    <ClInclude Include="..\src\intern\drw_cptable950.h" />
+    <ClInclude Include="..\src\intern\drw_cptables.h" />
+    <ClInclude Include="..\src\intern\drw_dbg.h" />
+    <ClInclude Include="..\src\intern\drw_textcodec.h" />
+    <ClInclude Include="..\src\intern\dwgbuffer.h" />
+    <ClInclude Include="..\src\intern\dwgreader.h" />
+    <ClInclude Include="..\src\intern\dwgreader15.h" />
+    <ClInclude Include="..\src\intern\dwgreader18.h" />
+    <ClInclude Include="..\src\intern\dwgreader21.h" />
+    <ClInclude Include="..\src\intern\dwgreader24.h" />
+    <ClInclude Include="..\src\intern\dwgreader27.h" />
+    <ClInclude Include="..\src\intern\dwgutil.h" />
+    <ClInclude Include="..\src\intern\dxfreader.h" />
+    <ClInclude Include="..\src\intern\dxfwriter.h" />
+    <ClInclude Include="..\src\intern\rscodec.h" />
+    <ClInclude Include="..\src\libdwgr.h" />
+    <ClInclude Include="..\src\libdxfrw.h" />
+    <ClInclude Include="..\src\main_doc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\drw_classes.cpp" />
+    <ClCompile Include="..\src\drw_entities.cpp" />
+    <ClCompile Include="..\src\drw_header.cpp" />
+    <ClCompile Include="..\src\drw_objects.cpp" />
+    <ClCompile Include="..\src\intern\drw_dbg.cpp" />
+    <ClCompile Include="..\src\intern\drw_textcodec.cpp" />
+    <ClCompile Include="..\src\intern\dwgbuffer.cpp" />
+    <ClCompile Include="..\src\intern\dwgreader.cpp" />
+    <ClCompile Include="..\src\intern\dwgreader15.cpp" />
+    <ClCompile Include="..\src\intern\dwgreader18.cpp" />
+    <ClCompile Include="..\src\intern\dwgreader21.cpp" />
+    <ClCompile Include="..\src\intern\dwgreader24.cpp" />
+    <ClCompile Include="..\src\intern\dwgreader27.cpp" />
+    <ClCompile Include="..\src\intern\dwgutil.cpp" />
+    <ClCompile Include="..\src\intern\dxfreader.cpp" />
+    <ClCompile Include="..\src\intern\dxfwriter.cpp" />
+    <ClCompile Include="..\src\intern\rscodec.cpp" />
+    <ClCompile Include="..\src\libdwgr.cpp" />
+    <ClCompile Include="..\src\libdxfrw.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

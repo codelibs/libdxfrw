@@ -25,3 +25,5 @@ config.log
 config.status
 libdxfrw*.pc
 libtool
+/vs2013/libdxfrw.sdf
+/vs2013/libdxfrw.v12.suo
