@@ -30,3 +30,4 @@ libtool
 /vs2013/Debug
 /vs2013/Release
 /vs2013/libdxfrw.opensdf
+/vs2013/libdxfrw.vcxproj.user
