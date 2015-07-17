@@ -17,6 +17,10 @@
 #include "dx_iface.h"
 #include "dx_data.h"
 
+#ifndef S_ISDIR
+#define S_ISDIR(mode) (((mode) & S_IFMT) == S_IFDIR)
+#endif
+
 void usage(){
     std::cout << "Usage: " << std::endl;
     std::cout << "   dwg2dxf <input> [-b] <-version> <output>" << std::endl << std::endl;
