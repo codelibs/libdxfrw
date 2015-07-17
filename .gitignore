@@ -27,6 +27,6 @@ libdxfrw*.pc
 libtool
 /vs2013/libdxfrw.sdf
 /vs2013/libdxfrw.v12.suo
-
 /vs2013/Debug
 /vs2013/Release
+/vs2013/libdxfrw.opensdf
