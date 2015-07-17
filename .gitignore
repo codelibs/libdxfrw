@@ -33,3 +33,6 @@ libtool
 /vs2013/libdxfrw.vcxproj.user
 /dwg2dxf/vs2013/Debug
 /dwg2dxf/vs2013/Release
+/dwg2dxf/vs2013/dwg2dxf.opensdf
+/dwg2dxf/vs2013/dwg2dxf.sdf
+/dwg2dxf/vs2013/dwg2dxf.v12.suo
