@@ -1013,6 +1013,7 @@ void DRW_Insert::parseCode(int code, dxfReader *reader){
         break;
     case 50:
         angle = reader->getDouble();
+        angle = angle/ARAD; //convert to radian
         break;
     case 70:
         colcount = reader->getInt32();
