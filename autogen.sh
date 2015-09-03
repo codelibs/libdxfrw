@@ -2,5 +2,5 @@
 
 aclocal \
 && libtoolize \
-&& automake --copy --gnu --add-missing \
+&& automake --copy --gnu --add-missing -f\
 && autoconf
