@@ -28,6 +28,6 @@ libdxfrw_la_LIBADD =
 pkgconfigdir = ${libdir}/pkgconfig
 pkgconfig_DATA = ${top_builddir}/libdxfrw$(LIBRARY_AGE).pc
 
-EXTRA_DIST = ${top_builddir}/autogen.sh ${top_builddir}/makefile.mingw
+EXTRA_DIST = ${top_builddir}/autogen.sh ${top_builddir}/makefile.mingw  ${top_builddir}/vs2013/*
 
 libdxfrw.pc: ${top_builddir}/config.status

@@ -353,7 +353,7 @@ libdxfrw_la_LDFLAGS = -no-undefined -version-number $(LIBRARY_AGE):$(LIBRARY_CUR
 libdxfrw_la_LIBADD = 
 pkgconfigdir = ${libdir}/pkgconfig
 pkgconfig_DATA = ${top_builddir}/libdxfrw$(LIBRARY_AGE).pc
-EXTRA_DIST = ${top_builddir}/autogen.sh ${top_builddir}/makefile.mingw
+EXTRA_DIST = ${top_builddir}/autogen.sh ${top_builddir}/makefile.mingw  ${top_builddir}/vs2013/*
 all: all-am
 
 .SUFFIXES:
