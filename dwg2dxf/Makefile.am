@@ -13,4 +13,6 @@ dwg2dxf_SOURCES = dx_iface.cpp main.cpp
 
 AM_CPPFLAGS = ${my_CPPFLAGS} -Wall -I$(top_srcdir)/src
 
-EXTRA_DIST = $(dwg2dxf_HEADERS) $(dwg2dxf_SOURCES)
+man_MANS = dwg2dxf.1
+
+EXTRA_DIST = $(dwg2dxf_HEADERS) $(dwg2dxf_SOURCES) $(man_MANS) ./vs2013/*

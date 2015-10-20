@@ -1,0 +1,24 @@
+.TH DWG2DXF 1 "November 2015" "version 1.0"
+.SH NAME
+dwg2dxf \- Conversor from dwg/dxf to dxf
+.SH SYNOPSIS
+dwg2dxf <input> [-b] <-version> <output>
+.SH DESCRIPTION
+dwg2dxf is a Console conversor from dwg/dxf to dxf. You can convert from dwg or dxf to another dxf version.
+.SH OPTIONS
+input      existing file to convert
+   -b         optional, sets output as binary dxf
+   -B         optional, batch mode reads a text file whit a list of full path input
+               files and saves with the same name in the indicated folder as output
+   -y -Y      optional, Warning! if output dxf exist overwrite without ask
+   -version   version output of dxf file
+   output     output file name
+
+     version can be:
+        -R12   dxf release 12 version
+        -v2000 dxf version 2000
+        -v2004 dxf version 2004
+        -v2007 dxf version 2007
+        -v2010 dxf version 2010
+.SH AUTHOR
+José F. Soriano - <rallazz@gmail.com>
