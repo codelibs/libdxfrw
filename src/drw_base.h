@@ -273,11 +273,8 @@ private:
 */
 class dwgHandle{
 public:
-    dwgHandle(){
-        code=0;
-        size=0;
-        ref=0;
-    }
+    dwgHandle(): code(0), size(0), ref(0){}
+
     ~dwgHandle(){}
     duint8 code;
     duint8 size;

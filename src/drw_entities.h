@@ -99,28 +99,17 @@ class DRW_Entity {
     SETENTFRIENDS
 public:
     //initializes default values
-    DRW_Entity() {
-        eType = DRW::UNKNOWN;
-        handle = parentHandle = DRW::NoHandle; //no handle (0)
-        lineType = "BYLAYER";
-        color = DRW::ColorByLayer; // default BYLAYER (256)
-        ltypeScale = 1.0;
-        visible = true;
-        layer = "0";
-        lWeight = DRW_LW_Conv::widthByLayer; // default BYLAYER  (dxf -1, dwg 29)
-        space = DRW::ModelSpace; // default ModelSpace (0)
-        haveExtrusion = false;
-        color24 = -1; //default -1 not set
-        numProxyGraph = 0;
-        shadow = DRW::CastAndReceieveShadows;
-        material = DRW::MaterialByLayer;
-        plotStyle = DRW::DefaultPlotStyle;
-        transparency = DRW::Opaque;
-        nextEntLink = prevEntLink = 0;
-        numReactors = xDictFlag = 0;
-        curr = NULL;
-        ownerHandle= false;
-    }
+        //handles: default no handle (0), color: default BYLAYER (256), 24 bits color: default -1 (not set)
+        //line weight: default BYLAYER  (dxf -1, dwg 29), space: default ModelSpace (0)
+    DRW_Entity(): eType(DRW::UNKNOWN), handle(DRW::NoHandle), parentHandle(DRW::NoHandle), appData(0),
+                  space(DRW::ModelSpace), layer("0"), lineType("BYLAYER"), material(DRW::MaterialByLayer),
+                  color(DRW::ColorByLayer), lWeight(DRW_LW_Conv::widthByLayer), ltypeScale(1.0), visible(true),
+                  numProxyGraph(0), proxyGraphics(std::string()), color24(-1), colorName(std::string()),
+                  transparency(DRW::Opaque), plotStyle(DRW::DefaultPlotStyle), shadow(DRW::CastAndReceieveShadows),
+                  haveExtrusion(false), extData(), haveNextLinks(0),plotFlags(0), ltFlags(0),materialFlag(0),
+                  shadowFlag(0), lTypeH(dwgHandle()), layerH(dwgHandle()), nextEntLink(0), prevEntLink(0),
+                  ownerHandle(false), xDictFlag(0), numReactors(0), objSize(0), oType(0), extAxisX(DRW_Coord()),
+                  extAxisY(DRW_Coord()), curr(NULL) {}
 
     DRW_Entity(const DRW_Entity& e) {
         eType = e.eType;
@@ -146,7 +135,6 @@ public:
         xDictFlag = e.xDictFlag;
         curr = NULL;
         ownerHandle= false;
-//        curr = e.curr;
         for (std::vector<DRW_Variant*>::const_iterator it=e.extData.begin(); it!=e.extData.end(); ++it){
             extData.push_back(new DRW_Variant(*(*it)));
         }
@@ -186,8 +174,8 @@ protected:
 public:
     enum DRW::ETYPE eType;     /*!< enum: entity type, code 0 */
     duint32 handle;            /*!< entity identifier, code 5 */
-    std::list<std::list<DRW_Variant> > appData; /*!< list of application data, code 102 */
     duint32 parentHandle;      /*!< Soft-pointer ID/handle to owner BLOCK_RECORD object, code 330 */
+    std::list<std::list<DRW_Variant> > appData; /*!< list of application data, code 102 */
     DRW::Space space;          /*!< space indicator, code 67*/
     UTF8STRING layer;          /*!< layer name, code 8 */
     UTF8STRING lineType;       /*!< line type, code 6 */
