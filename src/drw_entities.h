@@ -882,6 +882,7 @@ public:
     double tolfit;            /*!< fit point tolerance, code 44, default 0.0000001 */
 
     std::vector<double> knotslist;           /*!< knots list, code 40 */
+    std::vector<double> weightlist;          /*!< weight list, code 41 */
     std::vector<DRW_Coord *> controllist;  /*!< control points list, code 10, 20 & 30 */
     std::vector<DRW_Coord *> fitlist;      /*!< fit points list, code 11, 21 & 31 */
 

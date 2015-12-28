@@ -875,6 +875,9 @@ bool dxfRW::writeSpline(DRW_Spline *ent){
         for (int i = 0;  i< ent->nknots; i++){
             writer->writeDouble(40, ent->knotslist.at(i));
         }
+        for (int i = 0; i< ent->weightlist.size(); i++) {
+            writer->writeDouble(41, ent->weightlist.at(i));
+        }
         for (int i = 0;  i< ent->ncontrol; i++){
             DRW_Coord *crd = ent->controllist.at(i);
             writer->writeDouble(10, crd->x);

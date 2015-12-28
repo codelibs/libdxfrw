@@ -2088,8 +2088,9 @@ void DRW_Spline::parseCode(int code, dxfReader *reader){
     case 40:
         knotslist.push_back(reader->getDouble());
         break;
-//    case 41:
-//        break;
+    case 41:
+        weightlist.push_back(reader->getDouble());
+        break;
     default:
         DRW_Entity::parseCode(code, reader);
         break;
