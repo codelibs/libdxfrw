@@ -303,7 +303,7 @@ void DRW_Header::write(dxfWriter *writer, DRW::Version ver){
     if (getDouble("$DIMSCALE", &varDouble))
         writer->writeDouble(40, varDouble);
     else
-        writer->writeDouble(40, 2.5);
+        writer->writeDouble(40, 1.0);
     writer->writeString(9, "$DIMASZ");
     if (getDouble("$DIMASZ", &varDouble))
         writer->writeDouble(40, varDouble);
