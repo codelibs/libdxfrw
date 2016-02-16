@@ -34,20 +34,20 @@ public:
     }
 
     /** Called when header is parsed.  */
-    virtual void addHeader(const DRW_Header* data) = 0;
+    virtual void addHeader(const DRW_Header* data) { }
 
     /** Called for every line Type.  */
-    virtual void addLType(const DRW_LType& data) = 0;
+    virtual void addLType(const DRW_LType& data) { }
     /** Called for every layer. */
-    virtual void addLayer(const DRW_Layer& data) = 0;
+    virtual void addLayer(const DRW_Layer& data) { }
     /** Called for every dim style. */
-    virtual void addDimStyle(const DRW_Dimstyle& data) = 0;
+    virtual void addDimStyle(const DRW_Dimstyle& data) { }
     /** Called for every VPORT table. */
-    virtual void addVport(const DRW_Vport& data) = 0;
+    virtual void addVport(const DRW_Vport& data) { }
     /** Called for every text style. */
-    virtual void addTextStyle(const DRW_Textstyle& data) = 0;
+    virtual void addTextStyle(const DRW_Textstyle& data) { }
     /** Called for every AppId entry. */
-    virtual void addAppId(const DRW_AppId& data) = 0;
+    virtual void addAppId(const DRW_AppId& data) { }
 
     /**
      * Called for every block. Note: all entities added after this
@@ -55,7 +55,7 @@ public:
      *
      * @see endBlock()
      */
-    virtual void addBlock(const DRW_Block& data) = 0;
+    virtual void addBlock(const DRW_Block& data) { }
 
     /**
      * In DWG called when the following entities corresponding to a
@@ -64,137 +64,137 @@ public:
      *
      * int handle are the value of DRW_Block::handleBlock added with addBlock()
      */
-    virtual void setBlock(const int handle) = 0;
+    virtual void setBlock(const int handle) { }
 
     /** Called to end the current block */
-    virtual void endBlock() = 0;
+    virtual void endBlock() { }
 
     /** Called for every point */
-    virtual void addPoint(const DRW_Point& data) = 0;
+    virtual void addPoint(const DRW_Point& data) { }
 
     /** Called for every line */
-    virtual void addLine(const DRW_Line& data) = 0;
+    virtual void addLine(const DRW_Line& data) { }
 
     /** Called for every ray */
-    virtual void addRay(const DRW_Ray& data) = 0;
+    virtual void addRay(const DRW_Ray& data) { }
 
     /** Called for every xline */
-    virtual void addXline(const DRW_Xline& data) = 0;
+    virtual void addXline(const DRW_Xline& data) { }
 
     /** Called for every arc */
-    virtual void addArc(const DRW_Arc& data) = 0;
+    virtual void addArc(const DRW_Arc& data) { }
 
     /** Called for every circle */
-    virtual void addCircle(const DRW_Circle& data) = 0;
+    virtual void addCircle(const DRW_Circle& data) { }
 
     /** Called for every ellipse */
-    virtual void addEllipse(const DRW_Ellipse& data) = 0;
+    virtual void addEllipse(const DRW_Ellipse& data) { }
 
     /** Called for every lwpolyline */
-    virtual void addLWPolyline(const DRW_LWPolyline& data) = 0;
+    virtual void addLWPolyline(const DRW_LWPolyline& data) { }
 
     /** Called for every polyline start */
-    virtual void addPolyline(const DRW_Polyline& data) = 0;
+    virtual void addPolyline(const DRW_Polyline& data) { }
 
     /** Called for every spline */
-    virtual void addSpline(const DRW_Spline* data) = 0;
-	
+    virtual void addSpline(const DRW_Spline* data) { }
+
 	/** Called for every spline knot value */
-    virtual void addKnot(const DRW_Entity& data) = 0;
+    virtual void addKnot(const DRW_Entity& data) { }
 
     /** Called for every insert. */
-    virtual void addInsert(const DRW_Insert& data) = 0;
-    
+    virtual void addInsert(const DRW_Insert& data) { }
+
     /** Called for every trace start */
-    virtual void addTrace(const DRW_Trace& data) = 0;
-    
+    virtual void addTrace(const DRW_Trace& data) { }
+
     /** Called for every 3dface start */
-    virtual void add3dFace(const DRW_3Dface& data) = 0;
+    virtual void add3dFace(const DRW_3Dface& data) { }
 
     /** Called for every solid start */
-    virtual void addSolid(const DRW_Solid& data) = 0;
+    virtual void addSolid(const DRW_Solid& data) { }
 
 
     /** Called for every Multi Text entity. */
-    virtual void addMText(const DRW_MText& data) = 0;
+    virtual void addMText(const DRW_MText& data) { }
 
     /** Called for every Text entity. */
-    virtual void addText(const DRW_Text& data) = 0;
+    virtual void addText(const DRW_Text& data) { }
 
     /**
      * Called for every aligned dimension entity. 
      */
-    virtual void addDimAlign(const DRW_DimAligned *data) = 0;
+    virtual void addDimAlign(const DRW_DimAligned *data) { }
     /**
      * Called for every linear or rotated dimension entity. 
      */
-    virtual void addDimLinear(const DRW_DimLinear *data) = 0;
+    virtual void addDimLinear(const DRW_DimLinear *data) { }
 
 	/**
      * Called for every radial dimension entity. 
      */
-    virtual void addDimRadial(const DRW_DimRadial *data) = 0;
+    virtual void addDimRadial(const DRW_DimRadial *data) { }
 
 	/**
      * Called for every diametric dimension entity. 
      */
-    virtual void addDimDiametric(const DRW_DimDiametric *data) = 0;
+    virtual void addDimDiametric(const DRW_DimDiametric *data) { }
 
 	/**
      * Called for every angular dimension (2 lines version) entity. 
      */
-    virtual void addDimAngular(const DRW_DimAngular *data) = 0;
+    virtual void addDimAngular(const DRW_DimAngular *data) { }
 
 	/**
      * Called for every angular dimension (3 points version) entity. 
      */
-    virtual void addDimAngular3P(const DRW_DimAngular3p *data) = 0;
-	
+    virtual void addDimAngular3P(const DRW_DimAngular3p *data) { }
+
     /**
      * Called for every ordinate dimension entity. 
      */
-    virtual void addDimOrdinate(const DRW_DimOrdinate *data) = 0;
-    
-    /** 
-	 * Called for every leader start. 
+    virtual void addDimOrdinate(const DRW_DimOrdinate *data) { }
+
+    /**
+	 * Called for every leader start.
 	 */
-    virtual void addLeader(const DRW_Leader *data) = 0;
-	
-	/** 
-	 * Called for every hatch entity. 
+    virtual void addLeader(const DRW_Leader *data) { }
+
+	/**
+	 * Called for every hatch entity.
 	 */
-    virtual void addHatch(const DRW_Hatch *data) = 0;
-	
+    virtual void addHatch(const DRW_Hatch *data) { }
+
     /**
      * Called for every viewport entity.
      */
-    virtual void addViewport(const DRW_Viewport& data) = 0;
+    virtual void addViewport(const DRW_Viewport& data) { }
 
     /**
 	 * Called for every image entity. 
 	 */
-    virtual void addImage(const DRW_Image *data) = 0;
+    virtual void addImage(const DRW_Image *data) { }
 
 	/**
 	 * Called for every image definition.
 	 */
-    virtual void linkImage(const DRW_ImageDef *data) = 0;
+    virtual void linkImage(const DRW_ImageDef *data) { }
 
     /**
      * Called for every comment in the DXF file (code 999).
      */
-    virtual void addComment(const char* comment) = 0;
+    virtual void addComment(const char* comment) { }
 
-    virtual void writeHeader(DRW_Header& data) = 0;
-    virtual void writeBlocks() = 0;
-    virtual void writeBlockRecords() = 0;
-    virtual void writeEntities() = 0;
-    virtual void writeLTypes() = 0;
-    virtual void writeLayers() = 0;
-    virtual void writeTextstyles() = 0;
-    virtual void writeVports() = 0;
-    virtual void writeDimstyles() = 0;
-    virtual void writeAppId() = 0;
+    virtual void writeHeader(DRW_Header& data) { }
+    virtual void writeBlocks() { }
+    virtual void writeBlockRecords() { }
+    virtual void writeEntities() { }
+    virtual void writeLTypes() { }
+    virtual void writeLayers() { }
+    virtual void writeTextstyles() { }
+    virtual void writeVports() { }
+    virtual void writeDimstyles() { }
+    virtual void writeAppId() { }
 };
 
 #endif
