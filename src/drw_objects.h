@@ -131,7 +131,7 @@ public:
         dimasz = dimtxt = dimexe = 0.18;
         dimexo = 0.0625;
         dimgap = dimcen = 0.09;
-        dimtxsty = "Standard";
+        dimtxsty = "";
         dimscale = dimlfac = dimtfac = dimfxl = 1.0;
         dimdli = 0.38;
         dimrnd = dimdle = dimtp = dimtm = dimtsz = dimtvp = 0.0;

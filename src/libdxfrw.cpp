@@ -489,9 +489,10 @@ bool dxfRW::writeDimstyle(DRW_Dimstyle *ent){
     if (version > DRW::AC1014) {
         writer->writeInt16(289, ent->dimatfit);
     }
-    if ( version > DRW::AC1018 && ent->dimfxlon !=0 )
+    if ( version > DRW::AC1018 && ent->dimfxlon !=0 ) {
         writer->writeInt16(290, ent->dimfxlon);
-    if (version > DRW::AC1009) {
+    }
+    if (version > DRW::AC1009 && !ent->dimtxsty.empty()) {
         writer->writeUtf8String(340, ent->dimtxsty);
     }
     if (version > DRW::AC1014) {
