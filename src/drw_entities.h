@@ -155,6 +155,15 @@ public:
 
     virtual void applyExtrusion() = 0;
 
+    void setWidthMm(double millimeters) {
+        if(millimeters < 0.0) {
+            lWeight = DRW_LW_Conv::widthByLayer;
+            return;
+        }
+        if(millimeters > 2.11) millimeters = 2.11;
+        lWeight = DRW_LW_Conv::dxfInt2lineWidth(int(floor(millimeters * 100.0)));
+    }
+    
 protected:
     //parses dxf pair to read entity
     bool parseCode(int code, dxfReader *reader);
