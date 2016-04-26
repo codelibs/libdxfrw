@@ -1427,6 +1427,59 @@ void DRW_MText::parseCode(int code, dxfReader *reader){
     case 44:
         interlin = reader->getDouble();
         break;
+    case 71: {
+        // Attachment point
+        Attach a = (Attach)reader->getInt32();
+        
+        switch(a) {
+            case TopLeft:
+                alignV = VTop;
+                alignH = HLeft;
+                break;
+            case TopCenter:
+                alignV = VTop;
+                alignH = HCenter;
+                break;
+            case TopRight:
+                alignV = VTop;
+                alignH = HRight;
+                break;
+            case MiddleLeft:
+                alignV = VMiddle;
+                alignH = HLeft;
+                break;
+            case MiddleCenter:
+                alignV = VMiddle;
+                alignH = HCenter;
+                break;
+            case MiddleRight:
+                alignV = VMiddle;
+                alignH = HRight;
+                break;
+            case BottomLeft:
+                alignV = VBottom;
+                alignH = HLeft;
+                break;
+            case BottomCenter:
+                alignV = VBottom;
+                alignH = HCenter;
+                break;
+            case BottomRight:
+                alignV = VBottom;
+                alignH = HRight;
+                break;
+        }
+    } break;
+    case 72:
+        // To prevent redirection to DRW_Text::parseCode.
+        // This code meaning is different for MTEXT.
+        // Actually: Drawing direction
+        break;
+    case 73:
+        // To prevent redirection to DRW_Text::parseCode.
+        // This code meaning is different for MTEXT.
+        // Actually: Mtext line spacing style
+        break;
     default:
         DRW_Text::parseCode(code, reader);
         break;
