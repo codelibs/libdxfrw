@@ -57,15 +57,6 @@ public:
      */
     virtual void addBlock(const DRW_Block& data) { }
 
-    /**
-     * In DWG called when the following entities corresponding to a
-     * block different from the current. Note: all entities added after this
-     * command go into this block until setBlock() is called already.
-     *
-     * int handle are the value of DRW_Block::handleBlock added with addBlock()
-     */
-    virtual void setBlock(const int handle) { }
-
     /** Called to end the current block */
     virtual void endBlock() { }
 
