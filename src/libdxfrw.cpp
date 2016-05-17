@@ -1035,6 +1035,8 @@ bool dxfRW::writeDimension(DRW_Dimension *ent) {
         writer->writeDouble(210, ent->getExtrusion().x);
         writer->writeDouble(220, ent->getExtrusion().y);
         writer->writeDouble(230, ent->getExtrusion().z);
+        if ( ent->hasActualMeasurement())
+            writer->writeDouble(42, ent->getActualMeasurement());
 
         switch (ent->eType) {
         case DRW::DIMALIGNED:
