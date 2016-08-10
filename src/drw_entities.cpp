@@ -1965,8 +1965,7 @@ bool DRW_Hatch::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
                     }
                     for (dint32 j = 0; j < spline->ncontrol;++j){
                         // pt0 2RD 10 control point
-                        DRW_Coord* crd = new DRW_Coord(buf->get2RawDouble());
-                        spline->controllist.push_back(crd);
+                        DRW_Coord *crd = new DRW_Coord(buf->get2RawDouble());
                         if(isRational)
                             crd->z =  buf->getBitDouble(); //RLZ: investigate how store weight
                         spline->controllist.push_back(crd);
