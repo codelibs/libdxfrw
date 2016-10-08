@@ -28,6 +28,7 @@ public:
     ~dwgR();
     //read: return true if all ok
     bool read(DRW_Interface *interface_, bool ext);
+    bool read(std::istream &stream, DRW_Interface *interface_, bool ext);
     bool getPreview();
     DRW::Version getVersion(){return version;}
     DRW::error getError(){return error;}
@@ -35,6 +36,7 @@ public:
 
 private:
     bool openFile(std::ifstream *filestr);
+    bool open(std::istream *stream);
     bool processDwg();
 private:
     DRW::Version version;

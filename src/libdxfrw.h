@@ -37,9 +37,11 @@ public:
      * @return true for success
      */
     bool read(DRW_Interface *interface_, bool ext);
+    bool read(std::istream &stream, DRW_Interface *interface_, bool ext);
     void setBinary(bool b) {binFile = b;}
 
     bool write(DRW_Interface *interface_, DRW::Version ver, bool bin);
+    bool write(std::ostream &stream, DRW_Interface *interface_, DRW::Version ver, bool bin);
     bool writeLineType(DRW_LType *ent);
     bool writeLayer(DRW_Layer *ent);
     bool writeDimstyle(DRW_Dimstyle *ent);

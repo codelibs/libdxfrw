@@ -151,7 +151,7 @@ dwgBuffer::dwgBuffer(duint8 *buf, int size, DRW_TextCodec *dc){
     bitPos = 0;
 }
 
-dwgBuffer::dwgBuffer(std::ifstream *stream, DRW_TextCodec *dc){
+dwgBuffer::dwgBuffer(std::istream *stream, DRW_TextCodec *dc){
     filestr = new dwgFileStream(stream);
     decoder = dc;
     maxSize = filestr->size();
