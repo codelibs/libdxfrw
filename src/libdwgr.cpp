@@ -35,9 +35,8 @@
     secObjects
 };*/
 
-dwgR::dwgR(const char* name){
+dwgR::dwgR(){
     DRW_DBGSL(DRW_dbg::NONE);
-    fileName = name;
     reader = NULL;
 //    writer = NULL;
     applyExt = false;
@@ -62,11 +61,10 @@ void dwgR::setDebug(DRW::DBG_LEVEL lvl){
 }
 
 /*reads metadata and loads image preview*/
-bool dwgR::getPreview(){
+bool dwgR::getPreview(std::istream &stream){
     bool isOk = false;
 
-    std::ifstream filestr;
-    isOk = openFile(&filestr);
+    isOk = open(&stream);
     if (!isOk)
         return false;
 
@@ -76,7 +74,6 @@ bool dwgR::getPreview(){
     } else
         error = DRW::BAD_READ_METADATA;
 
-    filestr.close();
     if (reader != NULL) {
         delete reader;
         reader = NULL;
@@ -84,30 +81,17 @@ bool dwgR::getPreview(){
     return isOk;
 }
 
-/*start reading dwg file header and, if can read it, continue reading all*/
-bool dwgR::read(DRW_Interface *interface_, bool ext){
-    std::ifstream filestr;
-    DRW_DBG("dwgR::read 1\n");
-    filestr.open (fileName.c_str(), std::ios_base::in | std::ios::binary);
-    if (!filestr.is_open() || !filestr.good() ){
-        error = DRW::BAD_OPEN;
-        return false;
-    }
-
-    bool isOk = read(filestr, interface_, ext);
-    filestr.close();
-    return isOk;
-
-}
-
 bool dwgR::read(std::istream &stream, DRW_Interface *interface_, bool ext){
     applyExt = ext;
     iface = interface_;
 
-    if (!open(&stream))
+    bool isOk = false;
+
+    isOk = open(&stream);
+    if (!isOk)
         return false;
 
-    bool isOk = reader->readMetaData();
+    isOk = reader->readMetaData();
     if (isOk) {
         isOk = reader->readFileHeader();
         if (isOk) {
@@ -122,27 +106,6 @@ bool dwgR::read(std::istream &stream, DRW_Interface *interface_, bool ext){
         reader = NULL;
     }
 
-    return isOk;
-}
-
-/* Open the file and stores it in filestr, install the correct reader version.
- * If fail opening file, error are set as DRW::BAD_OPEN
- * If not are DWG or are unsupported version, error are set as DRW::BAD_VERSION
- * and closes filestr.
- * Return true on succeed or false on fail
-*/
-bool dwgR::openFile(std::ifstream *filestr) {
-    DRW_DBG("dwgR::read 1\n");
-    filestr->open (fileName.c_str(), std::ios_base::in | std::ios::binary);
-    if (!filestr->is_open() || !filestr->good() ){
-        error = DRW::BAD_OPEN;
-        return false;
-    }
-
-    bool isOk = open(filestr);
-    if(!isOk) {
-        filestr->close();
-    }
     return isOk;
 }
 

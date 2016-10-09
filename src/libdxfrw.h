@@ -25,7 +25,7 @@ class dxfWriter;
 
 class dxfRW {
 public:
-    dxfRW(const char* name);
+    dxfRW();
     ~dxfRW();
     void setDebug(DRW::DBG_LEVEL lvl);
     /// reads the file specified in constructor
@@ -36,11 +36,9 @@ public:
      * @param ext should the extrusion be applied to convert in 2D?
      * @return true for success
      */
-    bool read(DRW_Interface *interface_, bool ext);
     bool read(std::istream &stream, DRW_Interface *interface_, bool ext);
     void setBinary(bool b) {binFile = b;}
 
-    bool write(DRW_Interface *interface_, DRW::Version ver, bool bin);
     bool write(std::ostream &stream, DRW_Interface *interface_, DRW::Version ver, bool bin);
     bool writeLineType(DRW_LType *ent);
     bool writeLayer(DRW_Layer *ent);

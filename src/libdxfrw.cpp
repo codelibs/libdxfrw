@@ -32,9 +32,8 @@
     secObjects
 };*/
 
-dxfRW::dxfRW(const char* name){
+dxfRW::dxfRW(){
     DRW_DBGSL(DRW_dbg::NONE);
-    fileName = name;
     reader = NULL;
     writer = NULL;
     applyExt = false;
@@ -63,10 +62,10 @@ void dxfRW::setDebug(DRW::DBG_LEVEL lvl){
 
 bool dxfRW::read(std::istream &stream, DRW_Interface *interface_, bool ext){
     applyExt = ext;
-    
+
     if(interface_ == NULL)
         return false;
-        
+
     char line[22];
     char line2[22] = "AutoCAD Binary DXF\r\n";
     line2[20] = (char)26;
@@ -87,20 +86,6 @@ bool dxfRW::read(std::istream &stream, DRW_Interface *interface_, bool ext){
     bool isOk = processDxf();
     delete reader;
     reader = NULL;
-    return isOk;
-}
-
-bool dxfRW::read(DRW_Interface *interface_, bool ext){
-    drw_assert(fileName.empty() == false);
-    DRW_DBG("dxfRW::read 1def\n");
-    std::ifstream filestr;
-    filestr.open (fileName.c_str(), std::ios_base::in | std::ios::binary);
-    if (!filestr.is_open())
-        return false;
-    if (!filestr.good())
-        return false;
-    bool isOk = read(filestr, interface_, ext);
-    filestr.close();
     return isOk;
 }
 
@@ -154,18 +139,6 @@ bool dxfRW::write(std::ostream &stream, DRW_Interface *interface_, DRW::Version 
     delete writer;
     writer = NULL;
     return true;
-}
-
-bool dxfRW::write(DRW_Interface *interface_, DRW::Version ver, bool bin){
-    std::ofstream filestr;
-    if (binFile) {
-        filestr.open (fileName.c_str(), std::ios_base::out | std::ios::binary | std::ios::trunc);
-    } else {
-        filestr.open (fileName.c_str(), std::ios_base::out | std::ios::trunc);
-    }
-    bool isOk = write(filestr, interface_, ver, bin);
-    filestr.close();
-    return isOk;
 }
 
 bool dxfRW::writeEntity(DRW_Entity *ent) {
