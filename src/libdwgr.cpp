@@ -84,67 +84,11 @@ bool dwgR::getPreview(){
     return isOk;
 }
 
-bool dwgR::testReader(){
-    bool isOk = false;
-
-    std::ifstream filestr;
-    filestr.open (fileName.c_str(), std::ios_base::in | std::ios::binary);
-    if (!filestr.is_open() || !filestr.good() ){
-        error = DRW::BAD_OPEN;
-        return isOk;
-    }
-
-    dwgBuffer fileBuf(&filestr);
-    duint8 *tmpStrData = new duint8[fileBuf.size()];
-    fileBuf.getBytes(tmpStrData, fileBuf.size());
-    dwgBuffer dataBuf(tmpStrData, fileBuf.size());
-    fileBuf.setPosition(0);
-    DRW_DBG("\ndwgR::testReader filebuf size: ");DRW_DBG(fileBuf.size());
-    DRW_DBG("\ndwgR::testReader dataBuf size: ");DRW_DBG(dataBuf.size());
-    DRW_DBG("\n filebuf pos: ");DRW_DBG(fileBuf.getPosition());
-    DRW_DBG("\n dataBuf pos: ");DRW_DBG(dataBuf.getPosition());
-    DRW_DBG("\n filebuf bitpos: ");DRW_DBG(fileBuf.getBitPos());
-    DRW_DBG("\n dataBuf bitpos: ");DRW_DBG(dataBuf.getBitPos());
-    DRW_DBG("\n filebuf first byte : ");DRW_DBGH(fileBuf.getRawChar8());
-    DRW_DBG("\n dataBuf  first byte : ");DRW_DBGH(dataBuf.getRawChar8());
-    fileBuf.setBitPos(4);
-    dataBuf.setBitPos(4);
-    DRW_DBG("\n filebuf first byte : ");DRW_DBGH(fileBuf.getRawChar8());
-    DRW_DBG("\n dataBuf  first byte : ");DRW_DBGH(dataBuf.getRawChar8());
-    DRW_DBG("\n filebuf pos: ");DRW_DBG(fileBuf.getPosition());
-    DRW_DBG("\n dataBuf pos: ");DRW_DBG(dataBuf.getPosition());
-    DRW_DBG("\n filebuf bitpos: ");DRW_DBG(fileBuf.getBitPos());
-    DRW_DBG("\n dataBuf bitpos: ");DRW_DBG(dataBuf.getBitPos());
-    fileBuf.setBitPos(6);
-    dataBuf.setBitPos(6);
-    DRW_DBG("\n filebuf pos: ");DRW_DBG(fileBuf.getPosition());
-    DRW_DBG("\n dataBuf pos: ");DRW_DBG(dataBuf.getPosition());
-    DRW_DBG("\n filebuf bitpos: ");DRW_DBG(fileBuf.getBitPos());
-    DRW_DBG("\n dataBuf bitpos: ");DRW_DBG(dataBuf.getBitPos());
-    DRW_DBG("\n filebuf first byte : ");DRW_DBGH(fileBuf.getRawChar8());
-    DRW_DBG("\n dataBuf  first byte : ");DRW_DBGH(dataBuf.getRawChar8());
-    fileBuf.setBitPos(0);
-    dataBuf.setBitPos(0);
-    DRW_DBG("\n filebuf first byte : ");DRW_DBGH(fileBuf.getRawChar8());
-    DRW_DBG("\n dataBuf  first byte : ");DRW_DBGH(dataBuf.getRawChar8());
-    DRW_DBG("\n filebuf pos: ");DRW_DBG(fileBuf.getPosition());
-    DRW_DBG("\n dataBuf pos: ");DRW_DBG(dataBuf.getPosition());
-    DRW_DBG("\n filebuf bitpos: ");DRW_DBG(fileBuf.getBitPos());
-    DRW_DBG("\n dataBuf bitpos: ");DRW_DBG(dataBuf.getBitPos());
-
-    delete[]tmpStrData;
-    filestr.close();
-    DRW_DBG("\n\n");
-    return isOk;
-}
-
 /*start reading dwg file header and, if can read it, continue reading all*/
 bool dwgR::read(DRW_Interface *interface_, bool ext){
     bool isOk = false;
     applyExt = ext;
     iface = interface_;
-
-//testReader();return false;
 
     std::ifstream filestr;
     isOk = openFile(&filestr);
