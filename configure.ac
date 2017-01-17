@@ -63,6 +63,7 @@ AC_CONFIG_FILES([
 	Makefile
 	src/Makefile
 	dwg2dxf/Makefile
+	dwg2text/Makefile
 	libdxfrw${LIBRARY_AGE}.pc:libdxfrw.pc.in
 	])
 AC_OUTPUT

@@ -36,3 +36,17 @@ libtool
 /dwg2dxf/vs2013/dwg2dxf.opensdf
 /dwg2dxf/vs2013/dwg2dxf.sdf
 /dwg2dxf/vs2013/dwg2dxf.v12.suo
+/dwg2text/vs2013/Debug
+/dwg2text/vs2013/Release
+/dwg2text/vs2013/dwg2dxf.opensdf
+/dwg2text/vs2013/dwg2dxf.sdf
+/dwg2text/vs2013/dwg2dxf.v12.suo
+.idea
+build
+debug
+compile
+.cproject
+.project
+CMakeCache.txt
+cmake_install.cmake
+src/intern/.dirstamp
