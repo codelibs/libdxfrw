@@ -744,11 +744,14 @@ bool dxfRW::writeLWPolyline(DRW_LWPolyline *ent){
 bool dxfRW::writePolyline(DRW_Polyline *ent) {
     writer->writeString(0, "POLYLINE");
     writeEntity(ent);
+    bool is3d = false;
     if (version > DRW::AC1009) {
-        if (ent->flags & 8 || ent->flags & 16)
-            writer->writeString(100, "AcDb2dPolyline");
-        else
+        if (ent->flags & 8 || ent->flags & 16) {
             writer->writeString(100, "AcDb3dPolyline");
+            is3d = true;
+        } else {
+            writer->writeString(100, "AcDb2dPolyline");
+        }
     } else
         writer->writeInt16(66, 1);
     writer->writeDouble(10, 0.0);
@@ -785,12 +788,17 @@ bool dxfRW::writePolyline(DRW_Polyline *ent) {
     }
 
     int vertexnum = ent->vertlist.size();
-    for (int i = 0;  i< vertexnum; i++){
+    for (int i = 0; i < vertexnum; i++) {
         DRW_Vertex *v = ent->vertlist.at(i);
         writer->writeString(0, "VERTEX");
         writeEntity(ent);
         if (version > DRW::AC1009)
             writer->writeString(100, "AcDbVertex");
+            if(is3d) {
+                writer->writeString(100, "AcDb3dPolylineVertex");
+            } else {
+                writer->writeString(100, "AcDb2dVertex");
+            }
         if ( (v->flags & 128) && !(v->flags & 64) ) {
             writer->writeDouble(10, 0);
             writer->writeDouble(20, 0);
