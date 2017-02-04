@@ -45,6 +45,7 @@ AC_SUBST(LIBRARY_REVISION)dnl
 AC_SUBST(LIBRARY_AGE)dnl
 
 # Checks for libraries.
+AC_CHECK_LIB(iconv, iconv_open)
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdlib.h string.h])
