@@ -2,6 +2,8 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
+#include <cstring>
+#include <iconv.h>
 #include "../drw_base.h"
 #include "drw_cptables.h"
 #include "drw_cptable932.h"
@@ -52,6 +54,9 @@ void DRW_TextCodec::setVersion(std::string *v, bool dxfFormat){
 }
 
 void DRW_TextCodec::setCodePage(std::string *c, bool dxfFormat){
+    static int min_ver = 10;
+    min_ver = std::min(min_ver, version);
+
     cp = correctCodePage(*c);
     delete conv;
     if (version == DRW::AC1009 || version == DRW::AC1015) {
@@ -87,14 +92,19 @@ void DRW_TextCodec::setCodePage(std::string *c, bool dxfFormat){
             conv = new DRW_ConvTable(DRW_Table1258, CPLENGHTCOMMON);
         else if (cp == "UTF-8") { //DXF older than 2007 are write in win codepages
             cp = "ANSI_1252";
-            conv = new DRW_Converter(NULL, 0);
-        } else
-            conv = new DRW_ConvTable(DRW_Table1252, CPLENGHTCOMMON);
+            conv = new DRW_ExtConverter("SJIS");
+        } else {
+            conv = new DRW_ExtConverter("SJIS");
+        }
     } else {
-        if (dxfFormat)
-            conv = new DRW_Converter(NULL, 0);//utf16 to utf8
-        else
-            conv = new DRW_ConvUTF16();//utf16 to utf8
+        if (min_ver <= DRW::AC1018) {
+            conv = new DRW_ExtConverter("SJIS");
+        } else {
+            if (dxfFormat)
+                conv = new DRW_Converter(NULL, 0);//utf16 to utf8
+            else
+                conv = new DRW_ConvUTF16();//utf16 to utf8
+        }
     }
 }
 
@@ -458,6 +468,32 @@ std::string DRW_ConvUTF16::toUtf8(std::string *s){//RLZ: pending to write
     } //end for
 
     return res;
+}
+
+std::string DRW_ExtConverter::convertByiconv(const char *in_encode,
+                                             const char *out_encode,
+                                             const std::string *s) {
+    const int BUF_SIZE = 1000;
+    static char in_buf[BUF_SIZE], out_buf[BUF_SIZE];
+
+    char *in_ptr = in_buf, *out_ptr = out_buf;
+    strncpy(in_buf, s->c_str(), BUF_SIZE);
+
+    iconv_t ic;
+    ic = iconv_open(out_encode, in_encode);
+    size_t il = BUF_SIZE-1, ol = BUF_SIZE-1;
+    iconv(ic , &in_ptr, &il, &out_ptr, &ol);
+    iconv_close(ic);
+
+    return std::string(out_buf);
+}
+
+std::string DRW_ExtConverter::fromUtf8(std::string *s){
+    return convertByiconv("UTF8", this->encoding, s);
+}
+
+std::string DRW_ExtConverter::toUtf8(std::string *s){
+    return convertByiconv(this->encoding, "UTF8", s);
 }
 
 std::string DRW_TextCodec::correctCodePage(const std::string& s) {
