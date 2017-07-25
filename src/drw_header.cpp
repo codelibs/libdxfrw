@@ -926,6 +926,10 @@ void DRW_Header::write(dxfWriter *writer, DRW::Version ver){
         writer->writeInt16(70, varInt);
     } else
         writer->writeInt16(70, 6);
+    if (getStr("$TDCREATE", &varStr)) {
+        writer->writeString(9, "$TDCREATE");
+        writer->writeString(40, varStr);
+    }
     if (ver > DRW::AC1009) {
     writer->writeString(9, "$UCSBASE");
     if (getStr("$UCSBASE", &varStr))
