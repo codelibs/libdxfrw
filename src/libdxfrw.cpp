@@ -1309,7 +1309,7 @@ bool dxfRW::writeBlock(DRW_Block *bk){
             }
             writer->writeString(100, "AcDbEntity");
         }
-        writer->writeString(8, "0");
+        writer->writeString(8, bk->layer);
         if (version > DRW::AC1009) {
             writer->writeString(100, "AcDbBlockEnd");
         }
@@ -1324,7 +1324,7 @@ bool dxfRW::writeBlock(DRW_Block *bk){
         }
         writer->writeString(100, "AcDbEntity");
     }
-    writer->writeString(8, "0");
+    writer->writeString(8, bk->layer);
     if (version > DRW::AC1009) {
         writer->writeString(100, "AcDbBlockBegin");
         writer->writeUtf8String(2, bk->name);
