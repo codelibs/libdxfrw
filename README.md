@@ -33,3 +33,7 @@ Example usage of the library
 
 The dwg to dxf converter (dwg2dxf) included in this package can be used as reference.
 
+Test files
+==========
+
+[Test files](https://github.com/codelibs/fess-testdata/tree/master/autocad) are supported.
