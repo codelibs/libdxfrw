@@ -37,3 +37,29 @@ Test files
 ==========
 
 [Test files](https://github.com/codelibs/fess-testdata/tree/master/autocad) are supported.
+
+## Docker
+
+### Build Docker Image
+
+```
+docker build --rm -t codelibs/libdxfrw .
+docker push codelibs/libdxfrw:latest
+```
+
+### Build libdxfrw on Docker
+
+```
+docker run -t --rm -v `pwd`:/work codelibs/libdxfrw:latest /work/build.sh
+```
+
+dxfrw.tar.gz is created.
+Extract this file under /opt.
+
+### Push Release Images
+
+```
+docker tag codelibs/libdxfrw codelibs/libdxfrw:centos7
+docker push codelibs/libdxfrw:centos7
+```
+
