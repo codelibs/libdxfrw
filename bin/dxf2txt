@@ -1,0 +1,7 @@
+#!/bin/bash
+
+INPUT_FILE=$1
+OUTPUT_FILE=$2
+
+python `dirname $0`/dxf2txt.py $INPUT_FILE $OUTPUT_FILE
+

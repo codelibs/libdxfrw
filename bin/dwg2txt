@@ -1,0 +1,9 @@
+#!/bin/bash
+
+INPUT_FILE=$1
+OUTPUT_FILE=$2
+
+`dirname $0`/dwg2text $INPUT_FILE > $OUTPUT_FILE
+if [ $? != 0 ] ; then
+  echo > $OUTPUT_FILE
+fi
