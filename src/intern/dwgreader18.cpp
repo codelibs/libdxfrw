@@ -91,7 +91,7 @@ void dwgReader18::parseSysPage(duint8 *decompSec, duint32 decompSize){
         } else { DRW_DBG(", "); j++; }
     } DRW_DBG("\n");
 #endif
-    DRW_DBG("decompresing "); DRW_DBG(compSize); DRW_DBG(" bytes in "); DRW_DBG(decompSize); DRW_DBG(" bytes\n");
+    DRW_DBG("decompressing "); DRW_DBG(compSize); DRW_DBG(" bytes in "); DRW_DBG(decompSize); DRW_DBG(" bytes\n");
     dwgCompressor comp;
     comp.decompress18(tmpCompSec, decompSec, compSize, decompSize);
 #ifdef DRW_DBG_DUMP
@@ -146,7 +146,7 @@ bool dwgReader18::parseDataPage(dwgSectionInfo si/*, duint8 *dData*/){
         DRW_DBG("\n      header checksum= "); DRW_DBGH(bufHdr.getRawLong32());
         DRW_DBG("\n      data checksum= "); DRW_DBGH(bufHdr.getRawLong32()); DRW_DBG("\n");
 
-        //get compresed data
+        //get compressed data
         duint8 *cData = new duint8[pi.cSize];
         if (!fileBuf->setPosition(pi.address+32))
             return false;
@@ -162,7 +162,7 @@ bool dwgReader18::parseDataPage(dwgSectionInfo si/*, duint8 *dData*/){
 
         duint8* oData = objData + pi.startOffset;
         pi.uSize = si.maxSize;
-        DRW_DBG("decompresing "); DRW_DBG(pi.cSize); DRW_DBG(" bytes in "); DRW_DBG(pi.uSize); DRW_DBG(" bytes\n");
+        DRW_DBG("decompressing "); DRW_DBG(pi.cSize); DRW_DBG(" bytes in "); DRW_DBG(pi.uSize); DRW_DBG(" bytes\n");
         dwgCompressor comp;
         comp.decompress18(cData, oData, pi.cSize, pi.uSize);
         delete[]cData;
@@ -304,7 +304,7 @@ bool dwgReader18::readFileHeader() {
     duint8 *tmpDecompSec = new duint8[decompSize];
     parseSysPage(tmpDecompSec, decompSize);
 
-//parses "Section page map" decompresed data
+//parses "Section page map" decompressed data
     dwgBuffer buff2(tmpDecompSec, decompSize, &decoder);
     duint32 address = 0x100;
     //stores temporaly info of all pages:
@@ -366,8 +366,8 @@ bool dwgReader18::readFileHeader() {
         secInfo.maxSize = buff3.getRawLong32();
         DRW_DBG("\nMax Decompressed Size= "); DRW_DBGH(secInfo.maxSize);
         DRW_DBG("\nunknown long= "); DRW_DBGH(buff3.getRawLong32());
-        secInfo.compresed = buff3.getRawLong32();
-        DRW_DBG("\nis Compressed? 1:no, 2:yes= "); DRW_DBGH(secInfo.compresed);
+        secInfo.compressed = buff3.getRawLong32();
+        DRW_DBG("\nis Compressed? 1:no, 2:yes= "); DRW_DBGH(secInfo.compressed);
         secInfo.Id = buff3.getRawLong32();
         DRW_DBG("\nSection Id= "); DRW_DBGH(secInfo.Id);
         secInfo.encrypted = buff3.getRawLong32();
