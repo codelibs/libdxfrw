@@ -154,7 +154,7 @@ void dwgCompressor::decompress18(duint8 *cbuf, duint8 *dbuf, duint32 csize, duin
     pos=0; //current position in compresed buffer
     rpos=0; //current position in resulting decompresed buffer
     litCount = litLength18();
-    //copy first lileral lenght
+    //copy first literal length
     for (duint32 i=0; i < litCount; ++i) {
         bufD[rpos++] = bufC[pos++];
     }

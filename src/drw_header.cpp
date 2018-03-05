@@ -1530,7 +1530,7 @@ void DRW_Header::write(dxfWriter *writer, DRW::Version ver){
         else
             writer->writeDouble(40, 50.0);
         writer->writeString(9, "$CAMERAHEIGHT");
-        if (getDouble("$CAMERAHEIGTH", &varDouble))
+        if (getDouble("$CAMERAHEIGHT", &varDouble))
             writer->writeDouble(40, varDouble);
         else
             writer->writeDouble(40, 0.0);
@@ -2391,7 +2391,7 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
         }
     }
 
-    buf->setPosition(size+16+4); //readed size +16 start sentinel + 4 size
+    buf->setPosition(size+16+4); //read size +16 start sentinel + 4 size
     if (version > DRW::AC1021 && mv > 3) { //2010+
         buf->getRawLong32();//advance 4 bytes (hisize)
     }

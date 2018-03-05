@@ -2023,8 +2023,8 @@ bool DRW_Hatch::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
             DRW_DBG("\ndef line: "); DRW_DBG(angleL); DRW_DBG(","); DRW_DBG(ptL.x); DRW_DBG(","); DRW_DBG(ptL.y);
             DRW_DBG(","); DRW_DBG(offL.x); DRW_DBG(","); DRW_DBG(offL.y); DRW_DBG(","); DRW_DBG(angleL);
             for (duint16 i = 0 ; i < numDashL; ++i){
-                double lenghtL = buf->getBitDouble();
-                DRW_DBG(","); DRW_DBG(lenghtL);
+                double lengthL = buf->getBitDouble();
+                DRW_DBG(","); DRW_DBG(lengthL);
             }
         }//end deflines
     } //end not solid

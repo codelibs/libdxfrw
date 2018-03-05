@@ -6,7 +6,7 @@
 //first entry in this table are 0xA1
 #define CPOFFSET932 0xFEC0
 //#define CP1LENGHT932 63
-#define CPLENGHT932 7724
+#define CPLENGTH932 7724
 #define NOTFOUND932 0x30FB
 
 //Table 932 one byte are
