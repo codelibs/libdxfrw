@@ -1428,7 +1428,7 @@ bool dxfRW::writeTables() {
     writer->writeInt16(72, 65);
     writer->writeInt16(73, 0);
     writer->writeDouble(40, 0.0);
-//Aplication linetypes
+//Application linetypes
     iface->writeLTypes();
     writer->writeString(0, "ENDTAB");
 /*** LAYER ***/
@@ -1579,7 +1579,7 @@ bool dxfRW::writeTables() {
             writer->writeInt16(281, 0);
         }
     }
-    /* allways call writeBlockRecords to iface for prepare unnamed blocks */
+    /* always call writeBlockRecords to iface for prepare unnamed blocks */
     iface->writeBlockRecords();
     if (version > DRW::AC1009) {
         writer->writeString(0, "ENDTAB");

@@ -164,8 +164,8 @@ protected:
 
 public:
     std::map<duint32, objHandle>ObjectMap;
-    std::map<duint32, objHandle>objObjectMap; //stores the ojects & entities not read in readDwgEntities
-    std::map<duint32, objHandle>remainingMap; //stores the ojects & entities not read in all proces, for debug only
+    std::map<duint32, objHandle>objObjectMap; //stores the objects & entities not read in readDwgEntities
+    std::map<duint32, objHandle>remainingMap; //stores the objects & entities not read in all processes, for debug only
     std::map<duint32, DRW_LType*> ltypemap;
     std::map<duint32, DRW_Layer*> layermap;
     std::map<duint32, DRW_Block*> blockmap;

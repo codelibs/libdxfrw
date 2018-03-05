@@ -177,7 +177,7 @@ bool dwgReader18::readMetaData() {
     if (! fileBuf->setPosition(11))
         return false;
     maintenanceVersion = fileBuf->getRawChar8();
-    DRW_DBG("maintenance verion= "); DRW_DBGH(maintenanceVersion);
+    DRW_DBG("maintenance version= "); DRW_DBGH(maintenanceVersion);
     DRW_DBG("\nbyte at 0x0C= "); DRW_DBGH(fileBuf->getRawChar8());
     previewImagePos = fileBuf->getRawLong32(); //+ page header size (0x20).
     DRW_DBG("\npreviewImagePos (seekerImageData) = "); DRW_DBG(previewImagePos);
@@ -451,7 +451,7 @@ bool dwgReader18::readDwgClasses(){
     DRW_DBG("\ndata size in bytes "); DRW_DBG(size);
     if (version > DRW::AC1021 && maintenanceVersion > 3) { //2010+
         duint32 hSize = dataBuf.getRawLong32();
-        DRW_DBG("\n2010+ & MV> 3, higth 32b: "); DRW_DBG(hSize);
+        DRW_DBG("\n2010+ & MV> 3, height 32b: "); DRW_DBG(hSize);
     }
     duint32 bitSize = 0;
     if (version > DRW::AC1021) {//2007+

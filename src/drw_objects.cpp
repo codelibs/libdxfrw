@@ -448,7 +448,7 @@ void DRW_LType::parseCode(int code, dxfReader *reader){
 
 //! Update line type
 /*!
-*  Update the size and length of line type acording to the path
+*  Update the size and length of line type according to the path
 *  @author Rallaz
 */
 /*TODO: control max length permited */

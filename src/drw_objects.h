@@ -439,7 +439,7 @@ public:
     * bit 1 (1) show out of limits
     * bit 2 (2) adaptive grid
     * bit 3 (4) allow subdivision
-    * bit 4 (8) follow dinamic SCP
+    * bit 4 (8) follow dynamic SCP
     **/
 };
 

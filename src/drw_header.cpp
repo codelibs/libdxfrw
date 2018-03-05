@@ -1764,8 +1764,8 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
     DRW_DBG("\nbyte size of data: "); DRW_DBG(size);
     if (version > DRW::AC1021 && mv > 3) { //2010+
         duint32 hSize = buf->getRawLong32();
-        endBitPos += 32; //start bit: + 4 hight size
-        DRW_DBG("\n2010+ & MV> 3, higth 32b: "); DRW_DBG(hSize);
+        endBitPos += 32; //start bit: + 4 height size
+        DRW_DBG("\n2010+ & MV> 3, height 32b: "); DRW_DBG(hSize);
     }
 //RLZ TODO add $ACADVER var & $DWGCODEPAGE & $MEASUREMENT
 //RLZ TODO EN 2000 falta $CELWEIGHT, $ENDCAPS, $EXTNAMES $JOINSTYLE $LWDISPLAY $PSTYLEMODE $TDUCREATE  $TDUUPDATE $XEDIT
@@ -1946,7 +1946,7 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
 //    vars["TDUSRTIMER"]=new DRW_Variant(40, buf->getBitLong());//RLZ: TODO convert to day.msec
 //    vars["TDUSRTIMER"]=new DRW_Variant(40, buf->getBitLong());//RLZ: TODO convert to day.msec
     vars["CECOLOR"]=new DRW_Variant(62, buf->getCmColor(version));//RLZ: TODO read CMC or EMC color
-    dwgHandle HANDSEED = buf->getHandle();//allways present in data stream
+    dwgHandle HANDSEED = buf->getHandle();//always present in data stream
     DRW_DBG("\nHANDSEED: "); DRW_DBGHL(HANDSEED.code, HANDSEED.size, HANDSEED.ref);
     dwgHandle CLAYER = hBbuf->getHandle();
     DRW_DBG("\nCLAYER: "); DRW_DBGHL(CLAYER.code, CLAYER.size, CLAYER.ref);
