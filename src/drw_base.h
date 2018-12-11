@@ -10,6 +10,8 @@
 **  along with this program.  If not, see <http://www.gnu.org/licenses/>.    **
 ******************************************************************************/
 
+#pragma warning(disable:4996); //Ignore C4996, unsafe strncpy. TODO use safe alternative
+
 #ifndef DRW_BASE_H
 #define DRW_BASE_H
 
