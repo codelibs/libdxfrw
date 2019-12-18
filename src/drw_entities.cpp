@@ -1897,15 +1897,22 @@ bool DRW_Hatch::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
                     bool isRational = buf->getBit();
                     spline->flags |= (isRational << 2); //rational
                     spline->flags |= (buf->getBit() << 1); //periodic
+                    // refer the information at
+                    // https://www.opendesign.com/files/guestdownloads/OpenDesign_Specification_for_.dwg_files.pdf
+                    // first get the number of knots and control points
+                    // and then repeat to read the points.
+                    // > numknots BL 95 number of knots
+                    // > numctlpts BL 96 number of control points
                     spline->nknots = buf->getBitLong();
+                    spline->ncontrol = buf->getBitLong();
                     spline->knotslist.reserve(spline->nknots);
+                    spline->controllist.reserve(spline->ncontrol);
                     for (dint32 j = 0; j < spline->nknots;++j){
                         spline->knotslist.push_back (buf->getBitDouble());
                     }
-                    spline->ncontrol = buf->getBitLong();
-                    spline->controllist.reserve(spline->ncontrol);
                     for (dint32 j = 0; j < spline->ncontrol;++j){
-                        DRW_Coord* crd = new DRW_Coord(buf->get3BitDouble());
+                        // pt0 2RD 10 control point
+                        DRW_Coord* crd = new DRW_Coord(buf->get2RawDouble());
                         spline->controllist.push_back(crd);
                         if(isRational)
                             crd->z =  buf->getBitDouble(); //RLZ: investigate how store weight
@@ -1915,7 +1922,8 @@ bool DRW_Hatch::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
                         spline->nfit = buf->getBitLong();
                         spline->fitlist.reserve(spline->nfit);
                         for (dint32 j = 0; j < spline->nfit;++j){
-                            DRW_Coord* crd = new DRW_Coord(buf->get3BitDouble());
+                            // Fitpoint 2RD 11
+                            DRW_Coord* crd = new DRW_Coord(buf->get2RawDouble());
                             spline->fitlist.push_back (crd);
                         }
                         spline->tgStart = buf->get2RawDouble();
