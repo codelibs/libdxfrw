@@ -30,6 +30,6 @@ for e in modelspace:
         v = re.sub(r'\{\\f[^;]+;([^}]+)\}', r'\1', e.get_text()).replace('\\P', '\n')
         texts.append(v)
 
-with open(sys.argv[2], 'w') as f:
-    f.writelines([(t+'\n').encode('utf-8') for t in texts])
+with open(sys.argv[2], 'w', encoding='utf-8') as f:
+    f.writelines([(t+'\n') for t in texts])
 
