@@ -5,9 +5,9 @@ from __future__ import absolute_import
 from __future__ import generators
 from __future__ import division
 
-import ezdxf
 import re
 import sys
+import ezdxf
 
 if len(sys.argv) != 3:
     print("Invalid arguments: " + str(sys.argv))
@@ -27,7 +27,7 @@ for e in modelspace:
     if e.dxftype() == 'TEXT':
         texts.append(e.dxf.text)
     elif e.dxftype() == 'MTEXT':
-        v = re.sub(r'\{\\f[^;]+;([^}]+)\}', r'\1', e.get_text()).replace('\\P', '\n')
+        v = re.sub(r'\{\\f[^;]+;([^}]+)\}', r'\1', e.plain_text()).replace('\\P', '\n')
         texts.append(v)
 
 with open(sys.argv[2], 'w', encoding='utf-8') as f:
