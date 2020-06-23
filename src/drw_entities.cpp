@@ -2438,6 +2438,15 @@ void DRW_Dimension::parseCode(int code, dxfReader *reader){
     case 51:
         hdir = reader->getDouble();
         break;
+    case 210:
+        extPoint.x = reader->getDouble();
+        break;
+    case 220:
+        extPoint.y = reader->getDouble();
+        break;
+    case 230:
+        extPoint.z = reader->getDouble();
+        break;
     default:
         DRW_Entity::parseCode(code, reader);
         break;
