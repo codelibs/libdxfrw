@@ -1143,9 +1143,9 @@ public:
     double getDir() const { return rot;}                  /*!< rotation angle of the dimension text, code 53 (optional) default 0 */
     void setDir(const double d) { rot = d;}
 
-    DRW_Coord getExtrusion(){return extPoint;}            /*!< extrusion, code 210, 220 & 230 */
+    DRW_Coord getExtrusion() const {return extPoint;}     /*!< extrusion, code 210, 220 & 230 */
     void setExtrusion(const DRW_Coord p) {extPoint =p;}
-    std::string getName(){return name;}                   /*!< Name of the block that contains the entities, code 2 */
+    std::string getName() const {return name;}            /*!< Name of the block that contains the entities, code 2 */
     void setName(const std::string s) {name = s;}
 //    int getType(){ return type;}                      /*!< Dimension type, code 70 */
     bool hasActualMeasurement() const { return hasActual; }
