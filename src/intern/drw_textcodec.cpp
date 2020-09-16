@@ -476,7 +476,8 @@ std::string DRW_ExtConverter::convertByiconv(const char *in_encode,
     const int BUF_SIZE = 1000;
     static char in_buf[BUF_SIZE], out_buf[BUF_SIZE];
 
-    char *in_ptr = in_buf, *out_ptr = out_buf;
+	const char *in_ptr = in_buf;
+	char *out_ptr = out_buf;
     strncpy(in_buf, s->c_str(), BUF_SIZE);
 
     iconv_t ic;
