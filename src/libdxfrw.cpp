@@ -335,8 +335,8 @@ bool dxfRW::writeVport(DRW_Vport *ent){
     writer->writeDouble(16, ent->viewDir.x);
     writer->writeDouble(26, ent->viewDir.y);
     writer->writeDouble(36, ent->viewDir.z);
-    writer->writeDouble(17, ent->viewTarget.z);
-    writer->writeDouble(27, ent->viewTarget.z);
+    writer->writeDouble(17, ent->viewTarget.x); // typo. z -> x
+    writer->writeDouble(27, ent->viewTarget.y); // typo. z -> y
     writer->writeDouble(37, ent->viewTarget.z);
     writer->writeDouble(40, ent->height);
     writer->writeDouble(41, ent->ratio);
