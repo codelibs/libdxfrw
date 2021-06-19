@@ -37,7 +37,7 @@ build --build . --config Release  --target install
 There is also a dwg to dxf converter that depends on libdxfrw that can be built the same way.
 - Open dwg2dxf\vs2013\dwg2dxf.sln with VS2013
 - Build Solution
-
+[VC++ with CMakeLists.txt]
 - Open the CMakeLists.txt from vs 2019 driectly
 - build
 
