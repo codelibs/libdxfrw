@@ -21,6 +21,16 @@ make
 make install (as root)
 ```
 
+Use CMake
+
+
+```
+mkdir build
+cd build
+build ..  -DCMAKE_BUILD_TYPE=Release
+build --build . --config Release  --target install
+```
+
 [VC++]
 - Open vs2013\libdxfrw.sln with VS2013
 - Build Solution
