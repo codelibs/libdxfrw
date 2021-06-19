@@ -38,6 +38,9 @@ There is also a dwg to dxf converter that depends on libdxfrw that can be built 
 - Open dwg2dxf\vs2013\dwg2dxf.sln with VS2013
 - Build Solution
 
+- Open the CMakeLists.txt from vs 2019 driectly
+- build
+
 Example usage of the library
 ==========
 
