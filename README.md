@@ -21,12 +21,27 @@ make
 make install (as root)
 ```
 
+Use CMake
+
+
+```
+mkdir build
+cd build
+build ..  -DCMAKE_BUILD_TYPE=Release
+build --build . --config Release  --target install
+```
+
 [VC++]
 - Open vs2013\libdxfrw.sln with VS2013
 - Build Solution
 There is also a dwg to dxf converter that depends on libdxfrw that can be built the same way.
 - Open dwg2dxf\vs2013\dwg2dxf.sln with VS2013
 - Build Solution
+- 
+[VC++ with CMakeLists.txt]
+
+- Open the CMakeLists.txt from vs 2019 driectly
+- build
 
 Example usage of the library
 ==========
