@@ -49,8 +49,7 @@ void DRW_TextCodec::setVersion(std::string *v, bool dxfFormat){
     } else if (versionStr == "AC1012" || versionStr == "AC1014"
              || versionStr == "AC1015" || versionStr == "AC1018") {
         setVersion(DRW::AC1015, dxfFormat);
-    }
-    else { // typo
+    } else {
         setVersion(DRW::AC1021, dxfFormat);
     }
 }
