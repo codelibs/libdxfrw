@@ -192,8 +192,8 @@ bool dxfRW::writeLineType(DRW_LType *ent){
     writer->writeInt16(73, ent->size);
     writer->writeDouble(40, ent->length);
 
-    for (unsigned int i = 0;  i< ent->path.size(); i++){
-        writer->writeDouble(49, ent->path.at(i));
+    for (auto p : ent->path){
+        writer->writeDouble(49, p);
         if (version > DRW::AC1009) {
             writer->writeInt16(74, 0);
         }
@@ -787,9 +787,7 @@ bool dxfRW::writePolyline(DRW_Polyline *ent) {
         writer->writeDouble(230, crd.z);
     }
 
-    size_t vertexnum = ent->vertlist.size();
-    for (size_t i = 0; i < vertexnum; i++) {
-        DRW_Vertex *v = ent->vertlist.at(i);
+    for (DRW_Vertex *v : ent->vertlist) {
         writer->writeString(0, "VERTEX");
         writeEntity(ent);
         if (version > DRW::AC1009)
@@ -855,20 +853,21 @@ bool dxfRW::writeSpline(DRW_Spline *ent){
         writer->writeDouble(230, ent->normalVec.z);
         writer->writeInt16(70, ent->flags);
         writer->writeInt16(71, ent->degree);
-        writer->writeInt16(72, ent->nknots);
-        writer->writeInt16(73, ent->ncontrol);
+        writer->writeInt16(72, ent->nknots);   //!< @todo knotslist.size()?
+        writer->writeInt16(73, ent->ncontrol); //!< @todo controllist.size()?
         writer->writeInt16(74, ent->nfit);
         writer->writeDouble(42, ent->tolknot);
         writer->writeDouble(43, ent->tolcontrol);
         //RLZ: warning check if nknots are correct and ncontrol
-        for (int i = 0;  i< ent->nknots; i++){
-            writer->writeDouble(40, ent->knotslist.at(i));
+        assert(ent->nknots == ent->knotslist.size());
+        for (double knot : ent->knotslist) {
+            writer->writeDouble(40, knot);
         }
-        for (int i = 0; i< ent->weightlist.size(); i++) {
-            writer->writeDouble(41, ent->weightlist.at(i));
+        for (double weight: ent->weightlist) {
+            writer->writeDouble(41, weight);
         }
-        for (int i = 0;  i< ent->ncontrol; i++){
-            DRW_Coord *crd = ent->controllist.at(i);
+        assert(ent->ncontrol == ent->controllist.size());
+        for (DRW_Coord *crd : ent->controllist) {
             writer->writeDouble(10, crd->x);
             writer->writeDouble(20, crd->y);
             writer->writeDouble(30, crd->z);
@@ -896,8 +895,7 @@ bool dxfRW::writeHatch(DRW_Hatch *ent){
         ent->loopsnum = (int)ent->looplist.size();
         writer->writeInt16(91, ent->loopsnum);
         //write paths data
-        for (int i = 0;  i< ent->loopsnum; i++){
-            DRW_HatchLoop *loop = ent->looplist.at(i);
+        for (DRW_HatchLoop *loop : ent->looplist) {
             writer->writeInt16(92, loop->type);
             if ( (loop->type & 2) == 2){
                 //RLZ: polyline boundary writeme
@@ -905,11 +903,12 @@ bool dxfRW::writeHatch(DRW_Hatch *ent){
                 //boundary path
                 loop->update();
                 writer->writeInt16(93, loop->numedges);
+                for (DRW_Entity* o : loop->objlist)
                 for (int j = 0; j<loop->numedges; ++j) {
-                    switch ( (loop->objlist.at(j))->eType) {
+                    switch ( o->eType) {
                     case DRW::LINE: {
                         writer->writeInt16(72, 1);
-                        DRW_Line* l = (DRW_Line*)loop->objlist.at(j);
+                        DRW_Line* l = (DRW_Line*)o;
                         writer->writeDouble(10, l->basePoint.x);
                         writer->writeDouble(20, l->basePoint.y);
                         writer->writeDouble(11, l->secPoint.x);
@@ -917,7 +916,7 @@ bool dxfRW::writeHatch(DRW_Hatch *ent){
                         break; }
                     case DRW::ARC: {
                         writer->writeInt16(72, 2);
-                        DRW_Arc* a = (DRW_Arc*)loop->objlist.at(j);
+                        DRW_Arc* a = (DRW_Arc*)o;
                         writer->writeDouble(10, a->basePoint.x);
                         writer->writeDouble(20, a->basePoint.y);
                         writer->writeDouble(40, a->radious);
@@ -927,7 +926,7 @@ bool dxfRW::writeHatch(DRW_Hatch *ent){
                         break; }
                     case DRW::ELLIPSE: {
                         writer->writeInt16(72, 3);
-                        DRW_Ellipse* a = (DRW_Ellipse*)loop->objlist.at(j);
+                        DRW_Ellipse* a = (DRW_Ellipse*)o;
                         a->correctAxis();
                         writer->writeDouble(10, a->basePoint.x);
                         writer->writeDouble(20, a->basePoint.y);
@@ -982,8 +981,7 @@ bool dxfRW::writeLeader(DRW_Leader *ent){
         writer->writeDouble(41, ent->textwidth);
         writer->writeDouble(76, ent->vertnum);
         writer->writeDouble(76, ent->vertexlist.size());
-        for (unsigned int i=0; i<ent->vertexlist.size(); i++) {
-            DRW_Coord *vert = ent->vertexlist.at(i);
+        for (DRW_Coord *vert : ent->vertexlist) {
             writer->writeDouble(10, vert->x);
             writer->writeDouble(20, vert->y);
             writer->writeDouble(30, vert->z);
@@ -1232,14 +1230,15 @@ bool dxfRW::writeViewport(DRW_Viewport *ent) {
 
 DRW_ImageDef* dxfRW::writeImage(DRW_Image *ent, std::string name){
     if (version > DRW::AC1009) {
-        //search if exist imagedef with this mane (image inserted more than 1 time)
-        //RLZ: imagedef_reactor seem needed to read in acad
+        // search if exist imagedef with this mane (image inserted more than 1
+        // time) RLZ: imagedef_reactor seem needed to read in acad
         DRW_ImageDef *id = NULL;
-        for (unsigned int i=0; i<imageDef.size(); i++) {
-            if (imageDef.at(i)->name == name ) {
-                id = imageDef.at(i);
-                continue;
-            }
+        // RP: We were finding all matches and keeping only the last, so we now search reverse
+        // to maintain behavior
+        auto it = std::find_if(imageDef.rbegin(), imageDef.rend(),
+                     [&](DRW_ImageDef *id) { return id->name == name; });
+        if (it != imageDef.rend()) {
+            id = *it;
         }
         if (id == NULL) {
             id = new DRW_ImageDef();
@@ -1688,7 +1687,7 @@ bool dxfRW::writeObjects() {
     writer->writeInt16(281, 1);
     writer->writeString(3, "ACAD_GROUP");
     writer->writeString(350, "D");
-    if (imageDef.size() != 0) {
+    if (!imageDef.empty()) {
         writer->writeString(3, "ACAD_IMAGE_DICT");
         imgDictH = toHexStr(++entCount);
         writer->writeString(350, imgDictH);
@@ -1698,45 +1697,41 @@ bool dxfRW::writeObjects() {
     writer->writeString(330, "C");
     writer->writeString(100, "AcDbDictionary");
     writer->writeInt16(281, 1);
-//write IMAGEDEF_REACTOR
-    for (unsigned int i=0; i<imageDef.size(); i++) {
-        DRW_ImageDef *id = imageDef.at(i);
-        std::map<std::string, std::string>::iterator it;
-        for ( it=id->reactors.begin() ; it != id->reactors.end(); ++it ) {
+    // write IMAGEDEF_REACTOR
+    for (DRW_ImageDef *id : imageDef) {
+        for (auto& reactor : id->reactors) {
             writer->writeString(0, "IMAGEDEF_REACTOR");
-            writer->writeString(5, (*it).first);
-            writer->writeString(330, (*it).second);
+            writer->writeString(5, reactor.first);
+            writer->writeString(330, reactor.second);
             writer->writeString(100, "AcDbRasterImageDefReactor");
             writer->writeInt16(90, 2); //version 2=R14 to v2010
-            writer->writeString(330, (*it).second);
+            writer->writeString(330, reactor.second);
         }
     }
-    if (imageDef.size() != 0) {
+    if (!imageDef.empty()) {
         writer->writeString(0, "DICTIONARY");
         writer->writeString(5, imgDictH);
         writer->writeString(330, "C");
         writer->writeString(100, "AcDbDictionary");
         writer->writeInt16(281, 1);
-        for (unsigned int i=0; i<imageDef.size(); i++) {
-            size_t f1, f2;
-            f1 = imageDef.at(i)->name.find_last_of("/\\");
-            f2 =imageDef.at(i)->name.find_last_of('.');
+        for (DRW_ImageDef *id : imageDef) {
+            const std::string &name = id->name;
+            size_t f1 = name.find_last_of("/\\");
+            size_t f2 = name.find_last_of('.');
             ++f1;
-            writer->writeString(3, imageDef.at(i)->name.substr(f1,f2-f1));
-            writer->writeString(350, toHexStr(imageDef.at(i)->handle) );
+            writer->writeString(3, name.substr(f1, f2-f1));
+            writer->writeString(350, toHexStr(id->handle) );
         }
     }
-    for (unsigned int i=0; i<imageDef.size(); i++) {
-        DRW_ImageDef *id = imageDef.at(i);
+    for (DRW_ImageDef *id : imageDef) {
         writer->writeString(0, "IMAGEDEF");
         writer->writeString(5, toHexStr(id->handle) );
         if (version > DRW::AC1014) {
 //            writer->writeString(330, "0"); handle to DICTIONARY
         }
         writer->writeString(102, "{ACAD_REACTORS");
-        std::map<std::string, std::string>::iterator it;
-        for ( it=id->reactors.begin() ; it != id->reactors.end(); ++it ) {
-            writer->writeString(330, (*it).first);
+        for (auto &reactor : id->reactors) {
+            writer->writeString(330, reactor.first);
         }
         writer->writeString(102, "}");
         writer->writeString(100, "AcDbRasterImageDef");
