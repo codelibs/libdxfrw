@@ -42,10 +42,8 @@ dxfRW::dxfRW(){
     elParts = 128; //parts munber when convert ellipse to polyline
 }
 dxfRW::~dxfRW(){
-    if (reader != NULL)
-        delete reader;
-    if (writer != NULL)
-        delete writer;
+    delete reader;
+    delete writer;
     for (std::vector<DRW_ImageDef*>::iterator it=imageDef.begin(); it!=imageDef.end(); ++it)
         delete *it;
 

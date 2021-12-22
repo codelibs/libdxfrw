@@ -35,7 +35,7 @@ public:
     }
 
     void parseCode(int code, dxfReader *reader);
-    void write(dxfWriter *writer, DRW::Version ver);
+    void write(dxfWriter *writer, DRW::Version ver) const;
     bool parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *strBuf);
 
 private:

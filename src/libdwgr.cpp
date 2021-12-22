@@ -45,8 +45,7 @@ dwgR::dwgR(){
 }
 
 dwgR::~dwgR(){
-    if (reader != NULL)
-        delete reader;
+    delete reader;
 
 }
 

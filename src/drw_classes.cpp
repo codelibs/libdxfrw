@@ -55,9 +55,9 @@ bool DRW_Class::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *strBuf
     className = strBuf->getVariableText(version, false);
     recName = strBuf->getVariableText(version, false);
 
-    DRW_DBG("\napp name: "); DRW_DBG(appName.c_str());
-    DRW_DBG("\nclass name: "); DRW_DBG(className.c_str());
-    DRW_DBG("\ndxf rec name: "); DRW_DBG(recName.c_str());
+    DRW_DBG("\napp name: "); DRW_DBG(appName);
+    DRW_DBG("\nclass name: "); DRW_DBG(className);
+    DRW_DBG("\ndxf rec name: "); DRW_DBG(recName);
     wasaProxyFlag = buf->getBit(); //in dwg says wasazombie
     entityFlag = buf->getBitShort();
     entityFlag = entityFlag == 0x1F2 ? 1: 0;
@@ -80,7 +80,7 @@ bool DRW_Class::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *strBuf
     return buf->isGood();
 }
 
-void DRW_Class::write(dxfWriter *writer, DRW::Version ver){
+void DRW_Class::write(dxfWriter *writer, DRW::Version ver) const{
     if (ver > DRW::AC1009) {
         writer->writeString(0, "CLASS");
         writer->writeString(1, recName);

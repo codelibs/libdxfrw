@@ -55,11 +55,10 @@ void DRW_Entity::calculateAxis(DRW_Coord extPoint){
 *   apply extrusion in a point using arbitrary axis (previous calculated)
 *  @author Rallaz
 */
-void DRW_Entity::extrudePoint(DRW_Coord extPoint, DRW_Coord *point){
-    double px, py, pz;
-    px = (extAxisX.x*point->x)+(extAxisY.x*point->y)+(extPoint.x*point->z);
-    py = (extAxisX.y*point->x)+(extAxisY.y*point->y)+(extPoint.y*point->z);
-    pz = (extAxisX.z*point->x)+(extAxisY.z*point->y)+(extPoint.z*point->z);
+void DRW_Entity::extrudePoint(DRW_Coord extPoint, DRW_Coord *point) const{
+    double px = (extAxisX.x*point->x)+(extAxisY.x*point->y)+(extPoint.x*point->z);
+    double py = (extAxisX.y*point->x)+(extAxisY.y*point->y)+(extPoint.y*point->z);
+    double pz = (extAxisX.z*point->x)+(extAxisY.z*point->y)+(extPoint.z*point->z);
 
     point->x = px;
     point->y = py;
@@ -300,7 +299,7 @@ bool DRW_Entity::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer* strBu
             lineType = "";
             ltFlags = 3;
         }
-        DRW_DBG(" lineType: "); DRW_DBG(lineType.c_str());
+        DRW_DBG(" lineType: "); DRW_DBG(lineType);
         DRW_DBG(" ltFlags: "); DRW_DBG(ltFlags);
     }
     if (version > DRW::AC1015) {//2004+
@@ -336,7 +335,7 @@ bool DRW_Entity::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer* strBu
                 ltFlags = plotFlags;
                 lineType = plotStyleName; //RLZ: howto solve? if needed plotStyleName;
                 DRW_DBG("ltFlags: "); DRW_DBG(ltFlags);
-                DRW_DBG(" lineType: "); DRW_DBG(lineType.c_str());
+                DRW_DBG(" lineType: "); DRW_DBG(lineType);
             } else {
                 DRW_DBG(", plotFlags: "); DRW_DBG(plotFlags);
             }
@@ -778,16 +777,16 @@ bool DRW_Ellipse::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
 
 //parts are the number of vertex to split polyline, default 128
 void DRW_Ellipse::toPolyline(DRW_Polyline *pol, int parts){
-    double radMajor, radMinor, cosRot, sinRot, incAngle, curAngle;
-    double cosCurr, sinCurr;
-    radMajor = sqrt(secPoint.x*secPoint.x + secPoint.y*secPoint.y);
-    radMinor = radMajor*ratio;
+    double sinCurr;
+    double cosCurr;
+    double radMajor = sqrt(secPoint.x * secPoint.x + secPoint.y * secPoint.y);
+    double radMinor = radMajor*ratio;
     //calculate sin & cos of included angle
-    incAngle = atan2(secPoint.y, secPoint.x);
-    cosRot = cos(incAngle);
-    sinRot = sin(incAngle);
+    double incAngle = atan2(secPoint.y, secPoint.x);
+    double cosRot = cos(incAngle);
+    double sinRot = sin(incAngle);
     incAngle = M_PIx2 / parts;
-    curAngle = staparam;
+    double curAngle = staparam;
     int i = static_cast<int>(curAngle / incAngle);
     do {
         if (curAngle > endparam) {
@@ -984,7 +983,7 @@ bool DRW_Block::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
     if (!isEnd){
         DRW_DBG("\n***************************** parsing block *********************************************\n");
         name = sBuf->getVariableText(version, false);
-        DRW_DBG("Block name: "); DRW_DBG(name.c_str()); DRW_DBG("\n");
+        DRW_DBG("Block name: "); DRW_DBG(name); DRW_DBG("\n");
     } else {
         DRW_DBG("\n***************************** parsing end block *********************************************\n");
     }
@@ -1383,7 +1382,7 @@ bool DRW_Text::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
     DRW_DBG("thickness: "); DRW_DBG(thickness); DRW_DBG(", Oblique ang: "); DRW_DBG(oblique); DRW_DBG(", Width: ");
     DRW_DBG(widthscale); DRW_DBG(", Rotation: "); DRW_DBG(angle); DRW_DBG(", height: "); DRW_DBG(height); DRW_DBG("\n");
     text = sBuf->getVariableText(version, false); /* Text value TV 1 */
-    DRW_DBG("text string: "); DRW_DBG(text.c_str());DRW_DBG("\n");
+    DRW_DBG("text string: "); DRW_DBG(text); DRW_DBG("\n");
     //textgen, alignH, alignV always present in R14-, data_flags set in initialisation
     if ( !(data_flags & 0x20) ) { /* Generation BS 71 present if !(DataFlags & 0x20) */
         textgen = buf->getBitShort();
@@ -1905,14 +1904,14 @@ bool DRW_Hatch::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
             DRW_DBG(" ignored color: "); DRW_DBG(ignCol);
         }
         UTF8STRING gradName = sBuf->getVariableText(version, false);
-        DRW_DBG("\ngradient name: "); DRW_DBG(gradName.c_str()); DRW_DBG("\n");
+        DRW_DBG("\ngradient name: "); DRW_DBG(gradName); DRW_DBG("\n");
     }
     basePoint.z = buf->getBitDouble();
     extPoint = buf->get3BitDouble();
     DRW_DBG("base point: "); DRW_DBGPT(basePoint.x, basePoint.y, basePoint.z);
     DRW_DBG("\nextrusion: "); DRW_DBGPT(extPoint.x, extPoint.y, extPoint.z);
     name = sBuf->getVariableText(version, false);
-    DRW_DBG("\nhatch pattern name: "); DRW_DBG(name.c_str()); DRW_DBG("\n");
+    DRW_DBG("\nhatch pattern name: "); DRW_DBG(name); DRW_DBG("\n");
     solid = buf->getBit();
     associative = buf->getBit();
     loopsnum = buf->getBitLong();
@@ -2013,7 +2012,8 @@ bool DRW_Hatch::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
         doubleflag = buf->getBit();
         deflines = buf->getBitShort();
         for (dint32 i = 0 ; i < deflines; ++i){
-            DRW_Coord ptL, offL;
+            DRW_Coord ptL;
+            DRW_Coord offL;
             double angleL = buf->getBitDouble();
             ptL.x = buf->getBitDouble();
             ptL.y = buf->getBitDouble();
@@ -2480,7 +2480,7 @@ bool DRW_Dimension::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *sB
     //clear last 3 bits to set integer dim type
     type &= 0xF8;
     text = sBuf->getVariableText(version, false);
-    DRW_DBG("\nforced dim text: "); DRW_DBG(text.c_str());
+    DRW_DBG("\nforced dim text: "); DRW_DBG(text);
     rot = buf->getBitDouble();
     hdir = buf->getBitDouble();
     DRW_Coord inspoint = buf->get3BitDouble();

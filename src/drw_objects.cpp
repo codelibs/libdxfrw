@@ -407,7 +407,7 @@ bool DRW_Dimstyle::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
     if (!ret)
         return ret;
     name = sBuf->getVariableText(version, false);
-    DRW_DBG("dimension style name: "); DRW_DBG(name.c_str()); DRW_DBG("\n");
+    DRW_DBG("dimension style name: "); DRW_DBG(name); DRW_DBG("\n");
 
 //    handleObj = shpControlH.ref;
     DRW_DBG("\n Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
@@ -472,7 +472,7 @@ bool DRW_LType::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
     if (!ret)
         return ret;
     name = sBuf->getVariableText(version, false);
-    DRW_DBG("linetype name: "); DRW_DBG(name.c_str()); DRW_DBG("\n");
+    DRW_DBG("linetype name: "); DRW_DBG(name); DRW_DBG("\n");
     flags = buf->getBit()<< 6;
     DRW_DBG("flags: "); DRW_DBG(flags);
     if (version > DRW::AC1018) {//2007+
@@ -485,7 +485,7 @@ bool DRW_LType::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
     flags |= xdep<< 4;
     DRW_DBG(" flags: "); DRW_DBG(flags);
     desc = sBuf->getVariableText(version, false);
-    DRW_DBG(" desc: "); DRW_DBG(desc.c_str());
+    DRW_DBG(" desc: "); DRW_DBG(desc);
     length = buf->getBitDouble();
     DRW_DBG(" pattern length: "); DRW_DBG(length);
     char align = buf->getRawChar8();
@@ -608,7 +608,7 @@ bool DRW_Layer::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
     if (!ret)
         return ret;
     name = sBuf->getVariableText(version, false);
-    DRW_DBG("layer name: "); DRW_DBG(name.c_str());
+    DRW_DBG("layer name: "); DRW_DBG(name);
 
     flags |= buf->getBit()<< 6;//layer have entity
     if (version < DRW::AC1021) {//2004-
@@ -681,7 +681,7 @@ bool DRW_Block_Record::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs
     duint32 objectCount = 0; //only 2004+
 
     name = sBuf->getVariableText(version, false);
-    DRW_DBG("block record name: "); DRW_DBG(name.c_str()); DRW_DBG("\n");
+    DRW_DBG("block record name: "); DRW_DBG(name); DRW_DBG("\n");
 
     flags |= buf->getBit()<< 6;//referenced external reference, block code 70, bit 7 (64)
     if (version > DRW::AC1018) {//2007+
@@ -709,14 +709,14 @@ bool DRW_Block_Record::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs
     basePoint.z = buf->getBitDouble();
     DRW_DBG("insertion point: "); DRW_DBGPT(basePoint.x, basePoint.y, basePoint.z); DRW_DBG("\n");
     UTF8STRING path = sBuf->getVariableText(version, false);
-    DRW_DBG("XRef path name: "); DRW_DBG(path.c_str()); DRW_DBG("\n");
+    DRW_DBG("XRef path name: "); DRW_DBG(path); DRW_DBG("\n");
 
     if (version > DRW::AC1014) {//2000+
         insertCount = 0;
         while (duint8 i = buf->getRawChar8() != 0)
             insertCount +=i;
         UTF8STRING bkdesc = sBuf->getVariableText(version, false);
-        DRW_DBG("Block description: "); DRW_DBG(bkdesc.c_str()); DRW_DBG("\n");
+        DRW_DBG("Block description: "); DRW_DBG(bkdesc); DRW_DBG("\n");
 
         duint32 prevData = buf->getBitLong();
         for (unsigned int j= 0; j < prevData; ++j)
@@ -840,7 +840,7 @@ bool DRW_Textstyle::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
     if (!ret)
         return ret;
     name = sBuf->getVariableText(version, false);
-    DRW_DBG("text style name: "); DRW_DBG(name.c_str()); DRW_DBG("\n");
+    DRW_DBG("text style name: "); DRW_DBG(name); DRW_DBG("\n");
     flags |= buf->getBit()<< 6;//style are referenced for a entity, style code 70, bit 7 (64)
     /*dint16 xrefindex =*/ buf->getBitShort();
     flags |= buf->getBit() << 4; //is refx dependent, style code 70, bit 5 (16)
@@ -997,7 +997,7 @@ bool DRW_Vport::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
     if (!ret)
         return ret;
     name = sBuf->getVariableText(version, false);
-    DRW_DBG("vport name: "); DRW_DBG(name.c_str()); DRW_DBG("\n");
+    DRW_DBG("vport name: "); DRW_DBG(name); DRW_DBG("\n");
     flags |= buf->getBit()<< 6;// code 70, bit 7 (64)
     if (version < DRW::AC1021) { //2004-
         /*dint16 xrefindex =*/ buf->getBitShort();
@@ -1169,7 +1169,7 @@ bool DRW_ImageDef::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
     DRW_Coord size = buf->get2RawDouble();
     DRW_UNUSED(size);//RLZ: temporary, complete API
     name = sBuf->getVariableText(version, false);
-    DRW_DBG("appId name: "); DRW_DBG(name.c_str()); DRW_DBG("\n");
+    DRW_DBG("appId name: "); DRW_DBG(name); DRW_DBG("\n");
     loaded = buf->getBit();
     resolution = buf->getRawChar8();
     up = buf->getRawDouble();
@@ -1204,7 +1204,7 @@ bool DRW_AppId::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
     if (!ret)
         return ret;
     name = sBuf->getVariableText(version, false);
-    DRW_DBG("appId name: "); DRW_DBG(name.c_str()); DRW_DBG("\n");
+    DRW_DBG("appId name: "); DRW_DBG(name); DRW_DBG("\n");
     flags |= buf->getBit()<< 6;// code 70, bit 7 (64)
     /*dint16 xrefindex =*/ buf->getBitShort();
     flags |= buf->getBit() << 4; //is refx dependent, style code 70, bit 5 (16)

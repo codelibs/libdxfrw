@@ -27,7 +27,7 @@ class dxfRW {
 public:
     dxfRW();
     ~dxfRW();
-    void setDebug(DRW::DBG_LEVEL lvl);
+    static void setDebug(DRW::DBG_LEVEL lvl);
     /// reads the file specified in constructor
     /*!
      * An interface must be provided. It is used by the class to signal various
@@ -119,7 +119,7 @@ private:
     bool writeObjects();
     bool writeExtData(const std::vector<DRW_Variant*> &ed);
     /*use version from dwgutil.h*/
-    std::string toHexStr(int n);//RLZ removeme
+    static std::string toHexStr(int n);//RLZ removeme
 
 private:
     DRW::Version version;

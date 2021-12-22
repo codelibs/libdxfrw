@@ -22,7 +22,7 @@ DRW_Header::DRW_Header() {
     version = DRW::AC1021;
 }
 
-void DRW_Header::addComment(std::string c){
+void DRW_Header::addComment(const std::string& c){
     if (!comments.empty())
         comments += '\n';
     comments += c;
@@ -1672,27 +1672,27 @@ void DRW_Header::write(dxfWriter *writer, DRW::Version ver){
 #endif
 }
 
-void DRW_Header::addDouble(std::string key, double value, int code){
+void DRW_Header::addDouble(const std::string& key, double value, int code){
     curr = new DRW_Variant(code, value);
     vars[key] =curr;
 }
 
-void DRW_Header::addInt(std::string key, int value, int code){
+void DRW_Header::addInt(const std::string& key, int value, int code){
     curr = new DRW_Variant(code, value);
     vars[key] =curr;
 }
 
-void DRW_Header::addStr(std::string key, std::string value, int code){
+void DRW_Header::addStr(const std::string& key, std::string value, int code){
+    curr = new DRW_Variant(code, std::move(value));
+    vars[key] =curr;
+}
+
+void DRW_Header::addCoord(const std::string& key, DRW_Coord value, int code){
     curr = new DRW_Variant(code, value);
     vars[key] =curr;
 }
 
-void DRW_Header::addCoord(std::string key, DRW_Coord value, int code){
-    curr = new DRW_Variant(code, value);
-    vars[key] =curr;
-}
-
-bool DRW_Header::getDouble(std::string key, double *varDouble){
+bool DRW_Header::getDouble(const std::string& key, double *varDouble){
     bool result = false;
     std::map<std::string,DRW_Variant *>::iterator it;
     it=vars.find( key);
@@ -1708,7 +1708,7 @@ bool DRW_Header::getDouble(std::string key, double *varDouble){
     return result;
 }
 
-bool DRW_Header::getInt(std::string key, int *varInt){
+bool DRW_Header::getInt(const std::string& key, int *varInt){
     bool result = false;
     std::map<std::string,DRW_Variant *>::iterator it;
     it=vars.find( key);
@@ -1724,7 +1724,7 @@ bool DRW_Header::getInt(std::string key, int *varInt){
     return result;
 }
 
-bool DRW_Header::getStr(std::string key, std::string *varStr){
+bool DRW_Header::getStr(const std::string& key, std::string *varStr){
     bool result = false;
     std::map<std::string,DRW_Variant *>::iterator it;
     it=vars.find( key);
@@ -1740,7 +1740,7 @@ bool DRW_Header::getStr(std::string key, std::string *varStr){
     return result;
 }
 
-bool DRW_Header::getCoord(std::string key, DRW_Coord *varCoord){
+bool DRW_Header::getCoord(const std::string& key, DRW_Coord *varCoord){
     bool result = false;
     std::map<std::string,DRW_Variant *>::iterator it;
     it=vars.find( key);
@@ -1911,9 +1911,8 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
     if (version < DRW::AC1021) {//2004-
         vars["MENU"]=new DRW_Variant(1, buf->getCP8Text());
     }
-    ddouble64 msec, day;
-    day = buf->getBitLong();
-    msec = buf->getBitLong();
+    ddouble64 day = buf->getBitLong();
+    ddouble64 msec = buf->getBitLong();
     while (msec > 0)
         msec /=10;
     vars["TDCREATE"]=new DRW_Variant(40, day+msec);//RLZ: TODO convert to day.msec
@@ -2377,7 +2376,7 @@ bool DRW_Header::parseDwg(DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbuf
                 DRW_DBG(it->second->content.d);
                 break;
             case DRW_Variant::STRING:
-                DRW_DBG(it->second->content.s->c_str());
+                DRW_DBG(*it->second->content.s);
                 break;
             case DRW_Variant::COORD:
                  DRW_DBG("x= "); DRW_DBG(it->second->content.v->x);

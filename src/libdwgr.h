@@ -31,7 +31,7 @@ public:
     bool getPreview(std::istream &stream);
     DRW::Version getVersion(){return version;}
     DRW::error getError(){return error;}
-    void setDebug(DRW::DBG_LEVEL lvl);
+    static void setDebug(DRW::DBG_LEVEL lvl);
 
 private:
     bool open(std::istream *stream);
