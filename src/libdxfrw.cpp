@@ -1295,7 +1295,7 @@ bool dxfRW::writeBlockRecord(std::string name){
     return true;
 }
 
-bool dxfRW::writeBlock(DRW_Block *bk){
+bool dxfRW::writeBlock(DRW_Block *ent){
     if (writingBlock) {
         writer->writeString(0, "ENDBLK");
         if (version > DRW::AC1009) {
@@ -1305,7 +1305,7 @@ bool dxfRW::writeBlock(DRW_Block *bk){
             }
             writer->writeString(100, "AcDbEntity");
         }
-        writer->writeString(8, bk->layer);
+        writer->writeString(8, ent->layer);
         if (version > DRW::AC1009) {
             writer->writeString(100, "AcDbBlockEnd");
         }
@@ -1313,29 +1313,29 @@ bool dxfRW::writeBlock(DRW_Block *bk){
     writingBlock = true;
     writer->writeString(0, "BLOCK");
     if (version > DRW::AC1009) {
-        currHandle = (*(blockMap.find(bk->name))).second;
+        currHandle = (*(blockMap.find(ent->name))).second;
         writer->writeString(5, toHexStr(currHandle+1));
         if (version > DRW::AC1014) {
             writer->writeString(330, toHexStr(currHandle));
         }
         writer->writeString(100, "AcDbEntity");
     }
-    writer->writeString(8, bk->layer);
+    writer->writeString(8, ent->layer);
     if (version > DRW::AC1009) {
         writer->writeString(100, "AcDbBlockBegin");
-        writer->writeUtf8String(2, bk->name);
+        writer->writeUtf8String(2, ent->name);
     } else
-        writer->writeUtf8Caps(2, bk->name);
-    writer->writeInt16(70, bk->flags);
-    writer->writeDouble(10, bk->basePoint.x);
-    writer->writeDouble(20, bk->basePoint.y);
-    if (bk->basePoint.z != 0.0) {
-        writer->writeDouble(30, bk->basePoint.z);
+        writer->writeUtf8Caps(2, ent->name);
+    writer->writeInt16(70, ent->flags);
+    writer->writeDouble(10, ent->basePoint.x);
+    writer->writeDouble(20, ent->basePoint.y);
+    if (ent->basePoint.z != 0.0) {
+        writer->writeDouble(30, ent->basePoint.z);
     }
     if (version > DRW::AC1009)
-        writer->writeUtf8String(3, bk->name);
+        writer->writeUtf8String(3, ent->name);
     else
-        writer->writeUtf8Caps(3, bk->name);
+        writer->writeUtf8Caps(3, ent->name);
     writer->writeString(1, "");
 
     return true;
