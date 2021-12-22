@@ -113,7 +113,7 @@ public:
     void reset(){
     }
     bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
-    std::list<duint32>hadlesList;
+    std::list<duint32> handlesList;
 };
 
 

@@ -768,7 +768,7 @@ public:
     std::vector<DRW_Vertex *> vertlist;  /*!< vertex list */
 
 private:
-    std::list<duint32>hadlesList; //list of handles, only in 2004+
+    std::list<duint32> handlesList; //list of handles, only in 2004+
     duint32 firstEH;      //handle of first entity, only in pre-2004
     duint32 lastEH;       //handle of last entity, only in pre-2004
     dwgHandle seqEndH;    //handle of SEQEND entity

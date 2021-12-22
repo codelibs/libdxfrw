@@ -214,7 +214,7 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
                 ret = ret2;
         }
         delete[]tmpByteStr;
-        for (std::list<duint32>::iterator it=ltControl.hadlesList.begin(); it != ltControl.hadlesList.end(); ++it){
+        for (std::list<duint32>::iterator it=ltControl.handlesList.begin(); it != ltControl.handlesList.end(); ++it){
             mit = ObjectMap.find(*it);
             if (mit==ObjectMap.end()) {
                 DRW_DBG("\nWARNING: LineType not found\n");
@@ -275,7 +275,7 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
                 ret = ret2;
         }
         delete[]tmpByteStr;
-        for (std::list<duint32>::iterator it=layControl.hadlesList.begin(); it != layControl.hadlesList.end(); ++it){
+        for (std::list<duint32>::iterator it=layControl.handlesList.begin(); it != layControl.handlesList.end(); ++it){
             mit = ObjectMap.find(*it);
             if (mit==ObjectMap.end()) {
                 DRW_DBG("\nWARNING: Layer not found\n");
@@ -345,7 +345,7 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
                 ret = ret2;
         }
         delete[]tmpByteStr;
-        for (std::list<duint32>::iterator it=styControl.hadlesList.begin(); it != styControl.hadlesList.end(); ++it){
+        for (std::list<duint32>::iterator it=styControl.handlesList.begin(); it != styControl.handlesList.end(); ++it){
             mit = ObjectMap.find(*it);
             if (mit==ObjectMap.end()) {
                 DRW_DBG("\nWARNING: Style not found\n");
@@ -405,7 +405,7 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
                 ret = ret2;
         }
         delete[]tmpByteStr;
-        for (std::list<duint32>::iterator it=dimstyControl.hadlesList.begin(); it != dimstyControl.hadlesList.end(); ++it){
+        for (std::list<duint32>::iterator it=dimstyControl.handlesList.begin(); it != dimstyControl.handlesList.end(); ++it){
             mit = ObjectMap.find(*it);
             if (mit==ObjectMap.end()) {
                 DRW_DBG("\nWARNING: Dimension Style not found\n");
@@ -465,7 +465,7 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
                 ret = ret2;
         }
         delete[]tmpByteStr;
-        for (std::list<duint32>::iterator it=vportControl.hadlesList.begin(); it != vportControl.hadlesList.end(); ++it){
+        for (std::list<duint32>::iterator it=vportControl.handlesList.begin(); it != vportControl.handlesList.end(); ++it){
             mit = ObjectMap.find(*it);
             if (mit==ObjectMap.end()) {
                 DRW_DBG("\nWARNING: vport not found\n");
@@ -525,7 +525,7 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
                 ret = ret2;
         }
         delete[]tmpByteStr;
-        for (std::list<duint32>::iterator it=blockControl.hadlesList.begin(); it != blockControl.hadlesList.end(); ++it){
+        for (std::list<duint32>::iterator it=blockControl.handlesList.begin(); it != blockControl.handlesList.end(); ++it){
             mit = ObjectMap.find(*it);
             if (mit==ObjectMap.end()) {
                 DRW_DBG("\nWARNING: block record not found\n");
@@ -586,7 +586,7 @@ bool dwgReader::readDwgTables(DRW_Header& hdr, dwgBuffer *dbuf) {
                 ret = ret2;
         }
         delete[]tmpByteStr;
-        for (std::list<duint32>::iterator it=appIdControl.hadlesList.begin(); it != appIdControl.hadlesList.end(); ++it){
+        for (std::list<duint32>::iterator it=appIdControl.handlesList.begin(); it != appIdControl.handlesList.end(); ++it){
             mit = ObjectMap.find(*it);
             if (mit==ObjectMap.end()) {
                 DRW_DBG("\nWARNING: AppId not found\n");
@@ -893,7 +893,7 @@ bool dwgReader::readPlineVertex(DRW_Polyline& pline, dwgBuffer *dbuf){
                 nextH = nextEntLink;
         }
     } else {//2004+
-        for (std::list<duint32>::iterator it = pline.hadlesList.begin() ; it != pline.hadlesList.end(); ++it){
+        for (std::list<duint32>::iterator it = pline.handlesList.begin() ; it != pline.handlesList.end(); ++it){
             duint32 nextH = *it;
             mit = ObjectMap.find(nextH);
             if (mit==ObjectMap.end()) {
@@ -1280,7 +1280,7 @@ int unkData=0;
     for (int i =0; i< numEntries; i++){
         objectH = buf->getOffsetHandle(handle);
         if (objectH.ref != 0) //in vports R14  I found some NULL handles
-            hadlesList.push_back (objectH.ref);
+            handlesList.push_back (objectH.ref);
         DRW_DBG(" objectH Handle: "); DRW_DBGHL(objectH.code, objectH.size, objectH.ref); DRW_DBG("\n");
         DRW_DBG("Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
     }

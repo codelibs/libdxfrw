@@ -1660,7 +1660,7 @@ bool DRW_Polyline::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
     } else {
         for (dint32 i = 0; i < ooCount; ++i){
                 dwgHandle objectH = buf->getOffsetHandle(handle);
-                hadlesList.push_back (objectH.ref);
+                handlesList.push_back (objectH.ref);
                 DRW_DBG(" Vertex Handle: "); DRW_DBGHL(objectH.code, objectH.size, objectH.ref); DRW_DBG("\n");
                 DRW_DBG("Remaining bytes: "); DRW_DBG(buf->numRemainingBytes()); DRW_DBG("\n");
         }
