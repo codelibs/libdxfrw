@@ -594,7 +594,7 @@ bool dxfRW::writeCircle(DRW_Circle *ent) {
     if (ent->basePoint.z != 0.0) {
         writer->writeDouble(30, ent->basePoint.z);
     }
-    writer->writeDouble(40, ent->radious);
+    writer->writeDouble(40, ent->radius_);
     return true;
 }
 
@@ -609,7 +609,7 @@ bool dxfRW::writeArc(DRW_Arc *ent) {
     if (ent->basePoint.z != 0.0) {
         writer->writeDouble(30, ent->basePoint.z);
     }
-    writer->writeDouble(40, ent->radious);
+    writer->writeDouble(40, ent->radius_);
     if (version > DRW::AC1009) {
         writer->writeString(100, "AcDbArc");
     }
@@ -916,7 +916,7 @@ bool dxfRW::writeHatch(DRW_Hatch *ent){
                         DRW_Arc* a = (DRW_Arc*)o;
                         writer->writeDouble(10, a->basePoint.x);
                         writer->writeDouble(20, a->basePoint.y);
-                        writer->writeDouble(40, a->radious);
+                        writer->writeDouble(40, a->radius_);
                         writer->writeDouble(50, a->staangle*ARAD);
                         writer->writeDouble(51, a->endangle*ARAD);
                         writer->writeInt16(73, a->isccw);

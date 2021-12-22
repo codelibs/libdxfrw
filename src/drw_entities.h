@@ -28,13 +28,13 @@ namespace DRW {
    //! Entity's type.
     enum ETYPE {
         E3DFACE,
-//        E3DSOLID, //encripted propietry data
+//        E3DSOLID, //encrypted proprietary data
 //        ACAD_PROXY_ENTITY,
         ARC,
 //        ATTDEF,
 //        ATTRIB,
         BLOCK,// and ENDBLK
-//        BODY, //encripted propietry data
+//        BODY, //encrypted proprietary data
         CIRCLE,
         DIMENSION,
         DIMALIGNED,
@@ -63,14 +63,14 @@ namespace DRW {
         POINT,
         POLYLINE,
         RAY,
-//        REGION, //encripted propietry data
+//        REGION, //encrypted proprietary data
 //        SECTION,
 //        SEQEND,//not needed?? used in polyline and insert/attrib and dwg
 //        SHAPE,
         SOLID,
         SPLINE,
 //        SUN,
-//        SURFACE, //encripted propietry data can be four types
+//        SURFACE, //encrypted proprietary data can be four types
 //        TABLE,
         TEXT,
 //        TOLERANCE,
@@ -325,7 +325,7 @@ protected:
     virtual bool parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs=0);
 
 public:
-    double radious;                 /*!< radius, code 40 */
+    double radius_ = 0;                 /*!< radius, code 40 */
 };
 
 //! Class to handle arc entity
@@ -346,7 +346,7 @@ public:
     //! center point in OCS
     const DRW_Coord & center() { return basePoint; }
     //! the radius of the circle
-    double radius() { return radious; }
+    constexpr double radius() const noexcept { return radius_; }
     //! start angle in radians
     double startAngle() { return staangle; }
     //! end angle in radians
