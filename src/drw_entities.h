@@ -854,8 +854,6 @@ class DRW_Spline : public DRW_Entity {
 public:
     DRW_Spline() {
         eType = DRW::SPLINE;
-        flags = 0;
-        tolknot = tolcontrol = tolfit = 0.0000001;
     }
     ~DRW_Spline() {
         for(DRW_Coord *item : controllist) delete item;
@@ -871,23 +869,23 @@ public:
 //    double ex;                /*!< normal vector x coordinate, code 210 */
 //    double ey;                /*!< normal vector y coordinate, code 220 */
 //    double ez;                /*!< normal vector z coordinate, code 230 */
-    DRW_Coord normalVec;      /*!< normal vector, code 210, 220, 230 */
-    DRW_Coord tgStart;        /*!< start tangent, code 12, 22, 32 */
+    DRW_Coord normalVec;        /*!< normal vector, code 210, 220, 230 */
+    DRW_Coord tgStart;          /*!< start tangent, code 12, 22, 32 */
 //    double tgsx;              /*!< start tangent x coordinate, code 12 */
 //    double tgsy;              /*!< start tangent y coordinate, code 22 */
 //    double tgsz;              /*!< start tangent z coordinate, code 32 */
-    DRW_Coord tgEnd;          /*!< end tangent, code 13, 23, 33 */
+    DRW_Coord tgEnd;            /*!< end tangent, code 13, 23, 33 */
 //    double tgex;              /*!< end tangent x coordinate, code 13 */
 //    double tgey;              /*!< end tangent y coordinate, code 23 */
 //    double tgez;              /*!< end tangent z coordinate, code 33 */
-    int flags;                /*!< spline flag, code 70 */
-    int degree;               /*!< degree of the spline, code 71 */
+    int flags = 0;              /*!< spline flag, code 70 */
+    int degree;                 /*!< degree of the spline, code 71 */
     // dint32 nknots = 0;        /*!< number of knots, code 72, default 0 */
     // dint32 ncontrol = 0;      /*!< number of control points, code 73, default 0 */
     // dint32 nfit = 0;          /*!< number of fit points, code 74, default 0 */
-    double tolknot;           /*!< knot tolerance, code 42, default 0.0000001 */
-    double tolcontrol;        /*!< control point tolerance, code 43, default 0.0000001 */
-    double tolfit;            /*!< fit point tolerance, code 44, default 0.0000001 */
+    double tolknot = 0.0000001;    /*!< knot tolerance, code 42, default 0.0000001 */
+    double tolcontrol = 0.0000001; /*!< control point tolerance, code 43, default 0.0000001 */
+    double tolfit = 0.0000001;     /*!< fit point tolerance, code 44, default 0.0000001 */
 
     std::vector<double> knotslist;           /*!< knots list, code 40 */
     std::vector<double> weightlist;          /*!< weight list, code 41 */
