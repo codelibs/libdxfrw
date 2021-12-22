@@ -853,20 +853,17 @@ bool dxfRW::writeSpline(DRW_Spline *ent){
         writer->writeDouble(230, ent->normalVec.z);
         writer->writeInt16(70, ent->flags);
         writer->writeInt16(71, ent->degree);
-        writer->writeInt16(72, ent->nknots);   //!< @todo knotslist.size()?
-        writer->writeInt16(73, ent->ncontrol); //!< @todo controllist.size()?
-        writer->writeInt16(74, ent->nfit);
+        writer->writeInt16(72, ent->knotslist.size());
+        writer->writeInt16(73, ent->controllist.size());
+        writer->writeInt16(74, ent->fitlist.size());
         writer->writeDouble(42, ent->tolknot);
         writer->writeDouble(43, ent->tolcontrol);
-        //RLZ: warning check if nknots are correct and ncontrol
-        assert(ent->nknots == ent->knotslist.size());
         for (double knot : ent->knotslist) {
             writer->writeDouble(40, knot);
         }
         for (double weight: ent->weightlist) {
             writer->writeDouble(41, weight);
         }
-        assert(ent->ncontrol == ent->controllist.size());
         for (DRW_Coord *crd : ent->controllist) {
             writer->writeDouble(10, crd->x);
             writer->writeDouble(20, crd->y);

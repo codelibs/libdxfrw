@@ -1956,27 +1956,27 @@ bool DRW_Hatch::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
                     // and then repeat to read the points.
                     // > numknots BL 95 number of knots
                     // > numctlpts BL 96 number of control points
-                    spline->nknots = buf->getBitLong();
-                    spline->ncontrol = buf->getBitLong();
-                    spline->knotslist.reserve(spline->nknots);
-                    spline->controllist.reserve(spline->ncontrol);
-                    for (dint32 j = 0; j < spline->nknots;++j){
+                    const dint32 nknots = buf->getBitLong();
+                    const dint32 ncontrol = buf->getBitLong();
+                    spline->knotslist.reserve(nknots);
+                    spline->controllist.reserve(ncontrol);
+                    for (dint32 j = 0; j < nknots;++j){
                         spline->knotslist.push_back (buf->getBitDouble());
                     }
-                    for (dint32 j = 0; j < spline->ncontrol;++j){
+                    for (dint32 j = 0; j < ncontrol;++j){
                         // pt0 2RD 10 control point
                         DRW_Coord *crd = new DRW_Coord(buf->get2RawDouble());
                         if(isRational)
-                            crd->z =  buf->getBitDouble(); //RLZ: investigate how store weight
+                            crd->z = buf->getBitDouble(); //RLZ: investigate how store weight
                         spline->controllist.push_back(crd);
                     }
                     if (version > DRW::AC1021) { //2010+
-                        spline->nfit = buf->getBitLong();
-                        spline->fitlist.reserve(spline->nfit);
-                        for (dint32 j = 0; j < spline->nfit;++j){
+                        const dint32 nfit = buf->getBitLong();
+                        spline->fitlist.reserve(nfit);
+                        for (dint32 j = 0; j < nfit; ++j){
                             // Fitpoint 2RD 11
                             DRW_Coord* crd = new DRW_Coord(buf->get2RawDouble());
-                            spline->fitlist.push_back (crd);
+                            spline->fitlist.push_back(crd);
                         }
                         spline->tgStart = buf->get2RawDouble();
                         spline->tgEnd = buf->get2RawDouble();
@@ -2093,15 +2093,15 @@ void DRW_Spline::parseCode(int code, dxfReader *reader){
     case 71:
         degree = reader->getInt32();
         break;
-    case 72:
-        nknots = reader->getInt32();
-        break;
-    case 73:
-        ncontrol = reader->getInt32();
-        break;
-    case 74:
-        nfit = reader->getInt32();
-        break;
+    // case 72:
+    //     nknots = reader->getInt32();
+    //     break;
+    // case 73:
+    //     ncontrol = reader->getInt32();
+    //     break;
+    // case 74:
+    //     nfit = reader->getInt32();
+    //     break;
     case 42:
         tolknot = reader->getDouble();
         break;
@@ -2169,6 +2169,9 @@ bool DRW_Spline::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
     }
     degree = buf->getBitLong(); //RLZ: code 71, verify with dxf
     DRW_DBG(" degree: "); DRW_DBG(degree); DRW_DBG("\n");
+    dint32 nknots = 0;
+    dint32 ncontrol = 0;
+    dint32 nfit = 0;
     if (scenario == 2) {
         flags = 8;//scenario 2 = not rational & planar
         tolfit = buf->getBitDouble();//BD

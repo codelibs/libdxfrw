@@ -854,9 +854,8 @@ class DRW_Spline : public DRW_Entity {
 public:
     DRW_Spline() {
         eType = DRW::SPLINE;
-        flags = nknots = ncontrol = nfit = 0;
+        flags = 0;
         tolknot = tolcontrol = tolfit = 0.0000001;
-
     }
     ~DRW_Spline() {
         for(DRW_Coord *item : controllist) delete item;
@@ -883,9 +882,9 @@ public:
 //    double tgez;              /*!< end tangent z coordinate, code 33 */
     int flags;                /*!< spline flag, code 70 */
     int degree;               /*!< degree of the spline, code 71 */
-    dint32 nknots;            /*!< number of knots, code 72, default 0 */
-    dint32 ncontrol;          /*!< number of control points, code 73, default 0 */
-    dint32 nfit;              /*!< number of fit points, code 74, default 0 */
+    // dint32 nknots = 0;        /*!< number of knots, code 72, default 0 */
+    // dint32 ncontrol = 0;      /*!< number of control points, code 73, default 0 */
+    // dint32 nfit = 0;          /*!< number of fit points, code 74, default 0 */
     double tolknot;           /*!< knot tolerance, code 42, default 0.0000001 */
     double tolcontrol;        /*!< control point tolerance, code 43, default 0.0000001 */
     double tolfit;            /*!< fit point tolerance, code 44, default 0.0000001 */
