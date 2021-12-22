@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <sstream>
 #include <cassert>
+#include <memory>
 #include "intern/drw_textcodec.h"
 #include "intern/dxfreader.h"
 #include "intern/dxfwriter.h"
@@ -2497,19 +2498,19 @@ bool dxfRW::processPolyline() {
 
 bool dxfRW::processVertex(DRW_Polyline *pl) {
     DRW_DBG("dxfRW::processVertex");
-    int code;
-    DRW_Vertex *v = new DRW_Vertex();
+    int code = 0;
+    std::unique_ptr<DRW_Vertex> v{new DRW_Vertex()};
     while (reader->readRec(&code)) {
         DRW_DBG(code); DRW_DBG("\n");
         switch (code) {
         case 0: {
-            pl->appendVertex(v);
+            pl->appendVertex(v.release());
             nextentity = reader->getString();
             DRW_DBG(nextentity); DRW_DBG("\n");
             if (nextentity == "SEQEND") {
-            return true;  //found SEQEND no more vertex, terminate
-            } else if (nextentity == "VERTEX"){
-                v = new DRW_Vertex(); //another vertex
+                return true; // found SEQEND no more vertex, terminate
+            } else if (nextentity == "VERTEX") {
+                v.reset(new DRW_Vertex()); // another vertex
             }
         }
         default:
