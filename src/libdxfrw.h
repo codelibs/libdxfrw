@@ -59,7 +59,7 @@ public:
     bool writeLWPolyline(DRW_LWPolyline *ent);
     bool writePolyline(DRW_Polyline *ent);
     bool writeSpline(DRW_Spline *ent);
-    bool writeBlockRecord(std::string name);
+    bool writeBlockRecord(const std::string& name);
     bool writeBlock(DRW_Block *ent);
     bool writeInsert(DRW_Insert *ent);
     bool writeMText(DRW_MText *ent);

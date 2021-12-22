@@ -23,6 +23,7 @@
 #include "intern/drw_dbg.h"
 
 #define FIRSTHANDLE 48
+constexpr const char *EntityNameVertex = "VERTEX";
 
 /*enum sections {
     secUnknown,
@@ -789,7 +790,7 @@ bool dxfRW::writePolyline(DRW_Polyline *ent) {
     }
 
     for (DRW_Vertex *v : ent->vertlist) {
-        writer->writeString(0, "VERTEX");
+        writer->writeString(0, EntityNameVertex);
         writeEntity(ent);
         if (version > DRW::AC1009)
             writer->writeString(100, "AcDbVertex");
@@ -1273,7 +1274,7 @@ DRW_ImageDef* dxfRW::writeImage(DRW_Image *ent, std::string name){
     return NULL; //not exist in acad 12
 }
 
-bool dxfRW::writeBlockRecord(std::string name){
+bool dxfRW::writeBlockRecord(const std::string& name){
     if (version > DRW::AC1009) {
         writer->writeString(0, "BLOCK_RECORD");
         writer->writeString(5, toHexStr(++entCount));
@@ -2100,11 +2101,10 @@ bool dxfRW::processBlock() {
             if (nextentity == "ENDBLK") {
                 iface->endBlock();
                 return true;  //found ENDBLK, terminate
-            } else {
-                processEntities(true);
-                iface->endBlock();
-                return true;  //found ENDBLK, terminate
-            }
+            } 
+            processEntities(true);
+            iface->endBlock();
+            return true;  //found ENDBLK, terminate
         }
         default:
             block.parseCode(code, reader);
@@ -2132,7 +2132,8 @@ bool dxfRW::processEntities(bool isblock) {
     do {
         if (nextentity == "ENDSEC" || nextentity == "ENDBLK") {
             return true;  //found ENDSEC or ENDBLK terminate
-        } else if (nextentity == "POINT") {
+        }
+        if (nextentity == "POINT") {
             processPoint();
         } else if (nextentity == "LINE") {
             processLine();
@@ -2481,12 +2482,11 @@ bool dxfRW::processPolyline() {
         case 0: {
             nextentity = reader->getString();
             DRW_DBG(nextentity); DRW_DBG("\n");
-            if (nextentity != "VERTEX") {
-            iface->addPolyline(pl);
-            return true;  //found new entity or ENDSEC, terminate
-            } else {
-                processVertex(&pl);
+            if (nextentity != EntityNameVertex) {
+                iface->addPolyline(pl);
+                return true; // found new entity or ENDSEC, terminate
             }
+            processVertex(&pl);
         }
         default:
             pl.parseCode(code, reader);
@@ -2509,7 +2509,8 @@ bool dxfRW::processVertex(DRW_Polyline *pl) {
             DRW_DBG(nextentity); DRW_DBG("\n");
             if (nextentity == "SEQEND") {
                 return true; // found SEQEND no more vertex, terminate
-            } else if (nextentity == "VERTEX") {
+            }
+            if (nextentity == EntityNameVertex) {
                 v.reset(new DRW_Vertex()); // another vertex
             }
         }
