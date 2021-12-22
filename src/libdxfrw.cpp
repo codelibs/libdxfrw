@@ -2706,36 +2706,33 @@ bool dxfRW::processLeader() {
 
 bool dxfRW::processObjects() {
     DRW_DBG("dxfRW::processObjects\n");
-    int code;
+    int code = 0;
     if (!reader->readRec(&code)){
         return false;
     }
-    bool next = true;
-    if (code == 0) {
-            nextentity = reader->getString();
-    } else {
+    if (code != 0) {
             return false;  //first record in objects is 0
-   }
-    do {
-        if (nextentity == "ENDSEC") {
-            return true;  //found ENDSEC terminate
-        } else if (nextentity == "IMAGEDEF") {
+    }
+    nextentity = reader->getString();
+    while (nextentity != "ENDSEC") {
+        if (nextentity == "IMAGEDEF") {
+            // updates nextentity
             processImageDef();
-        } else {
-            if (reader->readRec(&code)){
-                if (code == 0)
-                    nextentity = reader->getString();
-            } else
-                return false; //end of file without ENDSEC
+            continue;
         }
-
-    } while (next);
-    return true;
+        if (reader->readRec(&code)) {
+            if (code == 0) {
+                nextentity = reader->getString();
+            }
+        } else
+            return false; // end of file without ENDSEC
+    }
+    return true; // found ENDSEC terminate
 }
 
 bool dxfRW::processImageDef() {
     DRW_DBG("dxfRW::processImageDef");
-    int code;
+    int code = 0;
     DRW_ImageDef img;
     while (reader->readRec(&code)) {
         DRW_DBG(code); DRW_DBG("\n");
