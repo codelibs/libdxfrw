@@ -27,8 +27,8 @@ Use CMake
 ```
 mkdir build
 cd build
-build ..  -DCMAKE_BUILD_TYPE=Release
-build --build . --config Release  --target install
+cmake ..  -DCMAKE_BUILD_TYPE=Release
+cmake --build . --config Release  --target install
 ```
 
 [VC++]
