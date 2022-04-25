@@ -32,7 +32,7 @@ class DRW_Converter
 {
 public:
     DRW_Converter(const int *t, int l){table = t;
-                               cpLenght = l;}
+                               cpLength = l;}
     virtual ~DRW_Converter(){}
     virtual std::string fromUtf8(std::string *s) {return *s;}
     virtual std::string toUtf8(std::string *s);
@@ -41,7 +41,7 @@ public:
     std::string encodeNum(int c);
     int decodeNum(std::string s, int *b);
     const int *table;
-    int cpLenght;
+    int cpLength;
 };
 
 class DRW_ConvUTF16 : public DRW_Converter {
