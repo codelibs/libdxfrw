@@ -35,8 +35,9 @@
     secObjects
 };*/
 
-dwgR::dwgR(){
+dwgR::dwgR(const char* name){
     DRW_DBGSL(DRW_dbg::NONE);
+    fileName = name;
     reader = NULL;
 //    writer = NULL;
     applyExt = false;
@@ -61,10 +62,11 @@ void dwgR::setDebug(DRW::DBG_LEVEL lvl){
 }
 
 /*reads metadata and loads image preview*/
-bool dwgR::getPreview(std::istream &stream){
+bool dwgR::getPreview(){
     bool isOk = false;
 
-    isOk = open(&stream);
+    std::ifstream filestr;
+    isOk = openFile(&filestr);
     if (!isOk)
         return false;
 
@@ -74,6 +76,7 @@ bool dwgR::getPreview(std::istream &stream){
     } else
         error = DRW::BAD_READ_METADATA;
 
+    filestr.close();
     if (reader != NULL) {
         delete reader;
         reader = NULL;
@@ -81,13 +84,70 @@ bool dwgR::getPreview(std::istream &stream){
     return isOk;
 }
 
-bool dwgR::read(std::istream &stream, DRW_Interface *interface_, bool ext){
+bool dwgR::testReader(){
+    bool isOk = false;
+
+    std::ifstream filestr;
+    filestr.open (fileName.c_str(), std::ios_base::in | std::ios::binary);
+    if (!filestr.is_open() || !filestr.good() ){
+        error = DRW::BAD_OPEN;
+        return isOk;
+    }
+
+    dwgBuffer fileBuf(&filestr);
+    duint8 *tmpStrData = new duint8[fileBuf.size()];
+    fileBuf.getBytes(tmpStrData, fileBuf.size());
+    dwgBuffer dataBuf(tmpStrData, fileBuf.size());
+    fileBuf.setPosition(0);
+    DRW_DBG("\ndwgR::testReader filebuf size: ");DRW_DBG(fileBuf.size());
+    DRW_DBG("\ndwgR::testReader dataBuf size: ");DRW_DBG(dataBuf.size());
+    DRW_DBG("\n filebuf pos: ");DRW_DBG(fileBuf.getPosition());
+    DRW_DBG("\n dataBuf pos: ");DRW_DBG(dataBuf.getPosition());
+    DRW_DBG("\n filebuf bitpos: ");DRW_DBG(fileBuf.getBitPos());
+    DRW_DBG("\n dataBuf bitpos: ");DRW_DBG(dataBuf.getBitPos());
+    DRW_DBG("\n filebuf first byte : ");DRW_DBGH(fileBuf.getRawChar8());
+    DRW_DBG("\n dataBuf  first byte : ");DRW_DBGH(dataBuf.getRawChar8());
+    fileBuf.setBitPos(4);
+    dataBuf.setBitPos(4);
+    DRW_DBG("\n filebuf first byte : ");DRW_DBGH(fileBuf.getRawChar8());
+    DRW_DBG("\n dataBuf  first byte : ");DRW_DBGH(dataBuf.getRawChar8());
+    DRW_DBG("\n filebuf pos: ");DRW_DBG(fileBuf.getPosition());
+    DRW_DBG("\n dataBuf pos: ");DRW_DBG(dataBuf.getPosition());
+    DRW_DBG("\n filebuf bitpos: ");DRW_DBG(fileBuf.getBitPos());
+    DRW_DBG("\n dataBuf bitpos: ");DRW_DBG(dataBuf.getBitPos());
+    fileBuf.setBitPos(6);
+    dataBuf.setBitPos(6);
+    DRW_DBG("\n filebuf pos: ");DRW_DBG(fileBuf.getPosition());
+    DRW_DBG("\n dataBuf pos: ");DRW_DBG(dataBuf.getPosition());
+    DRW_DBG("\n filebuf bitpos: ");DRW_DBG(fileBuf.getBitPos());
+    DRW_DBG("\n dataBuf bitpos: ");DRW_DBG(dataBuf.getBitPos());
+    DRW_DBG("\n filebuf first byte : ");DRW_DBGH(fileBuf.getRawChar8());
+    DRW_DBG("\n dataBuf  first byte : ");DRW_DBGH(dataBuf.getRawChar8());
+    fileBuf.setBitPos(0);
+    dataBuf.setBitPos(0);
+    DRW_DBG("\n filebuf first byte : ");DRW_DBGH(fileBuf.getRawChar8());
+    DRW_DBG("\n dataBuf  first byte : ");DRW_DBGH(dataBuf.getRawChar8());
+    DRW_DBG("\n filebuf pos: ");DRW_DBG(fileBuf.getPosition());
+    DRW_DBG("\n dataBuf pos: ");DRW_DBG(dataBuf.getPosition());
+    DRW_DBG("\n filebuf bitpos: ");DRW_DBG(fileBuf.getBitPos());
+    DRW_DBG("\n dataBuf bitpos: ");DRW_DBG(dataBuf.getBitPos());
+
+    delete[]tmpStrData;
+    filestr.close();
+    DRW_DBG("\n\n");
+    return isOk;
+}
+
+/*start reading dwg file header and, if can read it, continue reading all*/
+bool dwgR::read(DRW_Interface *interface_, bool ext){
+    bool isOk = false;
     applyExt = ext;
     iface = interface_;
 
-    bool isOk = false;
+//testReader();return false;
 
-    isOk = open(&stream);
+    std::ifstream filestr;
+    isOk = openFile(&filestr);
     if (!isOk)
         return false;
 
@@ -101,6 +161,7 @@ bool dwgR::read(std::istream &stream, DRW_Interface *interface_, bool ext){
     } else
         error = DRW::BAD_READ_METADATA;
 
+    filestr.close();
     if (reader != NULL) {
         delete reader;
         reader = NULL;
@@ -109,9 +170,23 @@ bool dwgR::read(std::istream &stream, DRW_Interface *interface_, bool ext){
     return isOk;
 }
 
-bool dwgR::open(std::istream *stream){
+/* Open the file and stores it in filestr, install the correct reader version.
+ * If fail opening file, error are set as DRW::BAD_OPEN
+ * If not are DWG or are unsupported version, error are set as DRW::BAD_VERSION
+ * and closes filestr.
+ * Return true on succeed or false on fail
+*/
+bool dwgR::openFile(std::ifstream *filestr){
+    bool isOk = false;
+    DRW_DBG("dwgR::read 1\n");
+    filestr->open (fileName.c_str(), std::ios_base::in | std::ios::binary);
+    if (!filestr->is_open() || !filestr->good() ){
+        error = DRW::BAD_OPEN;
+        return isOk;
+    }
+
     char line[7];
-    stream->read (line, 6);
+    filestr->read (line, 6);
     line[6]='\0';
     DRW_DBG("dwgR::read 2\n");
     DRW_DBG("dwgR::read line version: ");
@@ -125,33 +200,35 @@ bool dwgR::open(std::istream *stream){
 //        reader = new dwgReader09(&filestr, this);
     }else if (strcmp(line, "AC1012") == 0){
         version = DRW::AC1012;
-        reader = new dwgReader15(stream, this);
+        reader = new dwgReader15(filestr, this);
     } else if (strcmp(line, "AC1014") == 0) {
         version = DRW::AC1014;
-        reader = new dwgReader15(stream, this);
+        reader = new dwgReader15(filestr, this);
     } else if (strcmp(line, "AC1015") == 0) {
         version = DRW::AC1015;
-        reader = new dwgReader15(stream, this);
+        reader = new dwgReader15(filestr, this);
     } else if (strcmp(line, "AC1018") == 0){
         version = DRW::AC1018;
-        reader = new dwgReader18(stream, this);
+        reader = new dwgReader18(filestr, this);
     } else if (strcmp(line, "AC1021") == 0) {
         version = DRW::AC1021;
-        reader = new dwgReader21(stream, this);
+        reader = new dwgReader21(filestr, this);
     } else if (strcmp(line, "AC1024") == 0) {
         version = DRW::AC1024;
-        reader = new dwgReader24(stream, this);
+        reader = new dwgReader24(filestr, this);
     } else if (strcmp(line, "AC1027") == 0) {
         version = DRW::AC1027;
-        reader = new dwgReader27(stream, this);
+        reader = new dwgReader27(filestr, this);
     } else
         version = DRW::UNKNOWNV;
 
     if (reader == NULL) {
         error = DRW::BAD_VERSION;
-        return false;
-    }
-    return true;
+        filestr->close();
+    } else
+        isOk = true;
+
+    return isOk;
 }
 
 /********* Reader Process *********/
