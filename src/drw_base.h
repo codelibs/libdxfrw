@@ -103,25 +103,8 @@ enum DBG_LEVEL {
 
 //! Special codes for colors
 enum ColorCodes {
-    ColorByBlock = 0,
-    Red = 1,
-    Yellow = 2,
-    Green = 3,
-    Cyan = 4,
-    Blue = 5,
-    Magenta = 6,
-    White = 7,
-    Gray = 8,
-    Brown = 15,
-    LRed = 23,
-    LGreen = 121,
-    LCyan = 131,
-    LBlue = 163,
-    LMagenta = 221,
-    Black = 250,
-    LGray = 252,
     ColorByLayer = 256,
-
+    ColorByBlock = 0
 };
 
 //! Spaces
@@ -168,10 +151,14 @@ enum TransparencyCodes {
 */
 class DRW_Coord {
 public:
-    DRW_Coord() = default;
+    DRW_Coord():x(0), y(0),z(0) {}
     DRW_Coord(double ix, double iy, double iz): x(ix), y(iy),z(iz){}
 
-    /*! convert to unitary vector */
+     DRW_Coord& operator = (const DRW_Coord& data) {
+        x = data.x;  y = data.y;  z = data.z;
+        return *this;
+    }
+/*!< convert to unitary vector */
     void unitize(){
         double dist;
         dist = sqrt(x*x + y*y + z*z);
@@ -183,9 +170,9 @@ public:
     }
 
 public:
-    double x = 0;
-    double y = 0;
-    double z = 0;
+    double x;
+    double y;
+    double z;
 };
 
 

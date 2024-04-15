@@ -155,15 +155,6 @@ public:
 
     virtual void applyExtrusion() = 0;
 
-    void setWidthMm(double millimeters) {
-        if(millimeters < 0.0) {
-            lWeight = DRW_LW_Conv::widthByLayer;
-            return;
-        }
-        if(millimeters > 2.11) millimeters = 2.11;
-        lWeight = DRW_LW_Conv::dxfInt2lineWidth(int(floor(millimeters * 100.0)));
-    }
-    
 protected:
     //parses dxf pair to read entity
     bool parseCode(int code, dxfReader *reader);
@@ -612,7 +603,9 @@ public:
     }
 
     ~DRW_LWPolyline() {
-        for(DRW_Vertex2D *item : vertlist) delete item;
+        while (!vertlist.empty()) {
+            vertlist.pop_back();
+        }
     }
     virtual void applyExtrusion();
     void addVertex (DRW_Vertex2D v) {
@@ -804,7 +797,9 @@ public:
         smoothM = smoothN = curvetype = 0;
     }
     ~DRW_Polyline() {
-        for(DRW_Vertex *item : vertlist) delete item;
+        while (!vertlist.empty()) {
+           vertlist.pop_back();
+         }
     }
     void addVertex (DRW_Vertex v) {
         DRW_Vertex *vert = new DRW_Vertex();
@@ -859,8 +854,12 @@ public:
 
     }
     ~DRW_Spline() {
-        for(DRW_Coord *item : controllist) delete item;
-        for(DRW_Coord *item : fitlist) delete item;
+        while (!controllist.empty()) {
+           controllist.pop_back();
+        }
+        while (!fitlist.empty()) {
+           fitlist.pop_back();
+        }
     }
     virtual void applyExtrusion(){}
 
@@ -891,7 +890,6 @@ public:
     double tolfit;            /*!< fit point tolerance, code 44, default 0.0000001 */
 
     std::vector<double> knotslist;           /*!< knots list, code 40 */
-    std::vector<double> weightlist;          /*!< weight list, code 41 */
     std::vector<DRW_Coord *> controllist;  /*!< control points list, code 10, 20 & 30 */
     std::vector<DRW_Coord *> fitlist;      /*!< fit points list, code 11, 21 & 31 */
 
@@ -913,12 +911,16 @@ public:
     }
 
     ~DRW_HatchLoop() {
-        // for(DRW_LWPolyline *item : pollist) delete item;
-        for(DRW_Entity *item : objlist) delete item;
+/*        while (!pollist.empty()) {
+           pollist.pop_back();
+         }*/
+        while (!objlist.empty()) {
+           objlist.pop_back();
+         }
     }
 
     void update() {
-        numedges = (int)objlist.size();
+        numedges = objlist.size();
     }
 
 public:
@@ -950,7 +952,9 @@ public:
     }
 
     ~DRW_Hatch() {
-        for(DRW_HatchLoop *item : looplist) delete item;
+        while (!looplist.empty()) {
+           looplist.pop_back();
+         }
     }
 
     void appendLoop (DRW_HatchLoop *v) {
@@ -1085,9 +1089,6 @@ public:
         defPoint.z = extPoint.x = extPoint.y = 0;
         textPoint.z = rot = 0;
         clonePoint.x = clonePoint.y = clonePoint.z = 0;
-        length = 0.0;
-        hasActual = false;
-        actual = 0.0;
     }
 
     DRW_Dimension(const DRW_Dimension& d): DRW_Entity(d) {
@@ -1111,8 +1112,6 @@ public:
         arcPoint = d.arcPoint;
         circlePoint = d.circlePoint;
         length = d.length;
-        hasActual = d.hasActual;
-        actual = d.actual;
         //RLZ needed a def value for this: hdir = ???
     }
     virtual ~DRW_Dimension() {}
@@ -1143,14 +1142,11 @@ public:
     double getDir() const { return rot;}                  /*!< rotation angle of the dimension text, code 53 (optional) default 0 */
     void setDir(const double d) { rot = d;}
 
-    DRW_Coord getExtrusion() const {return extPoint;}     /*!< extrusion, code 210, 220 & 230 */
+    DRW_Coord getExtrusion(){return extPoint;}            /*!< extrusion, code 210, 220 & 230 */
     void setExtrusion(const DRW_Coord p) {extPoint =p;}
-    std::string getName() const {return name;}            /*!< Name of the block that contains the entities, code 2 */
+    std::string getName(){return name;}                   /*!< Name of the block that contains the entities, code 2 */
     void setName(const std::string s) {name = s;}
 //    int getType(){ return type;}                      /*!< Dimension type, code 70 */
-    bool hasActualMeasurement() const { return hasActual; }
-    void setActualMeasurement(double value) { hasActual = true; actual = value; }
-    double getActualMeasurement() const { return actual; }
 
 protected:
     DRW_Coord getPt2() const {return clonePoint;}
@@ -1193,8 +1189,6 @@ private:
     DRW_Coord circlePoint;     /*!< Definition point for diameter, radius & angular dims code 15, 25 & 35 (WCS) */
     DRW_Coord arcPoint;        /*!< Point defining dimension arc, x coordinate, code 16, 26 & 36 (OCS) */
     double length;             /*!< Leader length, code 40 */
-    bool hasActual;            /*!< Actual measurement has been read, code 42 */
-    double actual;             /*!< Actual measurement (optional; read-only value), code 42 */
 
 protected:
     dwgHandle dimStyleH;
@@ -1212,7 +1206,6 @@ class DRW_DimAligned : public DRW_Dimension {
 public:
     DRW_DimAligned(){
         eType = DRW::DIMALIGNED;
-        type = 1;
     }
     DRW_DimAligned(const DRW_Dimension& d): DRW_Dimension(d) {
         eType = DRW::DIMALIGNED;
@@ -1241,7 +1234,6 @@ class DRW_DimLinear : public DRW_DimAligned {
 public:
     DRW_DimLinear() {
         eType = DRW::DIMLINEAR;
-        type = 0;
     }
     DRW_DimLinear(const DRW_Dimension& d): DRW_DimAligned(d) {
         eType = DRW::DIMLINEAR;
@@ -1263,7 +1255,6 @@ class DRW_DimRadial : public DRW_Dimension {
 public:
     DRW_DimRadial() {
         eType = DRW::DIMRADIAL;
-        type = 4;
     }
     DRW_DimRadial(const DRW_Dimension& d): DRW_Dimension(d) {
         eType = DRW::DIMRADIAL;
@@ -1290,7 +1281,6 @@ class DRW_DimDiametric : public DRW_Dimension {
 public:
     DRW_DimDiametric() {
         eType = DRW::DIMDIAMETRIC;
-        type = 3;
     }
     DRW_DimDiametric(const DRW_Dimension& d): DRW_Dimension(d) {
         eType = DRW::DIMDIAMETRIC;
@@ -1298,7 +1288,7 @@ public:
 
     DRW_Coord getDiameter1Point() const {return getPt5();}      /*!< First definition point for diameter, code 15, 25 & 35 */
     void setDiameter1Point(const DRW_Coord p){setPt5(p);}
-    DRW_Coord getDiameter2Point() const {return getDefPoint();} /*!< Opposite point for diameter, code 10, 20 & 30 */
+    DRW_Coord getDiameter2Point() const {return getDefPoint();} /*!< Oposite point for diameter, code 10, 20 & 30 */
     void setDiameter2Point(const DRW_Coord p){setDefPoint(p);}
     double getLeaderLength() const {return getRa40();}          /*!< Leader length, code 40 */
     void setLeaderLength(const double d) {setRa40(d);}
@@ -1317,7 +1307,6 @@ class DRW_DimAngular : public DRW_Dimension {
 public:
     DRW_DimAngular() {
         eType = DRW::DIMANGULAR;
-        type = 2;
     }
     DRW_DimAngular(const DRW_Dimension& d): DRW_Dimension(d) {
         eType = DRW::DIMANGULAR;
@@ -1349,7 +1338,6 @@ class DRW_DimAngular3p : public DRW_Dimension {
 public:
     DRW_DimAngular3p() {
         eType = DRW::DIMANGULAR3P;
-        type = 5;
     }
     DRW_DimAngular3p(const DRW_Dimension& d): DRW_Dimension(d) {
         eType = DRW::DIMANGULAR3P;
@@ -1378,7 +1366,6 @@ class DRW_DimOrdinate : public DRW_Dimension {
 public:
     DRW_DimOrdinate() {
         eType = DRW::DIMORDINATE;
-        type = 6;
     }
     DRW_DimOrdinate(const DRW_Dimension& d): DRW_Dimension(d) {
         eType = DRW::DIMORDINATE;
@@ -1413,7 +1400,9 @@ public:
         extrusionPoint.z = 1.0;
     }
     ~DRW_Leader() {
-        for(DRW_Coord *item : vertexlist) delete item;
+        while (!vertexlist.empty()) {
+           vertexlist.pop_back();
+        }
     }
 
     virtual void applyExtrusion(){}

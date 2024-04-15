@@ -24,17 +24,18 @@ class dwgReader;
 
 class dwgR {
 public:
-    dwgR();
+    dwgR(const char* name);
     ~dwgR();
     //read: return true if all ok
-    bool read(std::istream &stream, DRW_Interface *interface_, bool ext);
-    bool getPreview(std::istream &stream);
+    bool read(DRW_Interface *interface_, bool ext);
+    bool getPreview();
     DRW::Version getVersion(){return version;}
     DRW::error getError(){return error;}
+bool testReader();
     void setDebug(DRW::DBG_LEVEL lvl);
 
 private:
-    bool open(std::istream *stream);
+    bool openFile(std::ifstream *filestr);
     bool processDwg();
 private:
     DRW::Version version;
