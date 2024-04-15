@@ -448,13 +448,13 @@ void DRW_LType::parseCode(int code, dxfReader *reader){
 
 //! Update line type
 /*!
-*  Update the size and length of line type acording to the path
+*  Update the size and length of line type according to the path
 *  @author Rallaz
 */
 /*TODO: control max length permited */
 void DRW_LType::update(){
     double d =0;
-    size = path.size();
+    size = (int)path.size();
     for (int i = 0;  i< size; i++){
         d += fabs(path.at(i));
     }
