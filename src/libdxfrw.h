@@ -25,9 +25,9 @@ class dxfWriter;
 
 class dxfRW {
 public:
-    dxfRW(const char* name);
+    dxfRW();
     ~dxfRW();
-    void setDebug(DRW::DBG_LEVEL lvl);
+    static void setDebug(DRW::DBG_LEVEL lvl);
     /// reads the file specified in constructor
     /*!
      * An interface must be provided. It is used by the class to signal various
@@ -36,10 +36,10 @@ public:
      * @param ext should the extrusion be applied to convert in 2D?
      * @return true for success
      */
-    bool read(DRW_Interface *interface_, bool ext);
+    bool read(std::istream &stream, DRW_Interface *interface_, bool ext);
     void setBinary(bool b) {binFile = b;}
 
-    bool write(DRW_Interface *interface_, DRW::Version ver, bool bin);
+    bool write(std::ostream &stream, DRW_Interface *interface_, DRW::Version ver, bool bin);
     bool writeLineType(DRW_LType *ent);
     bool writeLayer(DRW_Layer *ent);
     bool writeDimstyle(DRW_Dimstyle *ent);
@@ -59,7 +59,7 @@ public:
     bool writeLWPolyline(DRW_LWPolyline *ent);
     bool writePolyline(DRW_Polyline *ent);
     bool writeSpline(DRW_Spline *ent);
-    bool writeBlockRecord(std::string name);
+    bool writeBlockRecord(const std::string& name);
     bool writeBlock(DRW_Block *ent);
     bool writeInsert(DRW_Insert *ent);
     bool writeMText(DRW_MText *ent);
@@ -119,7 +119,7 @@ private:
     bool writeObjects();
     bool writeExtData(const std::vector<DRW_Variant*> &ed);
     /*use version from dwgutil.h*/
-    std::string toHexStr(int n);//RLZ removeme
+    static std::string toHexStr(int n);//RLZ removeme
 
 private:
     DRW::Version version;

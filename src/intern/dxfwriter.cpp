@@ -214,7 +214,7 @@ bool dxfWriterBinary::writeBool(int code, bool data) {
     return (filestr->good());
 }
 
-dxfWriterAscii::dxfWriterAscii(std::ofstream *stream):dxfWriter(stream){
+dxfWriterAscii::dxfWriterAscii(std::ostream *stream):dxfWriter(stream){
     filestr->precision(16);
 }
 
