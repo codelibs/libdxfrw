@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
-project(libdxfrw)
+project(libdxfrw VERSION 0.6.3)
+
+# Enable testing
+enable_testing()
 
 file(GLOB libdxfrw_sources src/*.cpp)
 file(GLOB libdxfrw_headers include/*.h)
@@ -30,3 +33,10 @@ else()
           LIBRARY DESTINATION lib
           ARCHIVE DESTINATION lib)
 endif()
+
+# Tests
+add_executable(test_basic tests/test_basic.cpp)
+target_include_directories(test_basic PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/tests)
+target_link_libraries(test_basic dxfrw)
+
+add_test(NAME BasicTests COMMAND test_basic)
