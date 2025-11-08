@@ -38,5 +38,39 @@ endif()
 add_executable(test_basic tests/test_basic.cpp)
 target_include_directories(test_basic PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/tests)
 target_link_libraries(test_basic dxfrw)
-
 add_test(NAME BasicTests COMMAND test_basic)
+
+add_executable(test_entities tests/test_entities.cpp)
+target_include_directories(test_entities PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/tests)
+target_link_libraries(test_entities dxfrw)
+add_test(NAME EntityTests COMMAND test_entities)
+
+add_executable(test_polylines tests/test_polylines.cpp)
+target_include_directories(test_polylines PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/tests)
+target_link_libraries(test_polylines dxfrw)
+add_test(NAME PolylineTests COMMAND test_polylines)
+
+add_executable(test_text tests/test_text.cpp)
+target_include_directories(test_text PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/tests)
+target_link_libraries(test_text dxfrw)
+add_test(NAME TextTests COMMAND test_text)
+
+add_executable(test_tables tests/test_tables.cpp)
+target_include_directories(test_tables PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/tests)
+target_link_libraries(test_tables dxfrw)
+add_test(NAME TableTests COMMAND test_tables)
+
+add_executable(test_blocks tests/test_blocks.cpp)
+target_include_directories(test_blocks PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/tests)
+target_link_libraries(test_blocks dxfrw)
+add_test(NAME BlockTests COMMAND test_blocks)
+
+add_executable(test_versions tests/test_versions.cpp)
+target_include_directories(test_versions PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/tests)
+target_link_libraries(test_versions dxfrw)
+add_test(NAME VersionTests COMMAND test_versions)
+
+add_executable(test_errors tests/test_errors.cpp)
+target_include_directories(test_errors PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/tests)
+target_link_libraries(test_errors dxfrw)
+add_test(NAME ErrorTests COMMAND test_errors)
