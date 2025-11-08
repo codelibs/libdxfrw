@@ -1,56 +1,56 @@
-# libdxfrw - 仕様書 / Specifications
+# libdxfrw - Technical Specifications
 
-## プロジェクト概要 / Project Overview
+## Project Overview
 
-**プロジェクト名**: libdxfrw
-**バージョン**: 0.6.3
-**ライセンス**: GNU General Public License v2 (またはそれ以降のバージョン)
-**作成者**: José F. Soriano (Rallaz)
-**メンテナー**: codelibs, Nicu Tofan, Miguel E. Hernández Cuervo
+**Project Name**: libdxfrw
+**Version**: 0.6.3
+**License**: GNU General Public License v2 (or later)
+**Original Author**: José F. Soriano (Rallaz)
+**Maintainers**: codelibs, Nicu Tofan, Miguel E. Hernández Cuervo
 
-### 目的 / Purpose
+### Purpose
 
-libdxfrwは、DXF (Drawing eXchange Format) ファイルの読み書きを行うための無料C++ライブラリです。ASCII形式とバイナリ形式の両方に対応しており、またDWG (AutoCAD drawing) ファイルの読み込みにも対応しています。
+libdxfrw is a free C++ library for reading and writing DXF (Drawing eXchange Format) files in both ASCII and binary formats. It also supports reading DWG (AutoCAD drawing) files from versions R14 through V2015.
 
-### 主な機能 / Main Features
+### Main Features
 
-1. **DXFファイルの読み書き**
-   - ASCII形式のDXFファイル読み書き
-   - バイナリ形式のDXFファイル読み書き
-   - 複数のDXFバージョンサポート: R12, 2000, 2004, 2007, 2010
+1. **DXF File Read/Write**
+   - Read and write DXF files in ASCII format
+   - Read and write DXF files in binary format
+   - Support for multiple DXF versions: R12, 2000, 2004, 2007, 2010
 
-2. **DWGファイルの読み込み**
-   - サポートバージョン: R14 から V2015
-   - バージョン別リーダー実装:
-     - dwgReader15: R14版
-     - dwgReader18: R2004版
-     - dwgReader21: R2007版
-     - dwgReader24: R2010版
-     - dwgReader27: R2013/R2015版
+2. **DWG File Reading**
+   - Supported versions: R14 to V2015
+   - Version-specific reader implementations:
+     - dwgReader15: R14 version
+     - dwgReader18: R2004 version
+     - dwgReader21: R2007 version
+     - dwgReader24: R2010 version
+     - dwgReader27: R2013/R2015 versions
 
-3. **CAD図形エンティティのサポート**
-   - 基本図形: 点、線、レイ、無限線
-   - 曲線図形: 円、円弧、楕円、スプライン
-   - ポリライン: 2D/3Dライトウェイトポリライン
-   - 3D図形: 3Dフェイス、トレース、ソリッド
-   - テキスト: 単一行テキスト、複数行テキスト
-   - 注釈: ハッチング、寸法、引出線
-   - その他: ブロック参照、画像、ビューポート
+3. **Supported CAD Drawing Entities**
+   - Basic shapes: Points, Lines, Rays, XLines
+   - Curves: Circles, Arcs, Ellipses, Splines
+   - Polylines: 2D/3D Lightweight Polylines
+   - 3D shapes: 3D Faces, Traces, Solids
+   - Text: Single-line text, Multi-line text
+   - Annotations: Hatches, Dimensions, Leaders
+   - Others: Block references, Images, Viewports
 
-4. **CADオブジェクトのサポート**
-   - レイヤー
-   - ラインタイプ
-   - テキストスタイル
-   - 寸法スタイル
-   - ビューポート
-   - アプリケーションID
-   - ブロック定義
+4. **Supported CAD Objects**
+   - Layers
+   - Line Types
+   - Text Styles
+   - Dimension Styles
+   - Viewports
+   - Application IDs
+   - Block Definitions
 
 ---
 
-## アーキテクチャ / Architecture
+## Architecture
 
-### コアクラス構成 / Core Classes
+### Core Class Structure
 
 ```
 dxfRW (Main API Class)
@@ -75,82 +75,82 @@ dxfRW (Main API Class)
 │   ├── DRW_Text
 │   ├── DRW_MText
 │   ├── DRW_Hatch
-│   ├── DRW_Dimension (各種寸法タイプ)
-│   └── その他のエンティティ
+│   ├── DRW_Dimension (various dimension types)
+│   └── Other entities
 └── DRW_Object (Non-geometric Objects)
     ├── DRW_Layer
     ├── DRW_LType
     ├── DRW_Textstyle
     ├── DRW_Dimstyle
-    └── その他のオブジェクト
+    └── Other objects
 ```
 
-### ディレクトリ構造 / Directory Structure
+### Directory Structure
 
 ```
 libdxfrw/
-├── src/                      # ライブラリソースコード
-│   ├── libdxfrw.h/cpp       # メインAPIクラス
-│   ├── drw_interface.h      # 抽象インターフェース
-│   ├── drw_entities.h/cpp   # エンティティ定義
-│   ├── drw_objects.h/cpp    # オブジェクト定義
-│   ├── drw_header.h/cpp     # ヘッダー変数
-│   ├── drw_base.h           # 基本データ構造
-│   └── intern/              # 内部実装
-│       ├── dxfreader.h/cpp     # DXFリーダー
-│       ├── dxfwriter.h/cpp     # DXFライター
-│       ├── dwgreader*.h/cpp    # DWGリーダー群
-│       ├── dwgbuffer.h/cpp     # DWGバッファ
-│       ├── drw_textcodec.h/cpp # 文字コード変換
-│       └── その他ユーティリティ
-├── dwg2dxf/                  # DWG→DXF変換ツール
-├── dwg2text/                 # DWG→テキスト抽出ツール
-├── bin/                      # 実行スクリプト
-└── vs2013/                   # Visual Studio 2013プロジェクト
+├── src/                      # Library source code
+│   ├── libdxfrw.h/cpp       # Main API class
+│   ├── drw_interface.h      # Abstract interface
+│   ├── drw_entities.h/cpp   # Entity definitions
+│   ├── drw_objects.h/cpp    # Object definitions
+│   ├── drw_header.h/cpp     # Header variables
+│   ├── drw_base.h           # Basic data structures
+│   └── intern/              # Internal implementation
+│       ├── dxfreader.h/cpp     # DXF reader
+│       ├── dxfwriter.h/cpp     # DXF writer
+│       ├── dwgreader*.h/cpp    # DWG readers
+│       ├── dwgbuffer.h/cpp     # DWG buffer
+│       ├── drw_textcodec.h/cpp # Character encoding
+│       └── Other utilities
+├── dwg2dxf/                  # DWG to DXF converter tool
+├── dwg2text/                 # DWG to text extractor tool
+├── bin/                      # Executable scripts
+└── vs2013/                   # Visual Studio 2013 project
 ```
 
 ---
 
-## API仕様 / API Specifications
+## API Specifications
 
-### メインクラス: dxfRW
+### Main Class: dxfRW
 
-#### コンストラクタ / Constructor
+#### Constructor
 
 ```cpp
 dxfRW(const char* name);
 ```
 
-- **パラメータ**: `name` - 処理するファイル名
-- **説明**: DXF/DWGファイルを処理するためのインスタンスを作成
+- **Parameters**: `name` - File name to process
+- **Description**: Creates an instance for processing DXF/DWG files
 
-#### 主要メソッド / Main Methods
+#### Main Methods
 
-##### 読み込み / Reading
+##### Reading
 
 ```cpp
 bool read(DRW_Interface *interface_, bool ext);
 ```
 
-- **パラメータ**:
-  - `interface_`: コールバックインターフェースの実装
-  - `ext`: 押し出し処理を適用して2Dに変換するか
-- **戻り値**: 成功時true、失敗時false
-- **説明**: ファイルを読み込み、エンティティごとにインターフェースメソッドを呼び出す
+- **Parameters**:
+  - `interface_`: Callback interface implementation
+  - `ext`: Apply extrusion to convert to 2D
+- **Returns**: true on success, false on failure
+- **Description**: Reads the file and calls interface methods for each entity
 
-##### 書き込み / Writing
+##### Writing
 
 ```cpp
 bool write(DRW_Interface *interface_, DRW::Version ver, bool bin);
 ```
 
-- **パラメータ**:
-  - `interface_`: データ提供用インターフェース実装
-  - `ver`: DXFバージョン (R12, 2000, 2004, 2007, 2010)
-  - `bin`: バイナリ形式で出力するか
-- **戻り値**: 成功時true、失敗時false
+- **Parameters**:
+  - `interface_`: Interface implementation providing data
+  - `ver`: DXF version (R12, 2000, 2004, 2007, 2010)
+  - `bin`: Output in binary format
+- **Returns**: true on success, false on failure
 
-##### エンティティ書き込みメソッド / Entity Writing Methods
+##### Entity Writing Methods
 
 ```cpp
 bool writePoint(DRW_Point *ent);
@@ -163,10 +163,10 @@ bool writeSpline(DRW_Spline *ent);
 bool writeText(DRW_Text *ent);
 bool writeMText(DRW_MText *ent);
 bool writeHatch(DRW_Hatch *ent);
-// ... その他多数
+// ... many more
 ```
 
-##### テーブルオブジェクト書き込みメソッド / Table Object Writing Methods
+##### Table Object Writing Methods
 
 ```cpp
 bool writeLayer(DRW_Layer *ent);
@@ -177,19 +177,19 @@ bool writeVport(DRW_Vport *ent);
 bool writeAppId(DRW_AppId *ent);
 ```
 
-### インターフェース: DRW_Interface
+### Interface: DRW_Interface
 
-アプリケーションは、このインターフェースを継承してコールバックメソッドを実装する必要があります。
+Applications must inherit from this interface and implement callback methods.
 
-#### 必須実装メソッド / Required Methods
+#### Required Methods
 
-##### ヘッダー / Header
+##### Header
 
 ```cpp
 virtual void addHeader(const DRW_Header* data) = 0;
 ```
 
-##### テーブルオブジェクト / Table Objects
+##### Table Objects
 
 ```cpp
 virtual void addLayer(const DRW_Layer& data) = 0;
@@ -200,7 +200,7 @@ virtual void addVport(const DRW_Vport& data) = 0;
 virtual void addAppId(const DRW_AppId& data) = 0;
 ```
 
-##### ブロック / Blocks
+##### Blocks
 
 ```cpp
 virtual void addBlock(const DRW_Block& data) = 0;
@@ -208,7 +208,7 @@ virtual void setBlock(const int handle) = 0;
 virtual void endBlock() = 0;
 ```
 
-##### エンティティ / Entities
+##### Entities
 
 ```cpp
 virtual void addPoint(const DRW_Point& data) = 0;
@@ -232,7 +232,7 @@ virtual void addViewport(const DRW_Viewport& data) = 0;
 virtual void addImage(const DRW_Image *data) = 0;
 ```
 
-##### 寸法 / Dimensions
+##### Dimensions
 
 ```cpp
 virtual void addDimAlign(const DRW_DimAligned *data) = 0;
@@ -244,7 +244,7 @@ virtual void addDimAngular3P(const DRW_DimAngular3p *data) = 0;
 virtual void addDimOrdinate(const DRW_DimOrdinate *data) = 0;
 ```
 
-##### その他 / Others
+##### Others
 
 ```cpp
 virtual void addLeader(const DRW_Leader *data) = 0;
@@ -252,7 +252,7 @@ virtual void linkImage(const DRW_ImageDef *data) = 0;
 virtual void addComment(const char* comment) = 0;
 ```
 
-##### 書き込み用メソッド / Writing Methods
+##### Writing Methods
 
 ```cpp
 virtual void writeHeader(DRW_Header& data) = 0;
@@ -269,9 +269,9 @@ virtual void writeAppId() = 0;
 
 ---
 
-## ビルドシステム / Build Systems
+## Build Systems
 
-### 1. Autotools (推奨) / Autotools (Recommended)
+### 1. Autotools (Recommended)
 
 ```bash
 autoreconf -vfi
@@ -280,15 +280,15 @@ make
 sudo make install
 ```
 
-#### 設定ファイル / Configuration Files
-- `configure.ac`: Autoconf設定
-- `Makefile.am`: Automake テンプレート
-- ライブラリバージョン: 0.6.3 (CURRENT=6, REVISION=3, AGE=0)
+#### Configuration Files
+- `configure.ac`: Autoconf configuration
+- `Makefile.am`: Automake templates
+- Library version: 0.6.3 (CURRENT=6, REVISION=3, AGE=0)
 
-#### 依存関係 / Dependencies
-- **必須**: libiconv (文字コード変換)
-- **標準ライブラリ**: stdlib.h, string.h
-- **数学関数**: sqrt()
+#### Dependencies
+- **Required**: libiconv (character conversion)
+- **Standard Library**: stdlib.h, string.h
+- **Math Functions**: sqrt()
 
 ### 2. CMake
 
@@ -300,65 +300,65 @@ cmake --build . --config Release
 sudo cmake --build . --config Release --target install
 ```
 
-#### CMakeLists.txt の主要設定 / Key CMake Settings
-- 最小CMakeバージョン: 3.10
-- ビルドターゲット: 静的ライブラリ `dxfrw`
-- インストール先:
-  - ヘッダー: `include/`
-  - ライブラリ: `lib/` (Linux/macOS), `Debug/lib/` または `Release/lib/` (Windows)
+#### Key CMake Settings
+- Minimum CMake version: 3.10
+- Build target: Static library `dxfrw`
+- Installation paths:
+  - Headers: `include/`
+  - Library: `lib/` (Linux/macOS), `Debug/lib/` or `Release/lib/` (Windows)
 
 ### 3. Visual Studio 2013
 
-- ソリューションファイル: `vs2013/libdxfrw.sln`
-- プロジェクトファイル: `vs2013/libdxfrw.vcxproj`
-- NuGetパッケージ: libiconv 1.14.0.11
+- Solution file: `vs2013/libdxfrw.sln`
+- Project file: `vs2013/libdxfrw.vcxproj`
+- NuGet package: libiconv 1.14.0.11
 
 ### 4. Docker
 
 ```bash
-# イメージビルド
+# Build image
 docker build --rm -t codelibs/libdxfrw .
 
-# ライブラリビルド
+# Build library
 docker run -t --rm -v `pwd`:/work codelibs/libdxfrw:latest /work/build.sh
 ```
 
-- ベースイメージ: CentOS 7
-- 出力: `dxfrw.tar.gz` (インストール先: `/opt`)
+- Base image: CentOS 7
+- Output: `dxfrw.tar.gz` (install location: `/opt`)
 
 ---
 
-## ユーティリティツール / Utility Tools
+## Utility Tools
 
 ### 1. dwg2dxf
 
-DWGファイルをDXF形式に変換するコマンドラインツール。
+Command-line tool to convert DWG files to DXF format.
 
 ```bash
 dwg2dxf [options] input.dwg [output.dxf]
 ```
 
-**ファイル**:
-- `dwg2dxf/main.cpp`: エントリーポイント
-- `dwg2dxf/dx_iface.h/cpp`: インターフェース実装
-- `dwg2dxf/dwg2dxf.1`: manページ
+**Files**:
+- `dwg2dxf/main.cpp`: Entry point
+- `dwg2dxf/dx_iface.h/cpp`: Interface implementation
+- `dwg2dxf/dwg2dxf.1`: Man page
 
 ### 2. dwg2text
 
-DWGファイルからテキスト情報を抽出するツール。
+Tool to extract text information from DWG files.
 
 ```bash
 dwg2text input.dwg
 ```
 
-**ファイル**:
-- `dwg2text/main.cpp`: エントリーポイント
-- `dwg2text/dx_iface.h/cpp`: インターフェース実装
-- `dwg2text/dwg2text.1`: manページ
+**Files**:
+- `dwg2text/main.cpp`: Entry point
+- `dwg2text/dx_iface.h/cpp`: Interface implementation
+- `dwg2text/dwg2text.1`: Man page
 
 ### 3. dxf2txt.py
 
-DXFファイルをテキスト形式でダンプするPythonスクリプト。
+Python script to dump DXF files in text format.
 
 ```bash
 python bin/dxf2txt.py input.dxf
@@ -366,14 +366,14 @@ python bin/dxf2txt.py input.dxf
 
 ---
 
-## データ構造 / Data Structures
+## Data Structures
 
-### 基本型 / Basic Types
+### Basic Types
 
 ```cpp
 namespace DRW {
     enum Version {
-        UNKNOWNV,    // 不明
+        UNKNOWNV,    // Unknown
         R12,         // R12 DXF
         R14,         // R14 DXF
         R2000,       // R2000 DXF
@@ -386,7 +386,7 @@ namespace DRW {
 }
 ```
 
-### エンティティ基底クラス / Entity Base Class
+### Entity Base Class
 
 ```cpp
 class DRW_Entity {
@@ -396,21 +396,21 @@ public:
         LWPOLYLINE, POLYLINE, SPLINE,
         INSERT, TEXT, MTEXT, HATCH,
         DIMENSION, LEADER, VIEWPORT, IMAGE,
-        // ... その他
+        // ... others
     };
 
-    DRW_Coord basePoint;      // 基点
-    std::string layer;        // レイヤー名
-    std::string lineType;     // ラインタイプ
-    int color;                // 色番号
-    double thickness;         // 太さ
-    double ltypeScale;        // ラインタイプスケール
-    int handle;               // ハンドル
-    // ... その他のプロパティ
+    DRW_Coord basePoint;      // Base point
+    std::string layer;        // Layer name
+    std::string lineType;     // Line type
+    int color;                // Color number
+    double thickness;         // Thickness
+    double ltypeScale;        // Line type scale
+    int handle;               // Handle
+    // ... other properties
 };
 ```
 
-### 座標型 / Coordinate Types
+### Coordinate Type
 
 ```cpp
 class DRW_Coord {
@@ -423,126 +423,126 @@ public:
 
 ---
 
-## 文字コードサポート / Character Encoding Support
+## Character Encoding Support
 
-libdxfrwは、複数の文字コードページをサポートしています:
+libdxfrw supports multiple character code pages:
 
-- **CP932**: 日本語 (Shift-JIS)
-- **CP936**: 簡体字中国語 (GB2312)
-- **CP949**: 韓国語
-- **CP950**: 繁体字中国語 (Big5)
+- **CP932**: Japanese (Shift-JIS)
+- **CP936**: Simplified Chinese (GB2312)
+- **CP949**: Korean
+- **CP950**: Traditional Chinese (Big5)
 
-### 実装ファイル / Implementation Files
+### Implementation Files
 
-- `src/intern/drw_textcodec.h/cpp`: 文字コード変換エンジン
-- `src/intern/drw_cptable932.h`: 日本語コードページ
-- `src/intern/drw_cptable936.h`: 簡体字中国語
-- `src/intern/drw_cptable949.h`: 韓国語
-- `src/intern/drw_cptable950.h`: 繁体字中国語
-- `src/intern/drw_cptables.h`: コードページテーブル統合
+- `src/intern/drw_textcodec.h/cpp`: Character encoding conversion engine
+- `src/intern/drw_cptable932.h`: Japanese code page
+- `src/intern/drw_cptable936.h`: Simplified Chinese
+- `src/intern/drw_cptable949.h`: Korean
+- `src/intern/drw_cptable950.h`: Traditional Chinese
+- `src/intern/drw_cptables.h`: Code page table integration
 
 ---
 
-## エラーハンドリングとデバッグ / Error Handling and Debugging
+## Error Handling and Debugging
 
-### デバッグレベル設定 / Debug Level
+### Debug Level Settings
 
 ```cpp
 void setDebug(DRW::DBG_LEVEL lvl);
 ```
 
-**デバッグレベル**:
-- `DRW::NONE`: デバッグ出力なし
-- `DRW::DEBUG`: デバッグ情報出力
+**Debug Levels**:
+- `DRW::NONE`: No debug output
+- `DRW::DEBUG`: Debug information output
 
-### デバッグユーティリティ / Debug Utilities
+### Debug Utilities
 
-- `src/intern/drw_dbg.h/cpp`: デバッグ出力ユーティリティ
+- `src/intern/drw_dbg.h/cpp`: Debug output utilities
 
 ---
 
-## パフォーマンス考慮事項 / Performance Considerations
+## Performance Considerations
 
-### バッファリング
+### Buffering
 
-- `dwgBuffer`: DWGファイル読み込み時の効率的なバイナリデータ処理
-- ビット単位の読み取り操作をサポート
+- `dwgBuffer`: Efficient binary data processing when reading DWG files
+- Supports bit-level read operations
 
-### メモリ管理
+### Memory Management
 
-- エンティティとオブジェクトはポインタまたは参照で渡される
-- インターフェース実装側でメモリ管理を行う
+- Entities and objects are passed by pointer or reference
+- Memory management is handled by the interface implementation side
 
-### 楕円のポリライン変換
+### Ellipse to Polyline Conversion
 
 ```cpp
 void setEllipseParts(int parts);
 ```
 
-楕円をポリラインに変換する際の分割数を設定可能。デフォルト値よりも細かく分割することで精度向上。
+Set the number of segments when converting ellipses to polylines. Increasing the number of segments improves accuracy.
 
 ---
 
-## テストデータ / Test Data
+## Test Data
 
-外部テストデータリポジトリ:
+External test data repository:
 - [fess-testdata/autocad](https://github.com/codelibs/fess-testdata/tree/master/autocad)
 
-様々なDXF/DWGファイルバージョンのサンプルファイルが含まれており、統合テストに利用可能。
+Contains sample files of various DXF/DWG file versions, useful for integration testing.
 
 ---
 
-## 既知の制限事項 / Known Limitations
+## Known Limitations
 
-1. **DWGファイル書き込み非対応**: DWGファイルの読み込みのみサポート
-2. **一部エンティティのサポート制限**: 最新AutoCADバージョンの全エンティティに対応していない場合がある
-3. **Reed-Solomonデコーディング**: DWGファイルのエラー訂正機能は限定的
-
----
-
-## バージョン履歴 / Version History
-
-詳細は`ChangeLog`ファイルを参照してください。
-
-主な開発マイルストーン:
-- **2011**: プロジェクト開始
-- **2013**: DWG R2004サポート追加
-- **2014**: DWG R2010/R2013サポート追加
-- **2015**: DWG R2015サポート追加
-- **2020年代**: コミュニティメンテナンス継続
+1. **DWG File Writing Not Supported**: Only DWG file reading is supported
+2. **Limited Entity Support**: May not support all entities from the latest AutoCAD versions
+3. **Reed-Solomon Decoding**: Error correction functionality for DWG files is limited
 
 ---
 
-## ライセンス / License
+## Version History
 
-GNU General Public License v2.0 (またはそれ以降のバージョン)
+See the `ChangeLog` file for details.
 
-詳細は`COPYING`ファイルを参照してください。
-
----
-
-## 貢献者 / Contributors
-
-- **José F. Soriano (Rallaz)**: オリジナル作成者
-- **Nicu Tofan**: コントリビューター
-- **Miguel E. Hernández Cuervo**: コントリビューター
-- **codelibs**: メンテナー
+Major development milestones:
+- **2011**: Project started
+- **2013**: Added DWG R2004 support
+- **2014**: Added DWG R2010/R2013 support
+- **2015**: Added DWG R2015 support
+- **2020s**: Ongoing community maintenance
 
 ---
 
-## 参考資料 / References
+## License
 
-- 公式ウェブサイト: http://sourceforge.net/projects/libdxfrw
+GNU General Public License v2.0 (or later)
+
+See the `COPYING` file for details.
+
+---
+
+## Contributors
+
+- **José F. Soriano (Rallaz)**: Original author
+- **Nicu Tofan**: Contributor
+- **Miguel E. Hernández Cuervo**: Contributor
+- **codelibs**: Maintainer
+
+---
+
+## References
+
+- Official website: http://sourceforge.net/projects/libdxfrw
 - GitHub: https://github.com/codelibs/libdxfrw
-- DXFリファレンス: AutoCAD DXF仕様 (Autodesk公式ドキュメント)
+- DXF Reference: AutoCAD DXF Specification (Autodesk official documentation)
 
 ---
 
-## サポートとコミュニティ / Support and Community
+## Support and Community
 
-問題報告やプルリクエストは、GitHubリポジトリを通じて行ってください:
+Report issues and submit pull requests through the GitHub repository:
 https://github.com/codelibs/libdxfrw/issues
 
 ---
 
-最終更新日 / Last Updated: 2025-11-08
+Last Updated: 2025-11-08
