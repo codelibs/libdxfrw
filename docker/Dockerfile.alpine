@@ -1,0 +1,24 @@
+# Alpine Linux Dockerfile for libdxfrw
+# Use this for building lightweight musl-based binaries
+
+FROM alpine:3.19
+
+LABEL maintainer="CodeLibs Project"
+LABEL description="Build environment for libdxfrw on Alpine Linux (musl-based)"
+
+# Install build dependencies
+# Note: Alpine uses musl libc instead of glibc
+RUN apk add --no-cache \
+    build-base \
+    autoconf \
+    automake \
+    libtool \
+    pkgconfig \
+    bash \
+    tar \
+    gzip
+
+WORKDIR /work
+
+# Default command
+CMD ["sh", "/work/build.sh"]

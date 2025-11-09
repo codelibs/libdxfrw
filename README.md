@@ -145,25 +145,45 @@ cmake --build . --config Release --target install
 
 ### Docker Build
 
-#### Build Docker Image:
+Build portable binaries for multiple OS distributions using Docker.
+
+> **Note:** Dockerfiles are in `docker/` directory. Build process updated from CentOS 7 (EOL) to AlmaLinux 9.
+
+**Available OS Distributions:**
+
+| OS | Tag | Use Case |
+|----|-----|----------|
+| AlmaLinux 9 | `almalinux` | RHEL/CentOS compatible (CentOS successor) |
+| Ubuntu 22.04 LTS | `ubuntu` | Debian/Ubuntu compatible |
+| Amazon Linux 2023 | `amazonlinux` | AWS optimized |
+| Alpine Linux | `alpine` | Lightweight musl-based |
+
+**Quick Start:**
 
 ```bash
-docker build --rm -t codelibs/libdxfrw .
+# Build for single OS (creates dxfrw-{os}.tar.gz)
+./docker/build-docker.sh run almalinux
+./docker/build-docker.sh run ubuntu
+
+# Build for all OS distributions
+./docker/build-docker.sh run all-os
+
+# Extract and install
+sudo tar xzf dxfrw-almalinux.tar.gz -C /opt
 ```
 
-#### Build Library Using Docker:
+**Manual Docker Commands (if needed):**
 
 ```bash
-docker run -t --rm -v `pwd`:/work codelibs/libdxfrw:latest /work/build.sh
+# Build image and library
+docker build -t codelibs/libdxfrw:ubuntu -f docker/Dockerfile.ubuntu .
+docker run -t --rm -v `pwd`:/work codelibs/libdxfrw:ubuntu /work/build.sh
 ```
 
-This creates `dxfrw.tar.gz`. Extract it under `/opt` or your preferred location.
-
-#### Push Docker Image:
+**Push to Docker Hub:**
 
 ```bash
-docker tag codelibs/libdxfrw codelibs/libdxfrw:centos7
-docker push codelibs/libdxfrw:centos7
+./docker/build-docker.sh push almalinux
 ```
 
 ## Installation
@@ -301,6 +321,59 @@ The source code in `dwg2dxf/` serves as a comprehensive reference implementation
 ### dwg2text Converter
 
 Extracts text information from DWG files.
+
+## Utility Scripts
+
+The library includes utility scripts in the `bin/` directory for extracting text content from DXF/DWG files.
+
+### dwg2txt - DWG to Text Converter
+
+Extracts text entities from DWG files:
+
+```bash
+# Usage
+./bin/dwg2txt <input.dwg> <output.txt>
+
+# Example
+./bin/dwg2txt drawing.dwg output.txt
+```
+
+**Requirements:**
+- `dwg2text` executable (built with the library)
+
+### dxf2txt - DXF to Text Converter
+
+Extracts text entities from DXF files:
+
+```bash
+# Usage
+./bin/dxf2txt <input.dxf> <output.txt>
+
+# Example
+./bin/dxf2txt drawing.dxf output.txt
+```
+
+**Requirements:**
+- Python 3.9 or later (minimum version across all Docker build environments)
+- `ezdxf` Python package: `pip install ezdxf`
+
+**Features:**
+- Supports both TEXT and MTEXT entities
+- Handles multiple DXF versions (R12 through 2018+)
+- Automatic encoding detection (UTF-8, CP932/Shift-JIS)
+- Preserves multi-line text formatting
+
+### Direct Python Usage
+
+You can also use the Python script directly:
+
+```bash
+# Install ezdxf if not already installed
+pip install ezdxf
+
+# Run the script
+python3 bin/dxf2txt.py input.dxf output.txt
+```
 
 ## Testing
 

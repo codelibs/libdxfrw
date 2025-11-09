@@ -1,0 +1,22 @@
+# AlmaLinux 9 Dockerfile for libdxfrw
+# Use this for building RHEL/CentOS compatible binaries
+# AlmaLinux is the successor to CentOS
+
+FROM almalinux:9
+
+LABEL maintainer="CodeLibs Project"
+LABEL description="Build environment for libdxfrw on AlmaLinux 9"
+
+# Install build dependencies
+RUN dnf -y groupinstall "Development Tools" && \
+    dnf -y install \
+    autoconf \
+    automake \
+    libtool \
+    pkg-config \
+    && dnf clean all
+
+WORKDIR /work
+
+# Default command
+CMD ["sh", "/work/build.sh"]

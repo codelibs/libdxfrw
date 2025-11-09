@@ -1,0 +1,23 @@
+# Amazon Linux 2023 Dockerfile for libdxfrw
+# Use this for building AWS/Amazon Linux compatible binaries
+
+FROM amazonlinux:2023
+
+LABEL maintainer="CodeLibs Project"
+LABEL description="Build environment for libdxfrw on Amazon Linux 2023"
+
+# Install build dependencies
+RUN dnf -y groupinstall "Development Tools" && \
+    dnf -y install \
+    autoconf \
+    automake \
+    libtool \
+    pkg-config \
+    tar \
+    gzip \
+    && dnf clean all
+
+WORKDIR /work
+
+# Default command
+CMD ["sh", "/work/build.sh"]
