@@ -1,12 +1,26 @@
-FROM centos:7
+# Default Dockerfile for libdxfrw (AlmaLinux 9)
+# For other OS options, see docker/ directory:
+# - docker/Dockerfile.ubuntu      (Ubuntu 22.04 LTS)
+# - docker/Dockerfile.almalinux   (AlmaLinux 9)
+# - docker/Dockerfile.amazonlinux (Amazon Linux 2023)
+# - docker/Dockerfile.alpine      (Alpine Linux)
 
-MAINTAINER CodeLibs Project
+FROM almalinux:9
 
-RUN yum -y groupinstall base "Development tools" --setopt=group_package_types=mandatory,default,optional
-RUN yum clean all
+LABEL maintainer="CodeLibs Project"
+LABEL description="Build environment for libdxfrw on AlmaLinux 9 (CentOS successor)"
 
-RUN mkdir /work
+# Install build dependencies
+RUN dnf -y groupinstall "Development Tools" && \
+    dnf -y install \
+    autoconf \
+    automake \
+    libtool \
+    pkg-config \
+    && dnf clean all
+
 WORKDIR /work
 
-CMD ["sh", "/opt/bin/run.sh"]
+# Default command
+CMD ["sh", "/work/build.sh"]
 
