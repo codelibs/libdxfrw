@@ -173,6 +173,14 @@ int main(int argc, char* argv[]) {
     totalTests++;
     if (!testDXFVersion(DRW::AC1024, "R2010")) failedTests++;
 
+    // Test R2013
+    totalTests++;
+    if (!testDXFVersion(DRW::AC1027, "R2013")) failedTests++;
+
+    // Test R2018
+    totalTests++;
+    if (!testDXFVersion(DRW::AC1032, "R2018")) failedTests++;
+
     // Test binary DXF write
     totalTests++;
     if (!testBinaryDXFWrite()) failedTests++;
