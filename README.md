@@ -4,6 +4,12 @@ A free, open-source C++ library for reading and writing DXF files in both ASCII 
 
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/gpl-2.0)
 
+## About this Fork
+
+This project is a fork of the original [libdxfrw project on SourceForge](http://sourceforge.net/projects/libdxfrw). This fork includes additional improvements, updated build configurations, comprehensive test suites, and enhanced documentation to make the library more accessible and easier to use.
+
+For the original project, please visit: http://sourceforge.net/projects/libdxfrw
+
 ## Features
 
 - **DXF Support**: Read and write DXF files in both ASCII and binary formats
@@ -15,6 +21,8 @@ A free, open-source C++ library for reading and writing DXF files in both ASCII 
 
 ## Table of Contents
 
+- [About this Fork](#about-this-fork)
+- [Features](#features)
 - [Requirements](#requirements)
 - [Building the Library](#building-the-library)
   - [Linux/macOS (CMake)](#linuxmacos-cmake)
@@ -325,7 +333,7 @@ Test files are available in the [fess-testdata repository](https://github.com/co
 
 ## Documentation
 
-- **Website**: [http://sourceforge.net/projects/libdxfrw](http://sourceforge.net/projects/libdxfrw)
+- **Original Project Website**: [http://sourceforge.net/projects/libdxfrw](http://sourceforge.net/projects/libdxfrw)
 - **API Documentation**: Generate with Doxygen using `libdxfrw.dox`
 - **Specifications**: See [SPECIFICATIONS.md](SPECIFICATIONS.md) for DXF format details
 - **Examples**: Check the `dwg2dxf/` directory for reference implementation
@@ -379,5 +387,9 @@ See [ChangeLog](ChangeLog) for version history and changes.
 
 ## Support
 
-- **Issues**: Report bugs and request features on GitHub
+### This Fork
+- **Issues**: Report bugs and request features on GitHub Issues
+- **Repository**: [https://github.com/codelibs/libdxfrw](https://github.com/codelibs/libdxfrw)
+
+### Original Project
 - **Website**: [http://sourceforge.net/projects/libdxfrw](http://sourceforge.net/projects/libdxfrw)
