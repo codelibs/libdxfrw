@@ -23,6 +23,7 @@
 #include "intern/dwgreader21.h"
 #include "intern/dwgreader24.h"
 #include "intern/dwgreader27.h"
+#include "intern/dwgreader32.h"
 
 #define FIRSTHANDLE 48
 
@@ -219,6 +220,9 @@ bool dwgR::openFile(std::ifstream *filestr){
     } else if (strcmp(line, "AC1027") == 0) {
         version = DRW::AC1027;
         reader = new dwgReader27(filestr, this);
+    } else if (strcmp(line, "AC1032") == 0) {
+        version = DRW::AC1032;
+        reader = new dwgReader32(filestr, this);
     } else
         version = DRW::UNKNOWNV;
 

@@ -77,7 +77,8 @@ enum Version {
     AC1018,       /*!< ACAD 2004. */
     AC1021,       /*!< ACAD 2007. */
     AC1024,       /*!< ACAD 2010. */
-    AC1027        /*!< ACAD 2013. */
+    AC1027,       /*!< ACAD 2013. */
+    AC1032        /*!< ACAD 2018. */
 };
 
 enum error {
