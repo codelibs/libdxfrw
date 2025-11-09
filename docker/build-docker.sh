@@ -26,7 +26,11 @@
 #   ./docker/build-docker.sh run all-os
 #
 
-set -e
+# Robust error handling
+# -e: Exit on error
+# -u: Exit on undefined variable
+# -o pipefail: Fail on pipe errors
+set -euo pipefail
 
 # Configuration
 IMAGE_NAME="codelibs/libdxfrw"

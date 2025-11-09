@@ -5,7 +5,11 @@
 # and creates a distributable tar.gz archive
 #
 
-set -e  # Exit on error
+# Robust error handling
+# -e: Exit on error
+# -u: Exit on undefined variable
+# -o pipefail: Fail on pipe errors
+set -euo pipefail
 
 echo "=========================================="
 echo "libdxfrw Build Script"
@@ -55,8 +59,9 @@ echo "[6/6] Creating distributable archive..."
 cd /opt
 tar czf "${OUTPUT_DIR}/${OUTPUT_FILE}" dxfrw
 
-# Set permissions
-chmod 644 "${OUTPUT_DIR}/${OUTPUT_FILE}"
+# Set permissions to allow host user access when running in Docker
+# 666 (rw-rw-rw-) ensures the file can be accessed even if Docker runs as different UID
+chmod 666 "${OUTPUT_DIR}/${OUTPUT_FILE}"
 
 # Calculate elapsed time
 END_TIME=$(date +%s)
