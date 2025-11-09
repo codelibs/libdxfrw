@@ -145,93 +145,45 @@ cmake --build . --config Release --target install
 
 ### Docker Build
 
-Docker-based builds support multiple OS distributions for creating portable binaries.
+Build portable binaries for multiple OS distributions using Docker.
 
-> **Note:** As of this version, all Dockerfiles have been moved to the `docker/` directory for better organization.
-> If you were using the root `Dockerfile`, please use `docker/Dockerfile` or OS-specific files instead.
-> The build process has been updated from CentOS 7 (EOL) to AlmaLinux 9.
+> **Note:** Dockerfiles are in `docker/` directory. Build process updated from CentOS 7 (EOL) to AlmaLinux 9.
 
-#### Quick Start (AlmaLinux 9 - Default):
-
-```bash
-# Build the library using default OS (AlmaLinux 9)
-./docker/build-docker.sh run almalinux
-```
-
-This creates `dxfrw-almalinux.tar.gz` in the project root.
-
-#### Available OS Distributions:
+**Available OS Distributions:**
 
 | OS | Tag | Use Case |
 |----|-----|----------|
-| **AlmaLinux 9** | `almalinux` | RHEL/CentOS compatible binaries (CentOS successor) |
-| **Ubuntu 22.04 LTS** | `ubuntu` | Debian/Ubuntu compatible binaries |
-| **Amazon Linux 2023** | `amazonlinux` | AWS/Amazon Linux compatible binaries |
-| **Alpine Linux** | `alpine` | Lightweight musl-based binaries |
+| AlmaLinux 9 | `almalinux` | RHEL/CentOS compatible (CentOS successor) |
+| Ubuntu 22.04 LTS | `ubuntu` | Debian/Ubuntu compatible |
+| Amazon Linux 2023 | `amazonlinux` | AWS optimized |
+| Alpine Linux | `alpine` | Lightweight musl-based |
 
-#### Build for Specific OS:
+**Quick Start:**
 
 ```bash
-# Build for Ubuntu
+# Build for single OS (creates dxfrw-{os}.tar.gz)
+./docker/build-docker.sh run almalinux
 ./docker/build-docker.sh run ubuntu
 
-# Build for Amazon Linux
-./docker/build-docker.sh run amazonlinux
-
-# Build for Alpine Linux
-./docker/build-docker.sh run alpine
-```
-
-#### Build for All OS Distributions:
-
-```bash
-# Create binaries for all supported OS distributions
+# Build for all OS distributions
 ./docker/build-docker.sh run all-os
-```
 
-This creates multiple tar.gz files:
-- `dxfrw-almalinux.tar.gz`
-- `dxfrw-ubuntu.tar.gz`
-- `dxfrw-amazonlinux.tar.gz`
-- `dxfrw-alpine.tar.gz`
-
-#### Manual Docker Commands:
-
-If you prefer manual Docker commands:
-
-```bash
-# Build Docker image (using default AlmaLinux)
-docker build --rm -t codelibs/libdxfrw:almalinux -f docker/Dockerfile .
-
-# Build library using Docker
-docker run -t --rm -v `pwd`:/work codelibs/libdxfrw:almalinux /work/build.sh
-
-# For other OS, use the respective Dockerfile
-docker build --rm -t codelibs/libdxfrw:ubuntu -f docker/Dockerfile.ubuntu .
-docker run -t --rm -v `pwd`:/work codelibs/libdxfrw:ubuntu /work/build.sh
-
-# Or use the OS-specific Dockerfile directly
-docker build --rm -t codelibs/libdxfrw:amazonlinux -f docker/Dockerfile.amazonlinux .
-docker build --rm -t codelibs/libdxfrw:alpine -f docker/Dockerfile.alpine .
-```
-
-#### Extract and Install:
-
-```bash
-# Extract the archive under /opt
+# Extract and install
 sudo tar xzf dxfrw-almalinux.tar.gz -C /opt
-
-# The library will be installed in /opt/dxfrw/
-ls /opt/dxfrw/
 ```
 
-#### Push Docker Image:
+**Manual Docker Commands (if needed):**
 
 ```bash
-# Tag and push image
-docker tag codelibs/libdxfrw:almalinux codelibs/libdxfrw:latest
-docker push codelibs/libdxfrw:almalinux
-docker push codelibs/libdxfrw:latest
+# Build image and library
+docker build -t codelibs/libdxfrw:ubuntu -f docker/Dockerfile.ubuntu .
+docker run -t --rm -v `pwd`:/work codelibs/libdxfrw:ubuntu /work/build.sh
+```
+
+**Push to Docker Hub:**
+
+```bash
+./docker/build-docker.sh push almalinux
 ```
 
 ## Installation
