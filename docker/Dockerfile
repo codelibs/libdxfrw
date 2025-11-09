@@ -1,9 +1,10 @@
 # Default Dockerfile for libdxfrw (AlmaLinux 9)
-# For other OS options, see docker/ directory:
-# - docker/Dockerfile.ubuntu      (Ubuntu 22.04 LTS)
-# - docker/Dockerfile.almalinux   (AlmaLinux 9)
-# - docker/Dockerfile.amazonlinux (Amazon Linux 2023)
-# - docker/Dockerfile.alpine      (Alpine Linux)
+# This is a symbolic/default build configuration
+# For OS-specific builds, use the corresponding Dockerfile:
+#   - Dockerfile.ubuntu      (Ubuntu 22.04 LTS)
+#   - Dockerfile.almalinux   (AlmaLinux 9 - RHEL/CentOS compatible)
+#   - Dockerfile.amazonlinux (Amazon Linux 2023)
+#   - Dockerfile.alpine      (Alpine Linux - lightweight)
 
 FROM almalinux:9
 
@@ -23,4 +24,3 @@ WORKDIR /work
 
 # Default command
 CMD ["sh", "/work/build.sh"]
-

@@ -52,3 +52,7 @@ compile
 CMakeCache.txt
 cmake_install.cmake
 src/intern/.dirstamp
+
+# Docker build outputs
+*.tar.gz
+dxfrw-*.tar.gz

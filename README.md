@@ -147,6 +147,10 @@ cmake --build . --config Release --target install
 
 Docker-based builds support multiple OS distributions for creating portable binaries.
 
+> **Note:** As of this version, all Dockerfiles have been moved to the `docker/` directory for better organization.
+> If you were using the root `Dockerfile`, please use `docker/Dockerfile` or OS-specific files instead.
+> The build process has been updated from CentOS 7 (EOL) to AlmaLinux 9.
+
 #### Quick Start (AlmaLinux 9 - Default):
 
 ```bash
@@ -196,8 +200,8 @@ This creates multiple tar.gz files:
 If you prefer manual Docker commands:
 
 ```bash
-# Build Docker image
-docker build --rm -t codelibs/libdxfrw:almalinux .
+# Build Docker image (using default AlmaLinux)
+docker build --rm -t codelibs/libdxfrw:almalinux -f docker/Dockerfile .
 
 # Build library using Docker
 docker run -t --rm -v `pwd`:/work codelibs/libdxfrw:almalinux /work/build.sh
@@ -205,6 +209,10 @@ docker run -t --rm -v `pwd`:/work codelibs/libdxfrw:almalinux /work/build.sh
 # For other OS, use the respective Dockerfile
 docker build --rm -t codelibs/libdxfrw:ubuntu -f docker/Dockerfile.ubuntu .
 docker run -t --rm -v `pwd`:/work codelibs/libdxfrw:ubuntu /work/build.sh
+
+# Or use the OS-specific Dockerfile directly
+docker build --rm -t codelibs/libdxfrw:amazonlinux -f docker/Dockerfile.amazonlinux .
+docker build --rm -t codelibs/libdxfrw:alpine -f docker/Dockerfile.alpine .
 ```
 
 #### Extract and Install:
@@ -394,7 +402,7 @@ Extracts text entities from DXF files:
 ```
 
 **Requirements:**
-- Python 3.6 or later
+- Python 3.9 or later (minimum version across all Docker build environments)
 - `ezdxf` Python package: `pip install ezdxf`
 
 **Features:**

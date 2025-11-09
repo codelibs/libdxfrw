@@ -10,8 +10,14 @@ Usage:
     python3 dxf2txt.py <input.dxf> <output.txt>
 
 Requirements:
-    - Python 3.6+
+    - Python 3.9+ (minimum version available across all supported OS distributions)
     - ezdxf package (pip install ezdxf)
+
+Supported OS and their Python versions:
+    - Ubuntu 22.04 LTS: Python 3.10
+    - AlmaLinux 9: Python 3.9
+    - Amazon Linux 2023: Python 3.9
+    - Alpine Linux 3.19: Python 3.11
 
 Author: CodeLibs Project
 """
