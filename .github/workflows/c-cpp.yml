@@ -8,18 +8,38 @@ on:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            install_deps: sudo apt-get update && sudo apt-get install -y autoconf automake libtool libiconv-hook-dev || true
+          - os: macos-latest
+            install_deps: brew install autoconf automake libtool libiconv || true
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: ${{ matrix.install_deps }}
+
     - name: autoreconf
       run: autoreconf -vfi
+
     - name: configure
       run: ./configure
+
     - name: make
       run: make
+
     - name: make check
       run: make check
-#    - name: make distcheck
-#      run: make distcheck
+
+    - name: Run integration tests
+      run: |
+        if [ -f tests/run_tests.sh ]; then
+          chmod +x tests/run_tests.sh
+          ./tests/run_tests.sh
+        fi
