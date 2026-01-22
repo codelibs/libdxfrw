@@ -87,3 +87,18 @@ add_executable(test_errors tests/test_errors.cpp)
 target_include_directories(test_errors PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/tests)
 target_link_libraries(test_errors dxfrw ${ICONV_LIBRARY})
 add_test(NAME ErrorTests COMMAND test_errors)
+
+add_executable(test_dimensions tests/test_dimensions.cpp)
+target_include_directories(test_dimensions PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/tests)
+target_link_libraries(test_dimensions dxfrw ${ICONV_LIBRARY})
+add_test(NAME DimensionTests COMMAND test_dimensions)
+
+add_executable(test_annotations tests/test_annotations.cpp)
+target_include_directories(test_annotations PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/tests)
+target_link_libraries(test_annotations dxfrw ${ICONV_LIBRARY})
+add_test(NAME AnnotationTests COMMAND test_annotations)
+
+add_executable(test_attributes tests/test_attributes.cpp)
+target_include_directories(test_attributes PRIVATE ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/tests)
+target_link_libraries(test_attributes dxfrw ${ICONV_LIBRARY})
+add_test(NAME AttributeTests COMMAND test_attributes)

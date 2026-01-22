@@ -23,7 +23,12 @@ public:
                       ellipseCount(0), lwPolylineCount(0), polylineCount(0),
                       splineCount(0), textCount(0), mtextCount(0), insertCount(0),
                       rayCount(0), xlineCount(0), traceCount(0), solidCount(0),
-                      face3dCount(0), hatchCount(0), layerCount(0), ltypeCount(0) {}
+                      face3dCount(0), hatchCount(0), layerCount(0), ltypeCount(0),
+                      dimAlignedCount(0), dimLinearCount(0), dimRadialCount(0),
+                      dimDiametricCount(0), dimAngularCount(0), dimAngular3PCount(0),
+                      dimOrdinateCount(0), leaderCount(0), viewportCount(0),
+                      imageCount(0), blockCount(0), dimstyleCount(0), vportCount(0),
+                      textstyleCount(0), appidCount(0) {}
     ~TestInterface() {}
 
     // Entity counters for validation
@@ -48,6 +53,37 @@ public:
     // Table object counters
     int layerCount;
     int ltypeCount;
+    int dimstyleCount;
+    int vportCount;
+    int textstyleCount;
+    int appidCount;
+
+    // Dimension counters
+    int dimAlignedCount;
+    int dimLinearCount;
+    int dimRadialCount;
+    int dimDiametricCount;
+    int dimAngularCount;
+    int dimAngular3PCount;
+    int dimOrdinateCount;
+
+    // Other entity counters
+    int leaderCount;
+    int viewportCount;
+    int imageCount;
+    int blockCount;
+
+    // Storage for verification (last entity of each type)
+    DRW_DimAligned lastDimAligned;
+    DRW_DimLinear lastDimLinear;
+    DRW_DimRadial lastDimRadial;
+    DRW_DimDiametric lastDimDiametric;
+    DRW_DimAngular lastDimAngular;
+    DRW_DimAngular3p lastDimAngular3P;
+    DRW_DimOrdinate lastDimOrdinate;
+    DRW_Line lastLine;
+    DRW_Circle lastCircle;
+    DRW_Point lastPoint;
 
     // Implement required virtual methods
     virtual void addHeader(const DRW_Header* data) {
@@ -60,23 +96,35 @@ public:
     virtual void addLayer(const DRW_Layer& data) {
         layerCount++;
     }
-    virtual void addDimStyle(const DRW_Dimstyle& data) {}
-    virtual void addVport(const DRW_Vport& data) {}
-    virtual void addTextStyle(const DRW_Textstyle& data) {}
-    virtual void addAppId(const DRW_AppId& data) {}
+    virtual void addDimStyle(const DRW_Dimstyle& data) {
+        dimstyleCount++;
+    }
+    virtual void addVport(const DRW_Vport& data) {
+        vportCount++;
+    }
+    virtual void addTextStyle(const DRW_Textstyle& data) {
+        textstyleCount++;
+    }
+    virtual void addAppId(const DRW_AppId& data) {
+        appidCount++;
+    }
 
-    virtual void addBlock(const DRW_Block& data) {}
+    virtual void addBlock(const DRW_Block& data) {
+        blockCount++;
+    }
     virtual void setBlock(const int handle) {}
     virtual void endBlock() {}
 
     virtual void addPoint(const DRW_Point& data) {
         pointCount++;
+        lastPoint = data;
         std::cout << "Point added at (" << data.basePoint.x << ", "
                   << data.basePoint.y << ", " << data.basePoint.z << ")" << std::endl;
     }
 
     virtual void addLine(const DRW_Line& data) {
         lineCount++;
+        lastLine = data;
         std::cout << "Line added from (" << data.basePoint.x << ", "
                   << data.basePoint.y << ") to (" << data.secPoint.x << ", "
                   << data.secPoint.y << ")" << std::endl;
@@ -97,6 +145,7 @@ public:
 
     virtual void addCircle(const DRW_Circle& data) {
         circleCount++;
+        lastCircle = data;
         std::cout << "Circle added at (" << data.basePoint.x << ", "
                   << data.basePoint.y << "), radius=" << data.radious << std::endl;
     }
@@ -132,19 +181,46 @@ public:
     virtual void addText(const DRW_Text& data) {
         textCount++;
     }
-    virtual void addDimAlign(const DRW_DimAligned *data) {}
-    virtual void addDimLinear(const DRW_DimLinear *data) {}
-    virtual void addDimRadial(const DRW_DimRadial *data) {}
-    virtual void addDimDiametric(const DRW_DimDiametric *data) {}
-    virtual void addDimAngular(const DRW_DimAngular *data) {}
-    virtual void addDimAngular3P(const DRW_DimAngular3p *data) {}
-    virtual void addDimOrdinate(const DRW_DimOrdinate *data) {}
-    virtual void addLeader(const DRW_Leader *data) {}
+    virtual void addDimAlign(const DRW_DimAligned *data) {
+        dimAlignedCount++;
+        if (data) lastDimAligned = *data;
+    }
+    virtual void addDimLinear(const DRW_DimLinear *data) {
+        dimLinearCount++;
+        if (data) lastDimLinear = *data;
+    }
+    virtual void addDimRadial(const DRW_DimRadial *data) {
+        dimRadialCount++;
+        if (data) lastDimRadial = *data;
+    }
+    virtual void addDimDiametric(const DRW_DimDiametric *data) {
+        dimDiametricCount++;
+        if (data) lastDimDiametric = *data;
+    }
+    virtual void addDimAngular(const DRW_DimAngular *data) {
+        dimAngularCount++;
+        if (data) lastDimAngular = *data;
+    }
+    virtual void addDimAngular3P(const DRW_DimAngular3p *data) {
+        dimAngular3PCount++;
+        if (data) lastDimAngular3P = *data;
+    }
+    virtual void addDimOrdinate(const DRW_DimOrdinate *data) {
+        dimOrdinateCount++;
+        if (data) lastDimOrdinate = *data;
+    }
+    virtual void addLeader(const DRW_Leader *data) {
+        leaderCount++;
+    }
     virtual void addHatch(const DRW_Hatch *data) {
         hatchCount++;
     }
-    virtual void addViewport(const DRW_Viewport& data) {}
-    virtual void addImage(const DRW_Image *data) {}
+    virtual void addViewport(const DRW_Viewport& data) {
+        viewportCount++;
+    }
+    virtual void addImage(const DRW_Image *data) {
+        imageCount++;
+    }
     virtual void linkImage(const DRW_ImageDef *data) {}
     virtual void addComment(const char* comment) {}
 
@@ -180,6 +256,21 @@ public:
         hatchCount = 0;
         layerCount = 0;
         ltypeCount = 0;
+        dimstyleCount = 0;
+        vportCount = 0;
+        textstyleCount = 0;
+        appidCount = 0;
+        dimAlignedCount = 0;
+        dimLinearCount = 0;
+        dimRadialCount = 0;
+        dimDiametricCount = 0;
+        dimAngularCount = 0;
+        dimAngular3PCount = 0;
+        dimOrdinateCount = 0;
+        leaderCount = 0;
+        viewportCount = 0;
+        imageCount = 0;
+        blockCount = 0;
     }
 };
 

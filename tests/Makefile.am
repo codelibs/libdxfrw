@@ -1,5 +1,5 @@
-TESTS = test_basic test_entities test_polylines test_text test_tables test_blocks test_versions test_errors
-check_PROGRAMS = test_basic test_entities test_polylines test_text test_tables test_blocks test_versions test_errors
+TESTS = test_basic test_entities test_polylines test_text test_tables test_blocks test_versions test_errors test_dimensions test_annotations test_attributes
+check_PROGRAMS = test_basic test_entities test_polylines test_text test_tables test_blocks test_versions test_errors test_dimensions test_annotations test_attributes
 
 test_basic_SOURCES = test_basic.cpp test_interface.h
 test_basic_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/tests
@@ -32,5 +32,17 @@ test_versions_LDADD = $(top_builddir)/src/libdxfrw.la
 test_errors_SOURCES = test_errors.cpp test_interface.h
 test_errors_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/tests
 test_errors_LDADD = $(top_builddir)/src/libdxfrw.la
+
+test_dimensions_SOURCES = test_dimensions.cpp test_interface.h
+test_dimensions_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/tests
+test_dimensions_LDADD = $(top_builddir)/src/libdxfrw.la
+
+test_annotations_SOURCES = test_annotations.cpp test_interface.h
+test_annotations_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/tests
+test_annotations_LDADD = $(top_builddir)/src/libdxfrw.la
+
+test_attributes_SOURCES = test_attributes.cpp test_interface.h
+test_attributes_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/tests
+test_attributes_LDADD = $(top_builddir)/src/libdxfrw.la
 
 CLEANFILES = test_output.dxf test_binary.dxf test_*.dxf *.dxf
