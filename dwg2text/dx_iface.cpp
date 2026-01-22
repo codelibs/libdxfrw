@@ -12,10 +12,150 @@
 
 #include <iostream>
 #include <algorithm>
+#include <regex>
 #include "dx_iface.h"
 #include "libdwgr.h"
 #include "libdxfrw.h"
 
+/**
+ * Strip MTEXT formatting codes and return plain text.
+ * MTEXT uses various formatting codes like:
+ *   \P       - paragraph break (newline)
+ *   \\       - literal backslash
+ *   \{       - literal opening brace
+ *   \}       - literal closing brace
+ *   {\fFont|...;text} - font specification
+ *   \L, \l   - underline on/off
+ *   \O, \o   - overline on/off
+ *   \K, \k   - strikethrough on/off
+ *   \S...^...; - stacked fraction
+ *   \H...x;  - height change
+ *   \W...x;  - width change
+ *   \Q...;   - oblique angle
+ *   \T...;   - tracking
+ *   \A...;   - alignment
+ *   \C...;   - color
+ *   { }      - grouping (removed)
+ */
+static std::string stripMTextFormatting(const std::string& text) {
+    std::string result;
+    result.reserve(text.size());
+
+    size_t i = 0;
+    while (i < text.size()) {
+        // Check for escape character (backslash or yen symbol)
+        // Yen symbol in UTF-8 is 0xC2 0xA5
+        bool isEscape = false;
+        size_t escapeLen = 0;
+
+        if (text[i] == '\\') {
+            isEscape = true;
+            escapeLen = 1;
+        } else if (i + 1 < text.size() &&
+                   static_cast<unsigned char>(text[i]) == 0xC2 &&
+                   static_cast<unsigned char>(text[i + 1]) == 0xA5) {
+            // UTF-8 encoded yen symbol (¥)
+            isEscape = true;
+            escapeLen = 2;
+        }
+
+        if (isEscape && i + escapeLen < text.size()) {
+            char next = text[i + escapeLen];
+            switch (next) {
+                case 'P':
+                case 'p':
+                    // Paragraph break -> newline
+                    result += '\n';
+                    i += escapeLen + 1;
+                    break;
+                case '\\':
+                    // Escaped backslash
+                    result += '\\';
+                    i += escapeLen + 1;
+                    break;
+                case '{':
+                    result += '{';
+                    i += escapeLen + 1;
+                    break;
+                case '}':
+                    result += '}';
+                    i += escapeLen + 1;
+                    break;
+                case 'L':
+                case 'l':
+                case 'O':
+                case 'o':
+                case 'K':
+                case 'k':
+                    // Underline/overline/strikethrough toggles - skip
+                    i += escapeLen + 1;
+                    break;
+                case 'S': {
+                    // Stacked fraction: \Snum^denom; or \Snum/denom; or \Snum#denom;
+                    i += escapeLen + 1;
+                    std::string num, denom;
+                    while (i < text.size() && text[i] != '^' && text[i] != '/' && text[i] != '#' && text[i] != ';') {
+                        num += text[i++];
+                    }
+                    if (i < text.size() && (text[i] == '^' || text[i] == '/' || text[i] == '#')) {
+                        i++; // skip separator
+                        while (i < text.size() && text[i] != ';') {
+                            denom += text[i++];
+                        }
+                    }
+                    if (i < text.size() && text[i] == ';') i++; // skip semicolon
+                    if (!num.empty() && !denom.empty()) {
+                        result += num + "/" + denom;
+                    } else {
+                        result += num + denom;
+                    }
+                    break;
+                }
+                case 'H':
+                case 'W':
+                case 'Q':
+                case 'T':
+                case 'A':
+                case 'C':
+                case 'h':
+                case 'w':
+                case 'q':
+                case 't':
+                case 'a':
+                case 'c':
+                    // Format codes with value: \Xvalue; - skip to semicolon
+                    i += escapeLen + 1;
+                    while (i < text.size() && text[i] != ';') {
+                        i++;
+                    }
+                    if (i < text.size() && text[i] == ';') i++;
+                    break;
+                case 'F':
+                case 'f':
+                    // Font specification: \fFontName|options; - skip to semicolon
+                    i += escapeLen + 1;
+                    while (i < text.size() && text[i] != ';') {
+                        i++;
+                    }
+                    if (i < text.size() && text[i] == ';') i++;
+                    break;
+                default:
+                    // Unknown escape - keep character as is
+                    result += text[i];
+                    i++;
+                    break;
+            }
+        } else if (text[i] == '{' || text[i] == '}') {
+            // Skip grouping braces
+            i++;
+        } else {
+            result += text[i];
+            i++;
+        }
+    }
+
+    return result;
+}
 
 bool dx_iface::printText(const std::string& fileI, dx_data *fData){
     unsigned int found = fileI.find_last_of(".");
@@ -46,6 +186,28 @@ bool dx_iface::printText(const std::string& fileI, dx_data *fData){
             case DRW::TEXT:
                 std::cout << static_cast<DRW_Text*>(e)->text << std::endl;
                 break;
+            case DRW::MTEXT: {
+                std::string mtextContent = static_cast<DRW_MText*>(e)->text;
+                std::string plainText = stripMTextFormatting(mtextContent);
+                if (!plainText.empty()) {
+                    std::cout << plainText << std::endl;
+                }
+                break;
+            }
+            case DRW::DIMLINEAR:
+            case DRW::DIMALIGNED:
+            case DRW::DIMANGULAR:
+            case DRW::DIMANGULAR3P:
+            case DRW::DIMRADIAL:
+            case DRW::DIMDIAMETRIC:
+            case DRW::DIMORDINATE: {
+                DRW_Dimension* dim = static_cast<DRW_Dimension*>(e);
+                std::string dimText = dim->getText();
+                if (!dimText.empty()) {
+                    std::cout << dimText << std::endl;
+                }
+                break;
+            }
             default:
                 break;
             }

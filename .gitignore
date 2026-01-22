@@ -49,6 +49,7 @@ debug
 compile
 .cproject
 .project
+.serena
 CMakeCache.txt
 cmake_install.cmake
 src/intern/.dirstamp

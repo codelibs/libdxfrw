@@ -43,11 +43,14 @@ if [ ! -f "$INPUT_FILE" ]; then
 fi
 
 # Check if dwg2text exists
-DWG2TEXT="${SCRIPT_DIR}/dwg2text"
+DWG2TEXT="${SCRIPT_DIR}/../dwg2text/.libs/dwg2text"
 if [ ! -x "$DWG2TEXT" ]; then
     echo "Error: dwg2text utility not found or not executable: $DWG2TEXT"
     exit 1
 fi
+
+# Set library path for shared libraries
+export LD_LIBRARY_PATH="${SCRIPT_DIR}/../src/.libs:$LD_LIBRARY_PATH"
 
 # Convert DWG to text
 if "$DWG2TEXT" "$INPUT_FILE" > "$OUTPUT_FILE" 2>&1; then
