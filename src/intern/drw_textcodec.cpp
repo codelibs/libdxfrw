@@ -55,8 +55,7 @@ void DRW_TextCodec::setVersion(std::string *v, bool dxfFormat){
 }
 
 void DRW_TextCodec::setCodePage(std::string *c, bool dxfFormat){
-    static int min_ver = 10;
-    min_ver = std::min(min_ver, version);
+    int min_ver = version;
 
     cp = correctCodePage(*c);
     delete conv;
