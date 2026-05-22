@@ -1718,14 +1718,17 @@ void DRW_Hatch::parseCode(int code, dxfReader *reader){
     case 72:        /*edge type*/
         if (ispol){ //if is polyline is a as_bulge flag
             break;
-        } else if (reader->getInt32() == 1){ //line
-            addLine();
-        } else if (reader->getInt32() == 2){ //arc
-            addArc();
-        } else if (reader->getInt32() == 3){ //elliptic arc
-            addEllipse();
-        } else if (reader->getInt32() == 4){ //spline
-            addSpline();
+        } else {
+            int edgeType = reader->getInt32();
+            if (edgeType == 1){ //line
+                addLine();
+            } else if (edgeType == 2){ //arc
+                addArc();
+            } else if (edgeType == 3){ //elliptic arc
+                addEllipse();
+            } else if (edgeType == 4){ //spline
+                addSpline();
+            }
         }
         break;
     case 10:
