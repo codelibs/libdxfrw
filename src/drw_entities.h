@@ -796,6 +796,19 @@ public:
         flags = vertexcount = facecount = 0;
         smoothM = smoothN = curvetype = 0;
     }
+    DRW_Polyline(const DRW_Polyline& p) : DRW_Point(p) {
+        eType = DRW::POLYLINE;
+        flags = p.flags;
+        defstawidth = p.defstawidth;
+        defendwidth = p.defendwidth;
+        vertexcount = p.vertexcount;
+        facecount = p.facecount;
+        smoothM = p.smoothM;
+        smoothN = p.smoothN;
+        curvetype = p.curvetype;
+        for (auto v : p.vertlist)
+            vertlist.push_back(new DRW_Vertex(*v));
+    }
     ~DRW_Polyline() {
         while (!vertlist.empty()) {
            vertlist.pop_back();
@@ -852,6 +865,25 @@ public:
         flags = nknots = ncontrol = nfit = 0;
         tolknot = tolcontrol = tolfit = 0.0000001;
 
+    }
+    DRW_Spline(const DRW_Spline& s) : DRW_Entity(s) {
+        eType = DRW::SPLINE;
+        normalVec = s.normalVec;
+        tgStart = s.tgStart;
+        tgEnd = s.tgEnd;
+        flags = s.flags;
+        degree = s.degree;
+        nknots = s.nknots;
+        ncontrol = s.ncontrol;
+        nfit = s.nfit;
+        tolknot = s.tolknot;
+        tolcontrol = s.tolcontrol;
+        tolfit = s.tolfit;
+        knotslist = s.knotslist;
+        for (auto p : s.controllist)
+            controllist.push_back(new DRW_Coord(*p));
+        for (auto p : s.fitlist)
+            fitlist.push_back(new DRW_Coord(*p));
     }
     ~DRW_Spline() {
         while (!controllist.empty()) {
@@ -910,6 +942,32 @@ public:
         numedges = 0;
     }
 
+    DRW_HatchLoop(const DRW_HatchLoop& h) {
+        type = h.type;
+        numedges = h.numedges;
+        for (auto p : h.objlist) {
+            switch (p->eType) {
+            case DRW::LINE:
+                objlist.push_back(new DRW_Line(*static_cast<DRW_Line*>(p)));
+                break;
+            case DRW::ARC:
+                objlist.push_back(new DRW_Arc(*static_cast<DRW_Arc*>(p)));
+                break;
+            case DRW::ELLIPSE:
+                objlist.push_back(new DRW_Ellipse(*static_cast<DRW_Ellipse*>(p)));
+                break;
+            case DRW::SPLINE:
+                objlist.push_back(new DRW_Spline(*static_cast<DRW_Spline*>(p)));
+                break;
+            case DRW::LWPOLYLINE:
+                objlist.push_back(new DRW_LWPolyline(*static_cast<DRW_LWPolyline*>(p)));
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
     ~DRW_HatchLoop() {
 /*        while (!pollist.empty()) {
            pollist.pop_back();
@@ -949,6 +1007,24 @@ public:
         deflines = doubleflag = 0;
         loop = NULL;
         clearEntities();
+    }
+
+    DRW_Hatch(const DRW_Hatch& h) : DRW_Point(h) {
+        eType = DRW::HATCH;
+        name = h.name;
+        solid = h.solid;
+        associative = h.associative;
+        hstyle = h.hstyle;
+        hpattern = h.hpattern;
+        doubleflag = h.doubleflag;
+        loopsnum = h.loopsnum;
+        angle = h.angle;
+        scale = h.scale;
+        deflines = h.deflines;
+        loop = NULL;
+        clearEntities();
+        for (auto p : h.looplist)
+            looplist.push_back(new DRW_HatchLoop(*p));
     }
 
     ~DRW_Hatch() {
@@ -1398,6 +1474,26 @@ public:
         extrusionPoint.x = extrusionPoint.y = 0.0;
         arrow = 1;
         extrusionPoint.z = 1.0;
+    }
+    DRW_Leader(const DRW_Leader& l) : DRW_Entity(l) {
+        eType = DRW::LEADER;
+        style = l.style;
+        arrow = l.arrow;
+        leadertype = l.leadertype;
+        flag = l.flag;
+        hookline = l.hookline;
+        hookflag = l.hookflag;
+        textheight = l.textheight;
+        textwidth = l.textwidth;
+        vertnum = l.vertnum;
+        coloruse = l.coloruse;
+        annotHandle = l.annotHandle;
+        extrusionPoint = l.extrusionPoint;
+        horizdir = l.horizdir;
+        offsetblock = l.offsetblock;
+        offsettext = l.offsettext;
+        for (auto p : l.vertexlist)
+            vertexlist.push_back(new DRW_Coord(*p));
     }
     ~DRW_Leader() {
         while (!vertexlist.empty()) {
