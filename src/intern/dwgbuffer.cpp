@@ -167,11 +167,14 @@ dwgBuffer::dwgBuffer( const dwgBuffer& org ){
 }
 
 dwgBuffer& dwgBuffer::operator=( const dwgBuffer& org ){
-    filestr = org.filestr->clone();
-    decoder = org.decoder;
-    maxSize = filestr->size();
-    currByte = org.currByte;
-    bitPos = org.bitPos;
+    if (this != &org) {
+        delete filestr;
+        filestr = org.filestr->clone();
+        decoder = org.decoder;
+        maxSize = filestr->size();
+        currByte = org.currByte;
+        bitPos = org.bitPos;
+    }
     return *this;
 }
 
