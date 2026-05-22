@@ -1914,9 +1914,8 @@ bool DRW_Hatch::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
                         // pt0 2RD 10 control point
                         DRW_Coord* crd = new DRW_Coord(buf->get2RawDouble());
                         spline->controllist.push_back(crd);
-                        if(isRational)
-                            crd->z =  buf->getBitDouble(); //RLZ: investigate how store weight
-                        spline->controllist.push_back(crd);
+                        if (isRational)
+                            crd->z = buf->getBitDouble(); //RLZ: investigate how store weight
                     }
                     if (version > DRW::AC1021) { //2010+
                         spline->nfit = buf->getBitLong();
@@ -1924,7 +1923,7 @@ bool DRW_Hatch::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
                         for (dint32 j = 0; j < spline->nfit;++j){
                             // Fitpoint 2RD 11
                             DRW_Coord* crd = new DRW_Coord(buf->get2RawDouble());
-                            spline->fitlist.push_back (crd);
+                            spline->fitlist.push_back(crd);
                         }
                         spline->tgStart = buf->get2RawDouble();
                         spline->tgEnd = buf->get2RawDouble();
