@@ -156,6 +156,7 @@ void dwgCompressor::decompress18(duint8 *cbuf, duint8 *dbuf, duint32 csize, duin
     litCount = litLength18();
     //copy first lileral lenght
     for (duint32 i=0; i < litCount; ++i) {
+        if (pos >= csize || rpos >= sizeD) break;
         bufD[rpos++] = bufC[pos++];
     }
 
@@ -199,18 +200,24 @@ void dwgCompressor::decompress18(duint8 *cbuf, duint8 *dbuf, duint32 csize, duin
             DRW_DBG(pos);DRW_DBG(", Dpos: ");DRW_DBG(rpos);DRW_DBG("\n");
             return; //fails, not valid
         }
-        //copy "compresed data", TODO Needed verify out of bounds
-        duint32 remaining = sizeD - (litCount+rpos);
+        //copy "compressed data"
+        duint32 remaining = (litCount + rpos <= sizeD) ? sizeD - litCount - rpos : 0;
         if (remaining < compBytes){
             compBytes = remaining;
             DRW_DBG("WARNING dwgCompressor::decompress, bad compBytes size, Cpos: ");
             DRW_DBG(pos);DRW_DBG(", Dpos: ");DRW_DBG(rpos);DRW_DBG("\n");
         }
+        if (compOffset >= rpos) {
+            DRW_DBG("WARNING dwgCompressor::decompress, bad compOffset, Cpos: ");
+            DRW_DBG(pos);DRW_DBG(", Dpos: ");DRW_DBG(rpos);DRW_DBG("\n");
+            return;
+        }
         for (duint32 i=0, j= rpos - compOffset -1; i < compBytes; i++) {
             bufD[rpos++] = bufD[j++];
         }
-        //copy "uncompresed data", TODO Needed verify out of bounds
+        //copy "uncompressed data"
         for (duint32 i=0; i < litCount; i++) {
+            if (pos >= csize || rpos >= sizeD) break;
             bufD[rpos++] = bufC[pos++];
         }
     }
