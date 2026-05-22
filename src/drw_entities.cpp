@@ -1099,7 +1099,7 @@ bool DRW_Insert::parseDwg(DRW::Version version, dwgBuffer *buf, duint32 bs){
             attH = buf->getHandle(); /* H 2 BLOCK HEADER (hard pointer) */
             DRW_DBG("second attrib Handle: "); DRW_DBGHL(attH.code, attH.size, attH.ref); DRW_DBG("\n");
         } else {
-            for (duint8 i=0; i< objCount; ++i){
+            for (dint32 i=0; i< objCount; ++i){
                 dwgHandle attH = buf->getHandle(); /* H 2 BLOCK HEADER (hard pointer) */
                 DRW_DBG("attrib Handle #"); DRW_DBG(i); DRW_DBG(": "); DRW_DBGHL(attH.code, attH.size, attH.ref); DRW_DBG("\n");
             }
