@@ -11,6 +11,7 @@
 ******************************************************************************/
 
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -102,18 +103,18 @@ int dxfReader::getHandleString(){
 }
 
 bool dxfReaderBinary::readCode(int *code) {
-    unsigned short *int16p;
+    unsigned short codeVal;
     char buffer[2];
     filestr->read(buffer,2);
-    int16p = (unsigned short *) buffer;
+    memcpy(&codeVal, buffer, 2);
 //exist a 32bits int (code 90) with 2 bytes???
-    if ((*code == 90) && (*int16p>2000)){
+    if ((*code == 90) && (codeVal>2000)){
         DRW_DBG(*code); DRW_DBG(" de 16bits\n");
         filestr->seekg(-4, std::ios_base::cur);
         filestr->read(buffer,2);
-        int16p = (unsigned short *) buffer;
+        memcpy(&codeVal, buffer, 2);
     }
-    *code = *int16p;
+    *code = codeVal;
     DRW_DBG(*code); DRW_DBG("\n");
 
     return (filestr->good());
@@ -144,33 +145,29 @@ bool dxfReaderBinary::readInt16() {
 
 bool dxfReaderBinary::readInt32() {
     type = INT32;
-    unsigned int *int32p;
     char buffer[4];
     filestr->read(buffer,4);
-    int32p = (unsigned int *) buffer;
-    intData = *int32p;
+    unsigned int tmp;
+    memcpy(&tmp, buffer, 4);
+    intData = tmp;
     DRW_DBG(intData); DRW_DBG("\n");
     return (filestr->good());
 }
 
 bool dxfReaderBinary::readInt64() {
     type = INT64;
-    unsigned long long int *int64p; //64 bits integer pointer
     char buffer[8];
     filestr->read(buffer,8);
-    int64p = (unsigned long long int *) buffer;
-    int64 = *int64p;
+    memcpy(&int64, buffer, 8);
     DRW_DBG(int64); DRW_DBG(" int64\n");
     return (filestr->good());
 }
 
 bool dxfReaderBinary::readDouble() {
     type = DOUBLE;
-    double *result;
     char buffer[8];
     filestr->read(buffer,8);
-    result = (double *) buffer;
-    doubleData = *result;
+    memcpy(&doubleData, buffer, 8);
     DRW_DBG(doubleData); DRW_DBG("\n");
     return (filestr->good());
 }
