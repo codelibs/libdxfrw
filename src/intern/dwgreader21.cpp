@@ -93,7 +93,7 @@ bool dwgReader21::parseDataPage(dwgSectionInfo si, duint8 *dData){
     #endif
 
         duint8 *tmpPageRS = new duint8[pi.size];
-        duint8 chunks =pi.size / 255;
+        duint32 chunks = pi.size / 255;
         dwgRSCodec::decode251I(tmpPageRaw, tmpPageRS, chunks);
     #ifdef DRW_DBG_DUMP
         DRW_DBG("\nSection OBJECTS RS data=\n");
