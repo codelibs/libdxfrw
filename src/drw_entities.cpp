@@ -158,26 +158,28 @@ bool DRW_Entity::parseDxfGroups(int code, dxfReader *reader){
     if (!appName.empty() && appName.at(0)== '{'){
         curr.addString(code, appName.substr(1, (int) appName.size()-1));
         ls.push_back(curr);
-        while (code !=102 && appName.at(0)== '}'){
-            reader->readRec(&nc);//RLZ curr.code = code or nc?
-//            curr.code = code;
-            //RLZ code == 330 || code == 360 OR nc == 330 || nc == 360 ?
-            if (code == 330 || code == 360)
-                curr.addInt(code, reader->getHandleString());//RLZ code or nc
-            else {
+        while (reader->readRec(&nc)){
+            if (nc == 102) {
+                appName = reader->getString();
+                if (!appName.empty() && appName.at(0) == '}')
+                    break;
+                curr.addString(nc, appName);
+            } else if (nc == 330 || nc == 360) {
+                curr.addInt(nc, reader->getHandleString());
+            } else {
                 switch (reader->type) {
                 case dxfReader::STRING:
-                    curr.addString(code, reader->getString());//RLZ code or nc
+                    curr.addString(nc, reader->getString());
                     break;
                 case dxfReader::INT32:
                 case dxfReader::INT64:
-                    curr.addInt(code, reader->getInt32());//RLZ code or nc
+                    curr.addInt(nc, reader->getInt32());
                     break;
                 case dxfReader::DOUBLE:
-                    curr.addDouble(code, reader->getDouble());//RLZ code or nc
+                    curr.addDouble(nc, reader->getDouble());
                     break;
                 case dxfReader::BOOL:
-                    curr.addInt(code, reader->getInt32());//RLZ code or nc
+                    curr.addInt(nc, reader->getInt32());
                     break;
                 default:
                     break;
