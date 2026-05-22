@@ -92,6 +92,25 @@ bool convertFile(std::string inName, std::string outName, DRW::Version ver, bool
         return false;
     }
 
+    // If no version specified, use the source file's version
+    if (ver == DRW::UNKNOWNV) {
+        auto it = fData.headerC.vars.find("$ACADVER");
+        if (it != fData.headerC.vars.end()) {
+            std::string acadVer = *(it->second->content.s);
+            if (acadVer == "AC1006") ver = DRW::AC1006;
+            else if (acadVer == "AC1009") ver = DRW::AC1009;
+            else if (acadVer == "AC1012") ver = DRW::AC1012;
+            else if (acadVer == "AC1014") ver = DRW::AC1014;
+            else if (acadVer == "AC1015") ver = DRW::AC1015;
+            else if (acadVer == "AC1018") ver = DRW::AC1018;
+            else if (acadVer == "AC1021") ver = DRW::AC1021;
+            else if (acadVer == "AC1024") ver = DRW::AC1024;
+            else if (acadVer == "AC1027") ver = DRW::AC1027;
+            else if (acadVer == "AC1032") ver = DRW::AC1032;
+        }
+        if (ver == DRW::UNKNOWNV) ver = DRW::AC1021; // fallback
+    }
+
     //And write a dxf file
     dx_iface *output = new dx_iface();
     badState = output->fileExport(outName, ver, binary, &fData);
